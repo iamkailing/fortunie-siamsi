@@ -145,7 +145,7 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
   if(S.owned[n]>maxCopies(p)){shard=SHARD_GET[p.t];S.shards[p.t]=(S.shards[p.t]||0)+shard}
   if(S.buddy==null)S.buddy=pi;return{pi,isNew,shard,k:S.owned[n]}}
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
-function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;S.pity=0;return giveCopy(pi)}
+function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;return giveCopy(pi)}
 /* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
 function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
@@ -162,7 +162,7 @@ function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
   S.pity=(S.pity||0)+1;let pet=null,isNew=false,shard=0;
-  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();pet=r.pi;isNew=r.isNew;shard=r.shard}
+  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
   const again=rnd()<P.again;if(again)S.bonusFree++;
   const cur={f,pet,isNew,shard,again,ticket,tg,fa,at:now(),fate:"pending"};S.last=cur;S.pend={f};return cur}
 function burnReward(){const P=powers(),gold=rnd()<GOLD_P+P.gold,pts=(BURN_PTS+P.bp)*(gold?GOLD_X:1);S.burned++;if(gold){S.bonusFree++;S.golds=(S.golds||0)+1}
@@ -198,6 +198,10 @@ const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const sb = createClient(SB_URL, SB_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 const EMAIL_DOMAIN = "players.fortunie.app";
 const LOGIN_RE = /^[a-z0-9_]{3,16}$/;
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,24}$/i;
+/* Thai mobile: keep as 0XXXXXXXXX; accepts +66 / 66 / spaces / dashes */
+function normPhone(v) { let d = String(v || "").replace(/[^0-9]/g, ""); if (d.startsWith("66")) d = "0" + d.slice(2); return /^0[0-9]{8,9}$/.test(d) ? d : ""; }
+const authEmailOf = pr => pr.auth_email || `${pr.login}@${EMAIL_DOMAIN}`;
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
 const TEST_CODES = { "TEST-TICKET": { t: 1 }, "TEST-STAR50": { s: 50 } };
 
@@ -209,7 +213,7 @@ const fail = (msg, status = 400) => out({ error: String(msg) }, status);
 const cleanName = v => String(v || "").replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 16);
 const int = (v, lo, hi) => { const n = Math.trunc(Number(v) || 0); return Math.max(lo, Math.min(hi, n)); };
 
-async function getConfig() { const { data } = await sb.from("config").select("pay,ann,maint,packs").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS }; }
+async function getConfig() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false }; }
 async function loadState(uid) {
   const { data } = await sb.from("player_state").select("state,ver").eq("id", uid).maybeSingle();
   return data ? { st: Object.assign(fresh(), data.state), ver: data.ver } : { st: fresh(), ver: -1 };
@@ -233,26 +237,41 @@ async function withPlayer(uid, fn) {
 }
 const inbox = (G, msg) => { G.S.inbox.push({ at: Date.now(), msg }); if (G.S.inbox.length > 20) G.S.inbox.splice(0, G.S.inbox.length - 20); };
 
+/* sign up with email + phone; the login id is made from the player code so nobody has to invent one */
 async function signUp(p) {
-  const login = String(p.login || "").trim().toLowerCase(), pass = String(p.password || ""), name = cleanName(p.name) || login;
-  if (!LOGIN_RE.test(login)) return fail("ไอดีใช้ได้เฉพาะ a-z 0-9 และ _ ยาว 3–16 ตัว");
+  const email = String(p.email || "").trim().toLowerCase(), phone = normPhone(p.phone), pass = String(p.password || "");
+  if (!EMAIL_RE.test(email) || email.length > 200) return fail("อีเมลไม่ถูกต้อง ลองเช็กอีกครั้ง");
+  if (!phone) return fail("เบอร์โทรไม่ถูกต้อง ใส่เบอร์มือถือ 10 หลัก เช่น 0812345678");
   if (pass.length < 6 || pass.length > 72) return fail("รหัสผ่านต้องยาว 6 ตัวขึ้นไป");
-  const { data: dup } = await sb.from("profiles").select("id").eq("login", login).maybeSingle();
-  if (dup) return fail("ไอดีนี้มีคนใช้แล้ว ลองไอดีอื่นนะคะ");
-  const code = await genCode();
+  const { data: de } = await sb.from("profiles").select("id").eq("email", email).maybeSingle(); if (de) return fail("อีเมลนี้สมัครไว้แล้ว ลองเข้าสู่ระบบ หรือทักแอดมินถ้าลืมรหัส");
+  const { data: dp } = await sb.from("profiles").select("id").eq("phone", phone).maybeSingle(); if (dp) return fail("เบอร์นี้สมัครไว้แล้ว ลองเข้าสู่ระบบ หรือทักแอดมินถ้าลืมรหัส");
+  const code = await genCode(), login = code.toLowerCase().replace(/[^a-z0-9]/g, ""), name = cleanName(p.name) || ("ผู้เล่น " + code.slice(-4));
+  const cfg = await getConfig(), approved = !cfg.signup_approval;
   const { data, error } = await sb.auth.admin.createUser({ email: `${login}@${EMAIL_DOMAIN}`, password: pass, email_confirm: true, user_metadata: { login } });
   if (error || !data.user) return fail(error && /already/i.test(error.message) ? "ไอดีนี้มีคนใช้แล้ว ลองไอดีอื่นนะคะ" : "สมัครไม่สำเร็จ ลองใหม่อีกครั้ง");
   const uid = data.user.id;
-  const { error: e2 } = await sb.from("profiles").insert({ id: uid, login, name, code });
+  const { error: e2 } = await sb.from("profiles").insert({ id: uid, login, name, code, email, phone, approved, auth_email: `${login}@${EMAIL_DOMAIN}` });
   if (e2) { await sb.auth.admin.deleteUser(uid); return fail("สมัครไม่สำเร็จ ลองใหม่อีกครั้ง"); }
   await sb.from("player_state").insert({ id: uid, state: fresh(), ver: 0 });
-  await log(uid, "signup", { login });
-  return out({ ok: true, email: `${login}@${EMAIL_DOMAIN}` });
+  await log(uid, "signup", { login, pending: !approved });
+  return out({ ok: true, res: { email: `${login}@${EMAIL_DOMAIN}`, pending: !approved } });
+}
+/* turn what the player typed (email / phone / old id) into the sign-in address; unknown ids get a look-alike so nobody can probe who has an account */
+async function resolveId(p) {
+  const raw = String(p.id || "").trim().toLowerCase(); if (!raw) return fail("ใส่อีเมลหรือเบอร์โทรก่อนนะคะ");
+  let q = null;
+  if (raw.includes("@")) q = sb.from("profiles").select("login,auth_email").eq("email", raw);
+  else if (normPhone(raw) && /^[0-9+\-\s]+$/.test(raw)) q = sb.from("profiles").select("login,auth_email").eq("phone", normPhone(raw));
+  else if (LOGIN_RE.test(raw)) q = sb.from("profiles").select("login,auth_email").eq("login", raw);
+  const { data } = q ? await q.maybeSingle() : { data: null };
+  if (data) return out({ res: { email: authEmailOf(data) } });
+  let h = 0; for (const ch of raw) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return out({ res: { email: `ftn${1000 + h % 9000}x@${EMAIL_DOMAIN}` } });
 }
 
 async function adminList() {
   const [{ data: profs }, { data: states }, { data: pend }, { data: hist }, { data: codes }] = await Promise.all([
-    sb.from("profiles").select("id,login,name,code,is_admin,banned,ban_reason,created_at,last_seen").order("last_seen", { ascending: false }).limit(500),
+    sb.from("profiles").select("id,login,name,code,is_admin,banned,ban_reason,created_at,last_seen,email,phone,approved").order("last_seen", { ascending: false }).limit(500),
     sb.from("player_state").select("id,state").limit(500),
     sb.from("topups").select("*").eq("status", "pending").order("created_at").limit(100),
     sb.from("topups").select("*").neq("status", "pending").order("done_at", { ascending: false }).limit(30),
@@ -284,6 +303,11 @@ async function adminAction(a, p, me) {
     await withPlayer(uid, G => { G.S.stars = Math.max(0, G.S.stars + s); G.S.tickets = Math.max(0, G.S.tickets + t); inbox(G, `แอดมิน${s < 0 || t < 0 ? "ปรับ" : "ส่ง"}ของให้${s ? " " + (s > 0 ? "+" : "") + s + " ดาว" : ""}${t ? " ตั๋ว " + (t > 0 ? "+" : "") + t : ""}${note ? " · " + note : ""}`); });
     await log(uid, "give", { s, t, note }, me); return { ok: true };
   }
+  if (a === "adm_approve") {
+    const pr = await prof(); if (p.ok) { await sb.from("profiles").update({ approved: true, banned: false, ban_reason: "" }).eq("id", uid); await withPlayer(uid, G => inbox(G, "ยินดีต้อนรับ! แอดมินอนุมัติบัญชีแล้ว เริ่มเขย่าได้เลย")); }
+    else await sb.from("profiles").update({ approved: false, banned: true, ban_reason: String(p.reason || "ไม่ผ่านการอนุมัติ").slice(0, 80) }).eq("id", uid);
+    await log(uid, p.ok ? "approve" : "deny", { login: pr.login }, me); return { ok: true };
+  }
   if (a === "adm_ban") { await prof(); await sb.from("profiles").update({ banned: !!p.ban, ban_reason: String(p.reason || "").slice(0, 80) }).eq("id", uid); await log(uid, p.ban ? "ban" : "unban", { reason: p.reason }, me); return { ok: true }; }
   if (a === "adm_rename") { await prof(); const name = cleanName(p.name); if (!name) throw "ชื่อว่างไม่ได้"; await sb.from("profiles").update({ name }).eq("id", uid); return { ok: true }; }
   if (a === "adm_reset") { const pr = await prof(); await withPlayer(uid, G => { const keepIn = G.S.inbox; G.S = fresh(); G.S.inbox = keepIn; inbox(G, "แอดมินล้างข้อมูลเกมของคุณแล้ว"); }); await log(uid, "reset", { login: pr.login }, me); return { ok: true }; }
@@ -292,7 +316,7 @@ async function adminAction(a, p, me) {
   if (a === "adm_cfg") {
     const packs = (Array.isArray(p.packs) ? p.packs : []).map(x => ({ baht: int(x.baht, 0, 100000), stars: int(x.stars, 0, 1000000), tag: String(x.tag || "").slice(0, 20) })).filter(x => x.baht > 0 && x.stars > 0).slice(0, 8);
     if (!packs.length) throw "ต้องมีแพ็กอย่างน้อย 1 แพ็ก";
-    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, packs, updated_at: new Date().toISOString() }).eq("id", 1);
+    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, packs, updated_at: new Date().toISOString() }).eq("id", 1);
     return { ok: true };
   }
   if (a === "adm_code") {
@@ -343,7 +367,8 @@ Deno.serve(async (req) => {
   const a = String(p.action || "");
   try {
     if (a === "signup") return await signUp(p);
-    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint } }); }
+    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint, approval: !!c.signup_approval } }); }
+    if (a === "resolve") return await resolveId(p);
     const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
     const { data: ud, error: ue } = await sb.auth.getUser(token);
     if (ue || !ud || !ud.user) return fail("กรุณาเข้าสู่ระบบใหม่", 401);
@@ -354,6 +379,7 @@ Deno.serve(async (req) => {
     const cfg = await getConfig();
     if (prof.banned && !ADMIN) return out({ locked: "ban", reason: prof.ban_reason, profile: { name: prof.name, code: prof.code } });
     if (cfg.maint && !ADMIN) return out({ locked: "maint", profile: { name: prof.name, code: prof.code } });
+    if (prof.approved === false && !ADMIN) return out({ locked: "pending", profile: { name: prof.name, code: prof.code } });
     if (a.startsWith("adm_")) { if (!ADMIN) return fail("ต้องเป็นแอดมิน", 403); return out({ res: await adminAction(a, p, uid) }); }
 
     let res = null, G = null;
@@ -383,7 +409,7 @@ Deno.serve(async (req) => {
     }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
-    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs }, topups: tops || [] });
+    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, approval: !!cfg.signup_approval }, topups: tops || [] });
   } catch (e) {
     return fail(typeof e === "string" ? e : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", typeof e === "string" ? 400 : 500);
   }

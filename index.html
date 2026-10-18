@@ -120,7 +120,7 @@ tr:last-child td{border-bottom:0}
 .reveal .lbl{font-family:var(--f-display);font-size:18px;color:var(--lav-soft)}
 .rays{position:absolute;width:140vmax;height:140vmax;left:50%;top:42%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;
   background:repeating-conic-gradient(from 0deg,var(--glow) 0 6deg,transparent 6deg 18deg);mask:radial-gradient(circle,#000 0,transparent 55%);-webkit-mask:radial-gradient(circle,#000 0,transparent 55%)}
-.reveal.lit .rays{opacity:.45;animation:spin 14s linear infinite}
+.reveal.lit .rays{opacity:.45;animation:fspin 14s linear infinite}/* rotate property keeps the centring transform intact */
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .flip{width:min(240px,64vw);aspect-ratio:3/4;perspective:900px;position:relative}
 .flip .inner{position:absolute;inset:0;transition:transform .8s cubic-bezier(.3,1.3,.4,1);transform-style:preserve-3d}
@@ -625,6 +625,7 @@ body{-webkit-tap-highlight-color:transparent}
         <b class="lbl-s">แพ็กดาว (บาท → ดาว)</b>
         <div id="cfPacks" class="cf-packs"></div>
         <label class="toggle"><input id="cfMaint" type="checkbox"> ปิดปรับปรุงชั่วคราว (ผู้เล่นเข้าเกมไม่ได้ ยกเว้นแอดมิน)</label>
+        <label class="toggle"><input id="cfApproval" type="checkbox"> คนสมัครใหม่ต้องรอแอดมินอนุมัติก่อนเล่น</label>
         <button class="primary" id="cfSave" type="button">บันทึกการตั้งค่า</button>
         <span class="small" id="cfMsg" style="text-align:left"></span>
       </div>
@@ -634,6 +635,8 @@ body{-webkit-tap-highlight-color:transparent}
       <div id="pendList" class="adm-list"></div>
     </section>
     <section>
+      <h2>รออนุมัติสมัคร <span class="small" id="signupCount"></span></h2>
+      <div id="signupList" class="adm-list"></div>
       <h2>ผู้เล่น</h2>
       <div id="playerList" class="adm-list"></div>
     </section>
@@ -773,20 +776,27 @@ body{-webkit-tap-highlight-color:transparent}
     <h1 id="lgTitle">เซียมซีฮีลใจ</h1>
     <p class="small" style="margin:-6px 0 4px">โดย Fortunie · LINE @fortuniehoro</p>
     <div class="seg" role="tablist"><button type="button" id="lgTabIn" class="on">เข้าสู่ระบบ</button><button type="button" id="lgTabUp">สมัครใหม่</button></div>
-    <label class="lbl-s" for="lgId">ไอดี</label>
-    <input id="lgId" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16" placeholder="a-z 0-9 _ เช่น madeng01">
+    <div id="lgInOnly">
+      <label class="lbl-s" for="lgId">อีเมล หรือ เบอร์โทร</label>
+      <input id="lgId" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="200" placeholder="เช่น 0812345678 หรือ name@gmail.com">
+    </div>
     <label class="lbl-s" for="lgPass">รหัสผ่าน</label>
     <input id="lgPass" type="password" autocomplete="current-password" maxlength="72" placeholder="อย่างน้อย 6 ตัว">
     <div id="lgUpOnly" class="lg-up" hidden>
+      <label class="lbl-s" for="lgEmail">อีเมล</label>
+      <input id="lgEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="200" placeholder="name@gmail.com">
+      <label class="lbl-s" for="lgPhone">เบอร์มือถือ</label>
+      <input id="lgPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0812345678">
       <label class="lbl-s" for="lgPass2">ยืนยันรหัสผ่าน</label>
       <input id="lgPass2" type="password" autocomplete="new-password" maxlength="72">
       <label class="lbl-s" for="lgName">ชื่อในเกม</label>
       <input id="lgName" type="text" maxlength="16" placeholder="ชื่อที่อยากให้แสดง ภาษาไทยได้">
+      <p class="note" id="lgApproveNote" hidden>ช่วงนี้บัญชีใหม่ต้องรอแอดมินอนุมัติก่อนเริ่มเล่นนะคะ</p>
       <p class="note">สมัครแล้วถือว่ายอมรับ <a href="terms.html" target="_blank" rel="noopener">ข้อตกลงการใช้งาน</a> และ <a href="privacy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a></p>
     </div>
     <button class="go" id="lgBtn" type="submit">เข้าสู่ระบบ</button>
     <span class="small" id="lgMsg" role="status"></span>
-    <p class="note">ลืมรหัสผ่าน ทักแอดมินที่ LINE @fortuniehoro</p>
+    <p class="note">ลืมรหัสผ่าน ทักแอดมินที่ LINE @fortuniehoro · บัญชีเก่าใช้ไอดีเดิมเข้าได้เหมือนเดิม</p>
   </form>
 </div>
 <div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button><button class="burn-skip" id="burnSkip" type="button" hidden>ข้าม ⏭</button></div>
@@ -944,7 +954,7 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
   if(S.owned[n]>maxCopies(p)){shard=SHARD_GET[p.t];S.shards[p.t]=(S.shards[p.t]||0)+shard}
   if(S.buddy==null)S.buddy=pi;return{pi,isNew,shard,k:S.owned[n]}}
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
-function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;S.pity=0;return giveCopy(pi)}
+function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;return giveCopy(pi)}
 /* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
 function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
@@ -961,7 +971,7 @@ function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
   S.pity=(S.pity||0)+1;let pet=null,isNew=false,shard=0;
-  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();pet=r.pi;isNew=r.isNew;shard=r.shard}
+  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
   const again=rnd()<P.again;if(again)S.bonusFree++;
   const cur={f,pet,isNew,shard,again,ticket,tg,fa,at:now(),fate:"pending"};S.last=cur;S.pend={f};return cur}
 function burnReward(){const P=powers(),gold=rnd()<GOLD_P+P.gold,pts=(BURN_PTS+P.bp)*(gold?GOLD_X:1);S.burned++;if(gold){S.bonusFree++;S.golds=(S.golds||0)+1}
@@ -1523,6 +1533,7 @@ $("extraBtn").addEventListener("click",()=>{if(invFull()){toast("คลังเ
 function renderAnn(){const el=$("annBar");el.hidden=!CFG.ann;el.textContent=CFG.ann||""}
 function applyLock(){const L=$("lockScreen");if(!LOCKED){L.hidden=true;return}
   if(LOCKED.locked==="ban"){$("lockTitle").textContent="บัญชีนี้ถูกระงับชั่วคราว";$("lockText").textContent=(LOCKED.reason?LOCKED.reason+" · ":"")+"ทักแอดมินที่ LINE @fortuniehoro ได้เลยค่ะ"}
+  else if(LOCKED.locked==="pending"){$("lockTitle").textContent="สมัครเรียบร้อย รอแอดมินอนุมัติ";$("lockText").textContent=`รหัสผู้เล่นของคุณคือ ${(LOCKED.profile&&LOCKED.profile.code)||""} · แอดมินจะอนุมัติให้เร็วที่สุด ถ้ารีบทักแอดมินที่ LINE @fortuniehoro ได้เลยค่ะ`}
   else{$("lockTitle").textContent="ปิดปรับปรุงสักครู่";$("lockText").textContent="แม่หมอกำลังจัดศาลเจ้าใหม่ กลับมาเขย่ากันอีกทีเร็ว ๆ นี้นะคะ"}
   L.hidden=false}
 $("lockLogout").addEventListener("click",logout);
@@ -1531,23 +1542,28 @@ $("lockLogout").addEventListener("click",logout);
 let loginMode="in";
 function showLogin(){$("loginScreen").hidden=false;setLoginMode(loginMode);setTimeout(()=>$("lgId").focus(),50)}
 function setLoginMode(m){loginMode=m;$("lgTabIn").classList.toggle("on",m==="in");$("lgTabUp").classList.toggle("on",m==="up");
-  $("lgUpOnly").hidden=m!=="up";$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
+  $("lgUpOnly").hidden=m!=="up";$("lgInOnly").hidden=m==="up";if(m==="up")api("config").then(()=>{$("lgApproveNote").hidden=!CFG.approval}).catch(()=>{});$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
 $("lgTabIn").addEventListener("click",()=>setLoginMode("in"));$("lgTabUp").addEventListener("click",()=>setLoginMode("up"));
-async function doLogin(){const id=$("lgId").value.trim().toLowerCase(),pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn");
-  if(!/^[a-z0-9_]{3,16}$/.test(id)){msg.textContent="ไอดีใช้ได้เฉพาะ a-z 0-9 และ _ ยาว 3–16 ตัว";return}
+const normPhoneC=v=>{let d=String(v||"").replace(/[^0-9]/g,"");if(d.startsWith("66"))d="0"+d.slice(2);return /^0[0-9]{8,9}$/.test(d)?d:""};
+async function doLogin(){const pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn");let authEmail="";
   if(pw.length<6){msg.textContent="รหัสผ่านต้องยาว 6 ตัวขึ้นไป";return}
   btn.disabled=true;
   try{
-    if(loginMode==="up"){if(pw!==$("lgPass2").value){msg.textContent="รหัสผ่านสองช่องไม่ตรงกัน";return}
-      msg.textContent="กำลังสมัคร…";await api("signup",{login:id,password:pw,name:$("lgName").value.trim()})}
+    if(loginMode==="up"){const em=$("lgEmail").value.trim(),ph=$("lgPhone").value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(em)){msg.textContent="อีเมลไม่ถูกต้อง ลองเช็กอีกครั้ง";return}
+      if(!normPhoneC(ph)){msg.textContent="ใส่เบอร์มือถือ 10 หลัก เช่น 0812345678";return}
+      if(pw!==$("lgPass2").value){msg.textContent="รหัสผ่านสองช่องไม่ตรงกัน";return}
+      msg.textContent="กำลังสมัคร…";const r=await api("signup",{email:em,phone:ph,password:pw,name:$("lgName").value.trim()});authEmail=r&&r.email||""}
+    else{const id=$("lgId").value.trim();if(!id){msg.textContent="ใส่อีเมลหรือเบอร์โทรก่อนนะคะ";return}
+      msg.textContent="กำลังเข้าสู่ระบบ…";const r=await api("resolve",{id});authEmail=r&&r.email||""}
     msg.textContent="กำลังเข้าสู่ระบบ…";
-    try{await authReq("password",{email:`${id}@${EMAIL_DOMAIN}`,password:pw})}catch(e){msg.textContent="ไอดีหรือรหัสผ่านไม่ถูกต้อง";return}
+    try{await authReq("password",{email:authEmail,password:pw})}catch(e){msg.textContent=loginMode==="up"?"สมัครแล้ว แต่เข้าสู่ระบบไม่สำเร็จ ลองกดเข้าสู่ระบบอีกครั้ง":"อีเมล/เบอร์ หรือรหัสผ่านไม่ถูกต้อง";return}
     $("lgPass").value="";$("lgPass2").value="";$("loginScreen").hidden=true;await boot();
-    if(loginMode==="up")toast("ยินดีต้อนรับ "+(PROFILE&&PROFILE.name||id));
+    if(loginMode==="up"&&!LOCKED)toast("ยินดีต้อนรับ "+(PROFILE&&PROFILE.name||""));
   }catch(e){msg.textContent=typeof e==="string"?e:"เกิดข้อผิดพลาด ลองใหม่อีกครั้ง"}
   finally{btn.disabled=false}}
 $("lgBtn").addEventListener("click",doLogin);
-["lgId","lgPass","lgPass2","lgName"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+["lgId","lgPass","lgPass2","lgName","lgEmail","lgPhone"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
 function logout(){setAuth(null);ONLINE=false;OWNER=false;LOCKED=null;S=fresh();PROFILE=null;applyLock();$("adminTab").hidden=true;showTab("home");render();showLogin()}
 
 /* ---------- admin (server checks every admin action) ---------- */
@@ -1560,6 +1576,9 @@ function renderAdmin(){if(!OWNER)return;const pend=ADM.pending,hist=ADM.history;
   $("pendList").innerHTML=pend.length?pend.map(r=>`<div class="adm-card" data-rid="${esc(r.id)}"><div class="row"><b>${nmOf(r.user_id)}</b><span class="small">${ago(r.created_at)}</span></div>
      <span>${+r.baht} บาท → ${+r.stars} ดาว</span>${r.slip_url?`<a href="${esc(r.slip_url)}" target="_blank" rel="noopener"><img class="slip-img" src="${esc(r.slip_url)}" alt="สลิปโอนเงิน"></a>`:""}
      <input type="text" class="rej-reason" maxlength="80" placeholder="เหตุผลถ้าไม่อนุมัติ (ไม่บังคับ)"><div class="row" style="justify-content:flex-start"><button class="primary" type="button" data-adm="ok">อนุมัติ เติม ${+r.stars} ดาว</button><button class="ghost" type="button" data-adm="no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีคำขอที่รออยู่</div>`;
+  const waiting=ADM.players.filter(p=>p.approved===false&&!p.banned);$("signupCount").textContent=waiting.length?waiting.length+" คน":"";
+  $("signupList").innerHTML=waiting.length?waiting.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b><span class="small" style="text-align:left;display:block">${esc(p.email||"")} · ${esc(p.phone||"")} · สมัคร ${ago(p.created_at)}</span></div><div class="row" style="flex-wrap:nowrap"><button class="primary mini" type="button" data-adm="su_ok">อนุมัติ</button><button class="ghost mini" type="button" data-adm="su_no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีคนรออนุมัติ</div>`;
+  if(waiting.length){$("badgeAdmin").hidden=false;$("badgeAdmin").textContent=pend.length+waiting.length}
   $("playerList").innerHTML=ADM.players.length?ADM.players.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b>${p.is_admin?` <span class="tier" style="background:var(--lav)">แอดมิน</span>`:""}${p.banned?` <span class="tier" style="background:#e27a7a">ระงับ</span>`:""}<span class="small" style="text-align:left;display:block">ไอดี ${esc(p.login)} · ดาว ${+p.stars||0} · เขย่า ${+p.shakes||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท · เห็นล่าสุด ${ago(p.last_seen)}</span></div><button class="mini" type="button" data-adm="pl">จัดการ</button></div>`).join(""):`<div class="placeholder">ยังไม่มีผู้เล่น</div>`;
   $("codeList").innerHTML=ADM.codes.length?ADM.codes.map(c=>`<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" ดาว ":""}${c.t?+c.t+" ตั๋ว ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div><button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button></div>`).join(""):`<div class="placeholder">ยังไม่มีโค้ด</div>`;
   $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?"อนุมัติ":"ไม่อนุมัติ"} ${ago(r.done_at||r.created_at)}</span></div>${r.slip_url?`<a class="mini" href="${esc(r.slip_url)}" target="_blank" rel="noopener">ดูสลิป</a><button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
@@ -1569,6 +1588,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("button[dat
   b.disabled=true;
   try{
     if(a==="ok"||a==="no"){await api("adm_topup",{id:card.dataset.rid,ok:a==="ok",reason:card.querySelector(".rej-reason").value.trim()});toast(a==="ok"?"อนุมัติแล้ว ดาวเข้าบัญชีผู้เล่นแล้ว":"ไม่อนุมัติแล้ว")}
+    else if(a==="su_ok"||a==="su_no"){await api("adm_approve",{uid:card.dataset.uid,ok:a==="su_ok"});toast(a==="su_ok"?"อนุมัติแล้ว ผู้เล่นเข้าเกมได้เลย":"ไม่อนุมัติแล้ว")}
     else if(a==="delslip"){await api("adm_delslip",{id:card.dataset.rid});toast("ลบรูปสลิปแล้ว")}
     else if(a==="off"||a==="on"){await api("adm_code",{code:card.dataset.code,toggle:1,off:a==="off"})}
     await loadAdmin()}catch(err){if(err!=="locked")toast(err);b.disabled=false}});
@@ -1576,7 +1596,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("button[dat
 let plUid=null;
 function openPl(uid){plUid=uid;const p=PLOF(uid);
   $("plTitle").textContent=p.name||"ผู้เล่น";
-  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b></span><span>ดาว ${+p.stars||0} · ตั๋ว ${+p.tickets||0} · เขย่า ${+p.shakes||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>สมัครเมื่อ ${ago(p.created_at)} · เห็นล่าสุด ${ago(p.last_seen)}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
+  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b>${p.approved===false?" · <b>รออนุมัติ</b>":""}</span>${p.email||p.phone?`<span>${esc(p.email||"-")} · ${esc(p.phone||"-")}</span>`:""}<span>ดาว ${+p.stars||0} · ตั๋ว ${+p.tickets||0} · เขย่า ${+p.shakes||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>สมัครเมื่อ ${ago(p.created_at)} · เห็นล่าสุด ${ago(p.last_seen)}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
   $("plName").value=p.name||"";$("plBanReason").value=p.ban_reason||"";["plStars","plTickets","plNote","plPass"].forEach(i=>$(i).value="");$("plMsg").textContent="";$("plResetYes").hidden=true;
   $("plAdmin").textContent=p.is_admin?"ปลดสิทธิ์แอดมิน":"ให้สิทธิ์แอดมิน";
   const rs=ADM.pending.concat(ADM.history).filter(r=>r.user_id===uid).slice(0,8);
@@ -1596,11 +1616,11 @@ $("plReset").addEventListener("click",()=>{$("plResetYes").hidden=false;plMsg("�
 $("plResetYes").addEventListener("click",()=>{$("plResetYes").hidden=true;plDo("adm_reset",{},"ล้างเกมของผู้เล่นแล้ว")});
 /* game settings */
 let cfgFilled=false;
-function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;
+function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;$("cfApproval").checked=!!CFG.approval;
   $("cfPacks").innerHTML=PACKS.concat([{},{}]).slice(0,6).map((p,i)=>`<div class="row cf-row" style="flex-wrap:nowrap"><input type="number" min="0" data-k="baht" value="${p.baht||""}" placeholder="บาท" aria-label="ราคาแพ็ก ${i+1}"><input type="number" min="0" data-k="stars" value="${p.stars||""}" placeholder="ดาว" aria-label="ดาวแพ็ก ${i+1}"><input type="text" maxlength="20" data-k="tag" value="${esc(p.tag||"")}" placeholder="ป้าย" aria-label="ป้ายแพ็ก ${i+1}"></div>`).join("")}
 $("cfSave").addEventListener("click",async()=>{const packs=[...$("cfPacks").querySelectorAll(".cf-row")].map(r=>({baht:+r.querySelector('[data-k="baht"]').value||0,stars:+r.querySelector('[data-k="stars"]').value||0,tag:r.querySelector('[data-k="tag"]').value.trim()})).filter(p=>p.baht>0&&p.stars>0);
   if(!packs.length){$("cfMsg").textContent="ต้องมีแพ็กอย่างน้อย 1 แพ็ก";return}
-  try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
+  try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
 $("ncBtn").addEventListener("click",async()=>{const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),msg=$("ncMsg");
   if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!t){msg.textContent="ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";return}
   const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
