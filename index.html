@@ -703,6 +703,80 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .edge-glow{padding:9px;filter:blur(10px)}.edge-glow.legend{padding:11px}
 .reveal.glass{-webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15)}
 
+/* ---- rank v65: showcase stage + pedestal podium ---- */
+.rk-title{display:flex;align-items:center;gap:10px}.rk-title span{filter:drop-shadow(0 0 8px #f0d28a88)}
+#scr-rank .profile-card{border:1px solid #f0d28a55;background:radial-gradient(120% 90% at 50% 100%,#4a2f7a55,transparent 60%),linear-gradient(160deg,#36215bdd,#211536ee);box-shadow:0 0 0 1px #ffffff08 inset,0 10px 30px #0006;border-radius:22px;padding:16px}
+.rk-lbl{font-size:12px;color:var(--lav-soft);text-align:left}
+#scr-rank .pc-score{font-size:34px}
+.rk-btn{flex:none;align-self:flex-start;border:1.5px solid #b98ae6aa;background:#b98ae61f;color:var(--text);border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.rk-btn:hover{background:#b98ae63a}
+.rk-sep{height:1px;background:linear-gradient(90deg,transparent,#ffffff26,transparent);margin:2px 0}
+.rk-show{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-areas:"stage info" "stage btn";align-items:center;column-gap:10px;row-gap:8px;border-radius:16px;background:radial-gradient(70% 80% at 25% 70%,color-mix(in srgb,var(--tg) 22%,transparent),transparent 70%),#ffffff06;padding:10px 12px}
+.rk-stage{grid-area:stage;position:relative;height:150px;display:flex;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:0!important;width:100%;border:0!important;background:none!important;padding:0 0 14px!important;cursor:pointer;min-height:0!important}
+.rk-stage .rk-img{position:relative;z-index:2;width:128px;height:128px;filter:drop-shadow(0 8px 10px #0007)}
+.rk-stage .rk-emo{font-size:72px;position:relative;z-index:2}
+.rk-disc{position:absolute;left:50%;bottom:6px;width:150px;height:34px;translate:-50% 0;border-radius:50%;border:2px solid color-mix(in srgb,var(--tc) 80%,#fff);background:radial-gradient(ellipse,color-mix(in srgb,var(--tg) 55%,transparent),transparent 72%);box-shadow:0 0 18px color-mix(in srgb,var(--tg) 70%,transparent)}
+.rk-info{grid-area:info;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;align-self:end}
+.rk-info b{font-family:var(--f-display);font-size:18px;line-height:1.25}
+.rk-show .rk-btn{grid-area:btn;align-self:start;justify-self:start;min-width:120px}
+.rk-chip{display:inline-block;border:1.5px solid var(--tc);color:color-mix(in srgb,var(--tc) 55%,#fff);border-radius:999px;padding:2px 10px;font-size:12px;white-space:nowrap;background:color-mix(in srgb,var(--tc) 12%,transparent)}
+.rk-empty{min-height:96px}
+.rk-head{margin-top:6px}.rk-head h2{display:flex;align-items:center;gap:8px}#lbMe{color:var(--lav-soft)}
+/* podium */
+.podium2{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:4px;margin:14px 0 6px}
+.podium2 .pd{display:flex;flex-direction:column;align-items:center;min-width:0}
+.podium2 .pd[data-code]{cursor:pointer}
+.rk-pfig{position:relative;display:flex;align-items:flex-end;justify-content:center;width:100%;margin-bottom:-14px;z-index:2}
+.rk-pfig .rk-img{width:104px;height:104px;filter:drop-shadow(0 6px 8px #0008)}
+.pd.p1 .rk-pfig .rk-img{width:128px;height:128px;filter:drop-shadow(0 0 16px color-mix(in srgb,var(--tg,#f0d28a) 70%,transparent)) drop-shadow(0 6px 8px #0008)}
+.rk-pfig .rk-emo{font-size:60px}
+.rk-crown{position:absolute;top:-30px;left:50%;translate:-50% 0;font-size:28px;filter:drop-shadow(0 0 10px #f0d28a);animation:rkfloat 2.6s ease-in-out infinite}
+@keyframes rkfloat{50%{translate:-50% -4px}}
+.rk-ghost{width:72px;height:72px;margin-bottom:18px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:var(--muted);border:1.5px dashed var(--line)}
+.rk-ped{position:relative;width:96%;height:52px;border-radius:50%/0 0 22px 22px;display:grid;place-items:end center;padding-bottom:4px;font-family:var(--f-display);font-size:22px;color:#2a1a40}
+.rk-ped::before{content:"";position:absolute;left:0;right:0;top:-12px;height:26px;border-radius:50%;background:var(--pt);box-shadow:0 0 0 1px #ffffff55 inset,0 0 14px var(--pg)}
+.rk-ped span{position:relative;text-shadow:0 1px 0 #fff8}
+.pd.p1 .rk-ped{height:66px;font-size:26px;background:linear-gradient(180deg,#e9bf5c,#b8862c 60%,#8a5f18);--pt:radial-gradient(ellipse at 50% 40%,#fff3c4,#e7c160 60%,#c8962f);--pg:#f0d28a88}
+.pd.p2 .rk-ped{background:linear-gradient(180deg,#c9cfdc,#9097a8 60%,#6c7284);--pt:radial-gradient(ellipse at 50% 40%,#ffffff,#d5dae6 60%,#a7aebf);--pg:#d9e0f088}
+.pd.p3 .rk-ped{background:linear-gradient(180deg,#d9a07a,#a8683f 60%,#7c4a2a);--pt:radial-gradient(ellipse at 50% 40%,#ffe3cc,#e0a77e 60%,#b97648);--pg:#f2b98f88}
+.pd.empty .rk-ped{filter:saturate(.3) brightness(.65)}
+.rk-pwho{display:flex;align-items:center;gap:6px;margin-top:10px;min-width:0;max-width:100%}
+.rk-pwho>div{display:flex;flex-direction:column;min-width:0}
+.rk-pwho b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.podium2 .pd-score{font-size:12px;color:var(--lav-soft);background:none;border:0;padding:0}.podium2 .pd-score b{font-family:var(--f-display);font-size:17px;color:var(--text)}
+.pd.p1 .rk-pwho b,.pd.p1 .pd-score b{color:var(--butter)}
+.pd.me .rk-pwho>div>b{color:var(--butter)}
+/* rows 4+ */
+.rk-rest{border:1px solid #f0d28a33;border-radius:18px;padding:6px;background:#ffffff05;margin-top:8px}
+.lb-row.rk-row{grid-template-columns:20px 40px minmax(0,1.15fr) 42px minmax(0,1fr) 38px;gap:7px;padding:8px 8px;border-radius:14px}
+.rk-row .lb-rank{font-size:20px;color:var(--lav)}.rk-row .av{--s:40px!important}
+.rk-row .lb-who small{color:var(--lav)}
+.rk-rpet{display:grid;place-items:center}.rk-rpet .rk-img{width:46px;height:46px}.rk-rpet .rk-emo{font-size:30px}
+.rk-rinfo{display:flex;flex-direction:column;gap:3px;min-width:0;align-items:flex-start}.rk-rinfo b{font-size:12px;font-weight:500;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}.rk-rinfo .rk-chip{font-size:10.5px;padding:1px 7px}.rk-rinfo small{font-size:11px;color:var(--muted)}
+.rk-row .lb-score{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}.rk-row .lb-score b{font-family:var(--f-display);font-size:20px;color:var(--butter)}.rk-row .lb-score small{font-size:11px;color:var(--lav-soft)}
+@media (max-width:360px){.lb-row.rk-row{grid-template-columns:20px 40px minmax(0,1fr) 38px 40px}.rk-rinfo{display:none}.rk-stage .rk-img{width:108px;height:108px}.rk-pfig .rk-img{width:84px;height:84px}.pd.p1 .rk-pfig .rk-img{width:104px;height:104px}}
+@media (prefers-reduced-motion:reduce){.rk-crown{animation:none}}
+/* ---- rank v67: pedestal art, light and shadow ---- */
+.podium2{position:relative;isolation:isolate;padding-top:34px}
+.podium2::before{content:"";position:absolute;left:50%;top:-6px;width:min(300px,78%);aspect-ratio:1;translate:-50% 0;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle,#f0d28a40 0%,#b98ae62a 38%,transparent 68%)}
+.rk-ped.img{height:auto;width:100%;padding:0;background:none!important;display:block;filter:drop-shadow(0 10px 14px #0009)}
+.rk-ped.img::before{display:none}
+.rk-ped.img img{display:block;width:100%;height:auto}
+.pd .rk-pfig{margin-bottom:-9%;isolation:isolate}
+.rk-pfig::after{content:"";position:absolute;left:50%;bottom:3px;width:62%;height:14px;translate:-50% 0;border-radius:50%;background:radial-gradient(ellipse,#1a0b2ecc 0%,#1a0b2e55 45%,transparent 72%);z-index:-1}
+.rk-pfig::before{content:"";position:absolute;left:50%;bottom:0;width:84%;aspect-ratio:1;translate:-50% 0;border-radius:50%;z-index:-2;background:radial-gradient(circle at 50% 60%,color-mix(in srgb,var(--tg,#b98ae6) 34%,transparent),transparent 66%)}
+.pd.p1 .rk-pfig::before{width:100%;background:radial-gradient(circle at 50% 60%,#f6dd8f66,#f0d28a22 45%,transparent 70%)}
+.pd.p1 .rk-pfig .rk-img{filter:drop-shadow(0 0 14px #f0d28a88) drop-shadow(0 6px 8px #0008)}
+.pd.p2 .rk-pfig .rk-img,.pd.p3 .rk-pfig .rk-img{filter:drop-shadow(0 0 10px color-mix(in srgb,var(--tg,#b98ae6) 55%,transparent)) drop-shadow(0 6px 8px #0008)}
+.pd.p2 .rk-ped.img,.pd.p3 .rk-ped.img{width:92%}
+.pd.empty .rk-ped.img{filter:saturate(.25) brightness(.6) drop-shadow(0 8px 12px #0008)}
+.pd.empty .rk-pfig::after,.pd.empty .rk-pfig::before{display:none}
+.rk-pwho{margin-top:6px}
+.pd.p2 .rk-ped.img,.pd.p3 .rk-ped.img{width:96%}.rk-pwho{min-height:44px}
+.pd .rk-ped.img{height:auto;font-size:0}
+.pe-hint{font-size:11px;font-weight:400;color:var(--lav-soft);margin-left:6px}
+.pick-pet{position:relative}.pick-pet .pe-lv{position:absolute;top:3px;right:4px;font-style:normal;font-size:9.5px;color:var(--lav-soft);background:#0006;border-radius:6px;padding:0 4px}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -788,10 +862,10 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 
   <!-- RANK -->
   <div class="screen" id="scr-rank" hidden>
-    <h2 class="screen-title">อันดับนักสะสม</h2>
+    <h2 class="screen-title rk-title"><span aria-hidden="true">👑</span> อันดับนักสะสม</h2>
     <section class="profile-card" id="myProfile"></section>
     <section>
-      <div class="row"><h2>🏆 ท็อปนักสะสม</h2><span class="small" id="lbMe"></span></div>
+      <div class="row rk-head"><h2><span aria-hidden="true">🏆</span> ท็อปนักสะสม</h2><span class="small" id="lbMe"></span></div>
       <div class="lb-list" id="lbList"></div>
     </section>
   </div>
@@ -1393,6 +1467,7 @@ const n1=x=>String(Math.round(x*10)/10);
 function toast(msg){const el=$("toast");el.textContent=msg;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2600)}
 const formE=(p,L)=>p.fe&&p.fe[L-1]?p.fe[L-1]:p.e;
 const PET_IMG={"มังกรทอง": ["pet-assets/dragon_1.webp", "pet-assets/dragon_2.webp", "pet-assets/dragon_3.webp"], "นกยูงราชินี": ["pet-assets/peacock_1.webp", "pet-assets/peacock_2.webp", "pet-assets/peacock_3.webp"], "ฟอร์จูนี่": ["pet-assets/fortunie_1.webp", "pet-assets/fortunie_2.webp", "pet-assets/fortunie_3.webp"], "หงส์ขาว": ["pet-assets/swan_1.webp", "pet-assets/swan_2.webp", "pet-assets/swan_3.webp"], "ผีเสื้อราตรี": ["pet-assets/butterfly_1.webp", "pet-assets/butterfly_2.webp", "pet-assets/butterfly_3.webp"], "เสือขาวเฝ้าดวง": ["pet-assets/tiger_1.webp", "pet-assets/tiger_2.webp", "pet-assets/tiger_3.webp"], "ยูนิคอร์นเมฆ": ["pet-assets/unicorn_1.webp", "pet-assets/unicorn_2.webp", "pet-assets/unicorn_3.webp"], "สิงโตทอง": ["pet-assets/lion_1.webp", "pet-assets/lion_2.webp", "pet-assets/lion_3.webp"], "น้องหมีเด้ง": ["pet-assets/bear_1.webp", "pet-assets/bear_2.webp", "pet-assets/bear_3.webp"], "หอยทากใจเย็น": ["pet-assets/snail_1.webp", "pet-assets/snail_2.webp", "pet-assets/snail_3.webp"], "เต่าน้อยมั่นคง": ["pet-assets/turtle_1.webp", "pet-assets/turtle_2.webp", "pet-assets/turtle_3.webp"], "ลูกเจี๊ยบตัวจิ๋ว": ["pet-assets/chick_1.webp", "pet-assets/chick_2.webp", "pet-assets/chick_3.webp"], "แฮมสเตอร์แก้มป่อง": ["pet-assets/hamster_1.webp", "pet-assets/hamster_2.webp", "pet-assets/hamster_3.webp"], "กบน้อยนำโชค": ["pet-assets/frog_1.webp", "pet-assets/frog_2.webp", "pet-assets/frog_3.webp"], "ผึ้งขยัน": ["pet-assets/bee_1.webp", "pet-assets/bee_2.webp", "pet-assets/bee_3.webp"], "เต่าทองจุดดาว": ["pet-assets/ladybug_1.webp", "pet-assets/ladybug_2.webp", "pet-assets/ladybug_3.webp"], "เม่นขนนุ่ม": ["pet-assets/hedgehog_1.webp", "pet-assets/hedgehog_2.webp", "pet-assets/hedgehog_3.webp"], "กระรอกเก็บโชค": ["pet-assets/squirrel_1.webp", "pet-assets/squirrel_2.webp", "pet-assets/squirrel_3.webp"], "เพนกวินเดินเตาะแตะ": ["pet-assets/penguin_1.webp", "pet-assets/penguin_2.webp", "pet-assets/penguin_3.webp"], "หนอนน้อยรอบิน": ["pet-assets/caterpillar_1.webp", "pet-assets/caterpillar_2.webp", "pet-assets/caterpillar_3.webp"], "กระต่ายจันทร์": ["pet-assets/rabbit_1.webp", "pet-assets/rabbit_2.webp", "pet-assets/rabbit_3.webp"], "แพนด้าฟูฟู": ["pet-assets/panda_1.webp", "pet-assets/panda_2.webp", "pet-assets/panda_3.webp"], "แมวนำโชค": ["pet-assets/cat_1.webp", "pet-assets/cat_2.webp", "pet-assets/cat_3.webp"], "หมาน้อยซื่อสัตย์": ["pet-assets/dog_1.webp", "pet-assets/dog_2.webp", "pet-assets/dog_3.webp"], "โคอาล่าขี้เซา": ["pet-assets/koala_1.webp", "pet-assets/koala_2.webp", "pet-assets/koala_3.webp"], "หมูนำทรัพย์": ["pet-assets/pig_1.webp", "pet-assets/pig_2.webp", "pet-assets/pig_3.webp"], "หมีน้ำผึ้ง": ["pet-assets/honeybear_1.webp", "pet-assets/honeybear_2.webp", "pet-assets/honeybear_3.webp"], "เป็ดน้อยลอยน้ำ": ["pet-assets/duck_1.webp", "pet-assets/duck_2.webp", "pet-assets/duck_3.webp"], "แกะขนเมฆ": ["pet-assets/sheep_1.webp", "pet-assets/sheep_2.webp", "pet-assets/sheep_3.webp"], "จิ้งจอกไพ่ทาโรต์": ["pet-assets/fox_1.webp", "pet-assets/fox_2.webp", "pet-assets/fox_3.webp"], "นกฮูกดวงดาว": ["pet-assets/owl_1.webp", "pet-assets/owl_2.webp", "pet-assets/owl_3.webp"], "โลมาสายรุ้ง": ["pet-assets/dolphin_1.webp", "pet-assets/dolphin_2.webp", "pet-assets/dolphin_3.webp"], "ปลาหมึกแปดโชค": ["pet-assets/octopus_1.webp", "pet-assets/octopus_2.webp", "pet-assets/octopus_3.webp"], "นกแก้วช่างพูด": ["pet-assets/parrot_1.webp", "pet-assets/parrot_2.webp", "pet-assets/parrot_3.webp"], "หมาป่าเดือนเพ็ญ": ["pet-assets/wolf_1.webp", "pet-assets/wolf_2.webp", "pet-assets/wolf_3.webp"], "วาฬฝันหวาน": ["pet-assets/whale_1.webp", "pet-assets/whale_2.webp", "pet-assets/whale_3.webp"]};
+const PED_IMG=["pet-assets/ped_1.webp", "pet-assets/ped_2.webp", "pet-assets/ped_3.webp"]; /* podium pedestal art: [gold, silver, bronze] */
 const petImg=(p,L)=>{const s=PET_IMG[p.n];return s&&s[L-1]||""};
 const petFace=(p,L)=>{L=L||lvOf(S.owned[p.n]||1,p);const e=formE(p,L),src=petImg(p,L);
   if(src)return `<img class="pimg" src="${src}" alt="" draggable="false" onerror="this.outerHTML='${e}'">`;
@@ -1429,9 +1504,10 @@ function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);con
 const MAX_SCORE=()=>PETS.length*3;
 function myShowcase(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).slice(0,SHOW_MAX)}
 function myAvatar(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?a:-1}
+function myAvL(){const a=myAvatar();if(a<0)return 1;const cur=lvOf(S.owned[PETS[a].n],PETS[a]),w=+S.avatarL||0;return w>=1&&w<=cur?w:cur}
 function myFrame(){return FRAMES.some(f=>f.id===S.frame)?S.frame:"none"}
 function saveShowcase(arr){act("showcase",{pis:arr.slice(0,SHOW_MAX)}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
-function saveProfile(avatar,frame){act("profile",{avatar,frame}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
+function saveProfile(avatar,frame,L){act("profile",{avatar,frame,L:L||0}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
 /* round profile picture: chosen pet (or the Fortunie logo) inside the chosen frame */
 function avatarHTML(pi,L,frame,size){const p=pi!=null&&pi>=0?PETS[pi]:null,f=FRAMES.some(x=>x.id===frame)?frame:"none";
   const face=p?petFace(p,L||1):`<img src="${LOGO}" alt="">`;const bg=p?RAR[p.t].glow:"#b98ae6";
@@ -1897,10 +1973,17 @@ $("inv").addEventListener("click",e=>{if(burnSel){const card=e.target.closest(".
 
 /* ---------- pets ---------- */
 /* ---------- rank screen: my profile + leaderboard ---------- */
+const bigPet=(p,L)=>{const src=petImg(p,L);return src?`<img class="pimg rk-img" src="${src}" alt="">`:`<span class="rk-emo">${formE(p,L)}</span>`};
+const tierChip=(p,L)=>`<span class="rk-chip" style="--tc:${RAR[p.t].c}">${RAR[p.t].name} · Lv.${L}</span>`;
 function renderMyProfile(){const sc=myShowcase(),score=collScore(),av=myAvatar();const nm=typeof PROFILE!=="undefined"&&PROFILE?PROFILE.name:(S.uname||"คุณ");
-  $("myProfile").innerHTML=`<div class="mp-top">${avatarHTML(av,av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1,myFrame(),84)}<div class="mp-who"><b>${esc(nm)}</b><span class="small" style="text-align:left">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="mini" id="mpEdit" type="button">แก้โปรไฟล์</button></div>
-   ${(()=>{const pi=sc[0];if(pi==null)return `<button class="pc-slot one empty" type="button" data-slot="0"><span>＋</span><div><b>เลือกเพื่อนโชว์</b><small>เพื่อนตัวนี้จะอยู่ข้างรูปคุณในหน้าอันดับ</small></div></button>`;const p=PETS[pi],L=lvOf(S.owned[p.n],p);
-     return `<button class="pc-slot one" type="button" data-slot="0" style="--tier-c:${RAR[p.t].c}">${formHTML(p,L,76)}<div><span class="small" style="text-align:left">เพื่อนที่โชว์ · แตะเพื่อเปลี่ยน</span><b>${formName(p,L)}</b><small>${RAR[p.t].name} · Lv.${L}</small></div></button>`})()}
+  const pi=sc[0];let show;
+  if(pi==null)show=`<button class="pc-slot one empty rk-empty" type="button" data-slot="0"><span>＋</span><div><b>เลือกเพื่อนโชว์</b><small>เพื่อนตัวนี้จะยืนบนแท่นในหน้าอันดับ</small></div></button>`;
+  else{const p=PETS[pi],L=lvOf(S.owned[p.n],p);
+    show=`<div class="rk-show" style="--tc:${RAR[p.t].c};--tg:${RAR[p.t].glow}"><button class="pc-slot rk-stage" type="button" data-slot="0" aria-label="เปลี่ยนเพื่อนที่โชว์"><span class="rk-disc"></span>${bigPet(p,L)}</button>
+      <div class="rk-info"><span class="rk-lbl">เพื่อนที่โชว์</span><b>${formName(p,L)}</b>${tierChip(p,L)}</div>
+      <button class="rk-btn" type="button" data-slot="0" id="mpSwap">เปลี่ยนตัว</button></div>`}
+  $("myProfile").innerHTML=`<div class="mp-top">${avatarHTML(av,myAvL(),myFrame(),84)}<div class="mp-who"><b>${esc(nm)}</b><span class="rk-lbl">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="rk-btn" id="mpEdit" type="button">แก้ไขโปรไฟล์</button></div>
+   <div class="rk-sep"></div>${show}
    <p class="note">เพื่อน Lv.1 = 1 คะแนน · Lv.2 = 2 · Lv.3 = 3 รวมทุกตัว</p>`}
 function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||lvOf(S.owned[PETS[b].n],PETS[b])-lvOf(S.owned[PETS[a].n],PETS[a]));
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนที่จะโชว์</h2><button class="ghost" data-close type="button">ปิด</button></div>
@@ -1909,34 +1992,39 @@ function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(
   $("petModal").hidden=false;
   $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{$("petModal").hidden=true;saveShowcase([+b.dataset.pi])}));
   const cl=$("pickClear");if(cl)cl.addEventListener("click",()=>{const arr=myShowcase();arr.splice(slot,1);$("petModal").hidden=true;saveShowcase(arr)})}
-function openProfileEdit(){let av=myAvatar(),fr=myFrame();const own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]);
-  const draw=()=>{const L=av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1;
-    $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">แก้โปรไฟล์</h2><button class="ghost" data-close type="button">ปิด</button></div>
+function openProfileEdit(){let av=myAvatar(),al=av>=0?myAvL():1,fr=myFrame();const own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||a-b);
+  const draw=()=>{const L=av>=0?al:1;
+    $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">แก้ไขโปรไฟล์</h2><button class="ghost" data-close type="button">ปิด</button></div>
      <div class="pe-preview">${avatarHTML(av,L,fr,110)}</div>
-     <b class="sub-h">รูปโปรไฟล์</b>
-     <div class="pick-grid sm"><button class="pick-pet${av<0?" on":""}" type="button" data-av="-1">${avatarHTML(-1,1,"none",48)}<small>โลโก้</small></button>${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${av===pi?" on":""}" type="button" data-av="${pi}" style="--tier-c:${RAR[p.t].c}">${avatarHTML(pi,lvOf(S.owned[p.n],p),"none",48)}<small>${formName(p)}</small></button>`}).join("")}</div>
+     <b class="sub-h">รูปโปรไฟล์ <small class="pe-hint">เลือกได้ทุกร่างที่ปลดล็อกแล้ว</small></b>
+     <div class="pick-grid sm"><button class="pick-pet${av<0?" on":""}" type="button" data-av="-1" data-al="1">${avatarHTML(-1,1,"none",48)}<small>โลโก้</small></button>${own.flatMap(pi=>{const p=PETS[pi],cur=lvOf(S.owned[p.n],p);return [1,2,3].filter(l=>l<=cur).map(l=>`<button class="pick-pet${av===pi&&al===l?" on":""}" type="button" data-av="${pi}" data-al="${l}" style="--tier-c:${RAR[p.t].c}">${avatarHTML(pi,l,"none",48)}<small>${formName(p,l)}</small><i class="pe-lv">Lv.${l}</i></button>`)}).join("")}</div>
      <b class="sub-h">กรอบ</b>
      <div class="pick-grid sm">${FRAMES.map(f=>`<button class="pick-pet${fr===f.id?" on":""}" type="button" data-fr="${f.id}">${avatarHTML(av,L,f.id,48)}<small>${f.n}</small></button>`).join("")}</div>
      <p class="note">กรอบชุดนี้เป็นกรอบทดลอง ใช้ได้ทุกคน เดี๋ยวมีกรอบใหม่ ๆ ตามมา</p>
      <button class="primary" id="peSave" type="button">บันทึกโปรไฟล์</button>`;
-    $("petPop").querySelectorAll("[data-av]").forEach(b=>b.addEventListener("click",()=>{av=+b.dataset.av;draw()}));
+    $("petPop").querySelectorAll("[data-av]").forEach(b=>b.addEventListener("click",()=>{av=+b.dataset.av;al=+b.dataset.al||1;draw()}));
     $("petPop").querySelectorAll("[data-fr]").forEach(b=>b.addEventListener("click",()=>{fr=b.dataset.fr;draw()}));
-    $("peSave").addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(av,fr)})};
+    $("peSave").addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(av,fr,av>=0?al:0)})};
   draw();$("petModal").hidden=false}
-function lbRowHTML(r,i){const shows=(r.showcase||[]).filter(x=>PETS[x.pi]).slice(0,3).map(x=>`<span class="lb-pet" title="${esc(formName(PETS[x.pi],x.L))}">${petFace(PETS[x.pi],x.L)}</span>`).join("");
-  return `<div class="lb-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank r${i+1}">${i<3?["🥇","🥈","🥉"][i]:i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div><span class="lb-pets">${shows}</span><b class="lb-score">${r.score}</b></div>`}
-/* top 3 on a podium: 2nd · 1st · 3rd */
-function podiumHTML(top){const order=[1,0,2],medal=["🥇","🥈","🥉"];
-  return `<div class="podium">${order.map(i=>{const r=top[i];if(!r)return `<div class="pd p${i+1} empty"><div class="pd-who"><span class="pd-ghost">?</span><b>ยังว่าง</b></div><div class="pd-step"><span>${i+1}</span></div></div>`;
-    const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0];
-    return `<div class="pd p${i+1}${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}>${i===0?'<span class="pd-rays" aria-hidden="true"></span><span class="pd-crown" aria-hidden="true">👑</span>':""}
-      <div class="pd-who"><span class="pd-av">${avatarHTML(r.avatar,r.avL,r.frame,i===0?92:70)}${sp?`<span class="pd-pet">${petFace(PETS[sp.pi],sp.L)}</span>`:""}</span><b>${esc(r.name)}</b><span class="pd-score">${r.score} <small>คะแนน</small></span></div>
-      <div class="pd-step"><span>${medal[i]}</span></div></div>`}).join("")}</div>`}
-function rowsHTML(top){return podiumHTML(top)+(top.length>3?`<div class="lb-rest">${top.slice(3).map((r,i)=>lbRowHTML(r,i+3)).join("")}</div>`:"")}
+function lbRowHTML(r,i){const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
+  return `<div class="lb-row rk-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank">${i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div>
+    ${p?`<span class="rk-rpet">${bigPet(p,sp.L)}</span><div class="rk-rinfo"><b>${esc(formName(p,sp.L))}</b>${tierChip(p,sp.L)}</div>`:`<span class="rk-rpet"></span><div class="rk-rinfo"><small>ยังไม่เลือกเพื่อนโชว์</small></div>`}
+    <span class="lb-score"><b>${r.score}</b><small>คะแนน</small></span></div>`}
+/* top 3 on a podium: 2nd · 1st · 3rd, each showcase pet standing on its pedestal */
+const pedHTML=i=>PED_IMG[i]?`<div class="rk-ped img"><img src="${PED_IMG[i]}" alt="อันดับ ${i+1}"></div>`:`<div class="rk-ped"><span>${i+1}</span></div>`;
+function podiumHTML(top){const order=[1,0,2];
+  return `<div class="podium2">${order.map(i=>{const r=top[i];
+    if(!r)return `<div class="pd p${i+1} empty"><div class="rk-pfig"><span class="rk-ghost">?</span></div>${pedHTML(i)}<div class="rk-pwho"><b>ยังว่าง</b></div></div>`;
+    const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
+    return `<div class="pd p${i+1}${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}${p?` style="--tg:${RAR[p.t].glow}"`:""}>
+      <div class="rk-pfig">${i===0?'<span class="rk-crown" aria-hidden="true">👑</span>':""}${p?bigPet(p,sp.L):avatarHTML(r.avatar,r.avL,r.frame,i===0?96:76)}</div>
+      ${pedHTML(i)}
+      <div class="rk-pwho">${avatarHTML(r.avatar,r.avL,r.frame,40)}<div><b>${esc(r.name)}</b><span class="pd-score"><b>${r.score}</b> คะแนน</span></div></div></div>`}).join("")}</div>`}
+function rowsHTML(top){return podiumHTML(top)+(top.length>3?`<div class="lb-rest rk-rest">${top.slice(3).map((r,i)=>lbRowHTML(r,i+3)).join("")}</div>`:"")}
 let LB=null;
 async function loadLeaderboard(){$("lbList").innerHTML=`<div class="placeholder">กำลังโหลดอันดับ…</div>`;
   try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("lbList").innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ")}</div>`;return}
-  $("lbMe").textContent=`คุณอันดับ ${LB.myRank} · ${LB.myScore} คะแนน`;
+  $("lbMe").innerHTML=`คุณอยู่อันดับ <b>${LB.myRank}</b>`;
   $("lbList").innerHTML=(LB.top.length?rowsHTML(LB.top):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`)+(LB.top.some(r=>r.me)?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้</p>`)+`<p class="note">แตะชื่อเพื่อดูโปรไฟล์ · สูงสุด ${MAX_SCORE()} คะแนน</p>`}
 async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}catch(e){if(e!=="locked")toast(e);return}
   const pets=(r.showcase||[]).filter(x=>PETS[x.pi]);
@@ -1947,7 +2035,7 @@ async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}ca
   $("petModal").hidden=false}
 
 function renderRank(){renderMyProfile();loadLeaderboard()}
-document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-slot");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#mpEdit")){openProfileEdit();return}
+document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-slot,#mpSwap");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#mpEdit")){openProfileEdit();return}
   const row=e.target.closest(".lb-row[data-code],.pd[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
 function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
   const bp=buddyPet();
