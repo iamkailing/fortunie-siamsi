@@ -118,9 +118,9 @@ tr:last-child td{border-bottom:0}
   padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));text-align:center}
 .reveal .big{font-family:var(--f-display);font-size:min(30vw,150px);line-height:1;color:var(--butter);text-shadow:0 0 30px var(--glow)}
 .reveal .lbl{font-family:var(--f-display);font-size:18px;color:var(--lav-soft)}
-.rays{position:absolute;width:140vmax;height:140vmax;left:50%;top:42%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;
-  background:repeating-conic-gradient(from 0deg,var(--glow) 0 6deg,transparent 6deg 18deg);mask:radial-gradient(circle,#000 0,transparent 55%);-webkit-mask:radial-gradient(circle,#000 0,transparent 55%)}
-.reveal.lit .rays{opacity:.45;animation:fspin 14s linear infinite}/* rotate property keeps the centring transform intact */
+.rays{position:absolute;width:140vmax;height:140vmax;left:50%;top:42%;translate:-50% -50%;pointer-events:none;opacity:0;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--glow) 55%,#fff) 0 7deg,transparent 7deg 18deg);mask:radial-gradient(circle,#000 0,#000a 30%,transparent 62%);-webkit-mask:radial-gradient(circle,#000 0,#000a 30%,transparent 62%)}
+.reveal.lit .rays{opacity:.38;animation:fspin 18s linear infinite}/* rotate property keeps the centring transform intact */
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .flip{width:min(240px,64vw);aspect-ratio:3/4;perspective:900px;position:relative}
 .flip .inner{position:absolute;inset:0;transition:transform .8s cubic-bezier(.3,1.3,.4,1);transform-style:preserve-3d}
@@ -780,17 +780,19 @@ body{-webkit-tap-highlight-color:transparent}
       <label class="lbl-s" for="lgId">อีเมล หรือ เบอร์โทร</label>
       <input id="lgId" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="200" placeholder="เช่น 0812345678 หรือ name@gmail.com">
     </div>
-    <label class="lbl-s" for="lgPass">รหัสผ่าน</label>
-    <input id="lgPass" type="password" autocomplete="current-password" maxlength="72" placeholder="อย่างน้อย 6 ตัว">
-    <div id="lgUpOnly" class="lg-up" hidden>
+    <div class="lg-up" hidden>
       <label class="lbl-s" for="lgEmail">อีเมล</label>
       <input id="lgEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="200" placeholder="name@gmail.com">
       <label class="lbl-s" for="lgPhone">เบอร์มือถือ</label>
       <input id="lgPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0812345678">
-      <label class="lbl-s" for="lgPass2">ยืนยันรหัสผ่าน</label>
-      <input id="lgPass2" type="password" autocomplete="new-password" maxlength="72">
       <label class="lbl-s" for="lgName">ชื่อในเกม</label>
       <input id="lgName" type="text" maxlength="16" placeholder="ชื่อที่อยากให้แสดง ภาษาไทยได้">
+    </div>
+    <label class="lbl-s" for="lgPass">รหัสผ่าน</label>
+    <input id="lgPass" type="password" autocomplete="current-password" maxlength="72" placeholder="อย่างน้อย 6 ตัว">
+    <div id="lgUpOnly" class="lg-up" hidden>
+      <label class="lbl-s" for="lgPass2">ยืนยันรหัสผ่าน</label>
+      <input id="lgPass2" type="password" autocomplete="new-password" maxlength="72" placeholder="พิมพ์รหัสผ่านอีกครั้ง">
       <p class="note" id="lgApproveNote" hidden>ช่วงนี้บัญชีใหม่ต้องรอแอดมินอนุมัติก่อนเริ่มเล่นนะคะ</p>
       <p class="note">สมัครแล้วถือว่ายอมรับ <a href="terms.html" target="_blank" rel="noopener">ข้อตกลงการใช้งาน</a> และ <a href="privacy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a></p>
     </div>
@@ -1542,7 +1544,7 @@ $("lockLogout").addEventListener("click",logout);
 let loginMode="in";
 function showLogin(){$("loginScreen").hidden=false;setLoginMode(loginMode);setTimeout(()=>$("lgId").focus(),50)}
 function setLoginMode(m){loginMode=m;$("lgTabIn").classList.toggle("on",m==="in");$("lgTabUp").classList.toggle("on",m==="up");
-  $("lgUpOnly").hidden=m!=="up";$("lgInOnly").hidden=m==="up";if(m==="up")api("config").then(()=>{$("lgApproveNote").hidden=!CFG.approval}).catch(()=>{});$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
+  document.querySelectorAll("#loginScreen .lg-up").forEach(x=>x.hidden=m!=="up");$("lgInOnly").hidden=m==="up";if(m==="up")api("config").then(()=>{$("lgApproveNote").hidden=!CFG.approval}).catch(()=>{});$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
 $("lgTabIn").addEventListener("click",()=>setLoginMode("in"));$("lgTabUp").addEventListener("click",()=>setLoginMode("up"));
 const normPhoneC=v=>{let d=String(v||"").replace(/[^0-9]/g,"");if(d.startsWith("66"))d="0"+d.slice(2);return /^0[0-9]{8,9}$/.test(d)?d:""};
 async function doLogin(){const pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn");let authEmail="";
