@@ -346,6 +346,12 @@ async function adminAction(a, p, me) {
     await withPlayer(uid, G => { G.S.stars = Math.max(0, G.S.stars + s); G.S.tickets = Math.max(0, G.S.tickets + t); inbox(G, `แอดมิน${s < 0 || t < 0 ? "ปรับ" : "ส่ง"}ของให้${s ? " " + (s > 0 ? "+" : "") + s + " ดาว" : ""}${t ? " ตั๋ว " + (t > 0 ? "+" : "") + t : ""}${note ? " · " + note : ""}`); });
     await log(uid, "give", { s, t, note }, me); return { ok: true };
   }
+  if (a === "adm_smstest") {
+    const phone = normPhone(p.phone); if (!phone) throw "เบอร์โทรไม่ถูกต้อง";
+    const j = await sendSms(phone, "ทดสอบระบบ SMS ของ Fortunie สำเร็จแล้ว");
+    await log(me, "sms_test", { tail: phone.slice(-3) }, me);
+    return { ok: true, credit: j.remaining_credit ?? null };
+  }
   if (a === "adm_approve") {
     const pr = await prof(); if (p.ok) { await sb.from("profiles").update({ approved: true, banned: false, ban_reason: "" }).eq("id", uid); await withPlayer(uid, G => inbox(G, "ยินดีต้อนรับ! แอดมินอนุมัติบัญชีแล้ว เริ่มเขย่าได้เลย")); }
     else await sb.from("profiles").update({ approved: false, banned: true, ban_reason: String(p.reason || "ไม่ผ่านการอนุมัติ").slice(0, 80) }).eq("id", uid);

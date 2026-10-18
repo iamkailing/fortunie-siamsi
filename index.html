@@ -628,6 +628,7 @@ body{-webkit-tap-highlight-color:transparent}
         <label class="toggle"><input id="cfMaint" type="checkbox"> ปิดปรับปรุงชั่วคราว (ผู้เล่นเข้าเกมไม่ได้ ยกเว้นแอดมิน)</label>
         <label class="toggle"><input id="cfApproval" type="checkbox"> คนสมัครใหม่ต้องรอแอดมินอนุมัติก่อนเล่น</label>
         <label class="toggle"><input id="cfSms" type="checkbox"> คนสมัครใหม่ต้องยืนยันเบอร์ด้วย SMS</label>
+        <div class="row" style="flex-wrap:nowrap"><input id="cfSmsPhone" type="tel" inputmode="tel" maxlength="16" placeholder="เบอร์สำหรับส่ง SMS ทดสอบ"><button class="mini" id="cfSmsTest" type="button">ส่ง SMS ทดสอบ</button></div>
         <span class="small" id="cfSmsNote" style="text-align:left"></span>
         <button class="primary" id="cfSave" type="button">บันทึกการตั้งค่า</button>
         <span class="small" id="cfMsg" style="text-align:left"></span>
@@ -1668,6 +1669,9 @@ $("plResetYes").addEventListener("click",()=>{$("plResetYes").hidden=true;plDo("
 let cfgFilled=false;
 function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;$("cfApproval").checked=!!CFG.approval;$("cfSms").checked=!!CFG.sms;$("cfSmsNote").textContent=CFG.smsReady?"ระบบ SMS พร้อมใช้":"ยังไม่ได้ใส่คีย์ SMS ในหลังบ้าน เปิดไว้คนจะสมัครไม่ได้";
   $("cfPacks").innerHTML=PACKS.concat([{},{}]).slice(0,6).map((p,i)=>`<div class="row cf-row" style="flex-wrap:nowrap"><input type="number" min="0" data-k="baht" value="${p.baht||""}" placeholder="บาท" aria-label="ราคาแพ็ก ${i+1}"><input type="number" min="0" data-k="stars" value="${p.stars||""}" placeholder="ดาว" aria-label="ดาวแพ็ก ${i+1}"><input type="text" maxlength="20" data-k="tag" value="${esc(p.tag||"")}" placeholder="ป้าย" aria-label="ป้ายแพ็ก ${i+1}"></div>`).join("")}
+$("cfSmsTest").addEventListener("click",async()=>{const ph=$("cfSmsPhone").value.trim(),m=$("cfSmsNote");if(!ph){m.textContent="ใส่เบอร์ที่จะส่งทดสอบก่อน";return}
+  const b=$("cfSmsTest");b.disabled=true;m.textContent="กำลังส่ง SMS ทดสอบ…";
+  try{const r=await api("adm_smstest",{phone:ph});m.textContent="ส่งแล้ว เช็กข้อความในมือถือได้เลย"+(r&&r.credit!=null?" · เครดิตเหลือ "+r.credit:"")}catch(e){m.textContent=e==="locked"?"":"ส่งไม่สำเร็จ: "+e}finally{b.disabled=false}});
 $("cfSave").addEventListener("click",async()=>{const packs=[...$("cfPacks").querySelectorAll(".cf-row")].map(r=>({baht:+r.querySelector('[data-k="baht"]').value||0,stars:+r.querySelector('[data-k="stars"]').value||0,tag:r.querySelector('[data-k="tag"]').value.trim()})).filter(p=>p.baht>0&&p.stars>0);
   if(!packs.length){$("cfMsg").textContent="ต้องมีแพ็กอย่างน้อย 1 แพ็ก";return}
   try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
