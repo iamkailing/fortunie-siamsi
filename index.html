@@ -545,6 +545,38 @@ body{-webkit-tap-highlight-color:transparent}
 #scr-rank .lb-list{margin-top:6px}
 @media (prefers-reduced-motion:reduce){.av-dec{animation:none!important}}
 
+/* ---- one showcase pet + podium ---- */
+.pc-slot.one{flex-direction:row;justify-content:flex-start;gap:12px;padding:8px 14px;text-align:left;min-height:84px}
+.pc-slot.one>div{display:flex;flex-direction:column;min-width:0}.pc-slot.one b{font-size:15px}.pc-slot.one small{white-space:normal}
+.pc-slot.one.empty{justify-content:center}.pc-slot.one.empty>span{font-size:26px}
+.podium{position:relative;display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:6px;padding:46px 2px 0;margin:4px 0 12px;isolation:isolate}
+.pd{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;cursor:default}
+.pd[data-code]{cursor:pointer}
+.pd-who{display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:8px;min-width:0;max-width:100%;z-index:2}
+.pd-who b{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd.p1 .pd-who b{font-size:15px;color:var(--butter)}
+.pd-av{position:relative;display:inline-block}
+.pd-pet{position:absolute;right:-8px;bottom:-4px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:22px;line-height:1;background:var(--night-2);border:2px solid var(--line);box-shadow:0 3px 8px #0008}
+.pd-pet img{width:26px;height:26px;border-radius:50%}
+.pd.p1 .pd-pet{width:40px;height:40px;font-size:26px}
+.pd-score{font-family:var(--f-display);font-size:14px;color:var(--text);background:#0005;border:1px solid var(--line);border-radius:999px;padding:1px 10px}.pd-score small{font-size:10px;color:var(--muted)}
+.pd-step{width:100%;border-radius:14px 14px 6px 6px;display:grid;place-items:start center;padding-top:8px;font-size:26px;position:relative;overflow:hidden;box-shadow:inset 0 2px 0 #ffffff55,0 8px 20px #0007}
+.pd-step::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff55 45%,transparent 60%);translate:-120% 0;animation:pdshine 4.5s ease-in-out infinite}
+.pd.p1 .pd-step{height:112px;background:linear-gradient(180deg,#ffe9a8,#e0b04e 55%,#9b6a1d)}
+.pd.p2 .pd-step{height:84px;background:linear-gradient(180deg,#f1f3f8,#b9c0cf 55%,#6d7486)}.pd.p2 .pd-step::after{animation-delay:1.2s}
+.pd.p3 .pd-step{height:66px;background:linear-gradient(180deg,#f6c9a2,#c98552 55%,#7a4826)}.pd.p3 .pd-step::after{animation-delay:2.4s}
+.pd-step span{filter:drop-shadow(0 2px 3px #0006)}
+.pd-crown{position:absolute;top:-36px;left:50%;translate:-50% 0;font-size:34px;z-index:3;filter:drop-shadow(0 0 10px #f0d28a);animation:pdbob 2.6s ease-in-out infinite}
+.pd-rays{position:absolute;top:-40px;left:50%;width:220px;height:220px;margin-left:-110px;border-radius:50%;z-index:-1;pointer-events:none;background:repeating-conic-gradient(from 0deg,#f0d28a55 0 8deg,transparent 8deg 22deg);-webkit-mask:radial-gradient(circle,#000 10%,transparent 65%);mask:radial-gradient(circle,#000 10%,transparent 65%);animation:fspin 20s linear infinite}
+.pd.me .pd-score{border-color:var(--butter);color:var(--butter)}
+.pd.empty .pd-who{opacity:.55}.pd-ghost{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:var(--muted);border:2px dashed var(--line)}
+.pd.empty .pd-step{filter:saturate(.25) brightness(.7)}
+.lb-rest{display:flex;flex-direction:column;gap:6px}
+@keyframes pdshine{0%,60%{translate:-120% 0}85%,100%{translate:120% 0}}
+@keyframes pdbob{0%,100%{translate:-50% 0}50%{translate:-50% -5px}}
+@media (prefers-reduced-motion:reduce){.pd-step::after,.pd-crown,.pd-rays{animation:none!important}}
+.pc-slot.one small,.pc-slot.one .small{text-align:left}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1001,7 +1033,7 @@ function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArr
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
-const SHOW_MAX=3;
+const SHOW_MAX=1;
 const FRAMES=[{id:"none",n:"ไม่มีกรอบ"},{id:"gold",n:"ทองมงคล"},{id:"sakura",n:"ซากุระ"},{id:"star",n:"ดาวราตรี"}];
 function actProfile(avatar,frame){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้"}else avatar=-1;
   if(!FRAMES.some(f=>f.id===frame))throw "ไม่มีกรอบนี้";S.avatar=avatar;S.frame=frame;return{avatar,frame}}
@@ -1009,7 +1041,7 @@ function avatarOut(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PET
 function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
   for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
   S.showcase=out;return{showcase:out}}
-function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
+function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).slice(0,SHOW_MAX).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
 function buffOf(f){return{type:f%3,s:LVPOW[F[f][0]]}}
 function activeBuff(){return S.active&&S.active.until>now()?Object.assign(buffOf(S.active.f),{f:S.active.f}):null}
 function buddyPet(){const i=S.buddy;return i!=null&&PETS[i]&&S.owned[PETS[i].n]?PETS[i]:null}
@@ -1155,7 +1187,7 @@ function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);con
   if(a.baseMul)o.push(`โอกาสพื้นฐาน x${n1(a.baseMul+(m-1))}`);if(a.burnFree)o.push(`เผาแล้ว ${n1(Math.min(.6,a.burnFree*m)*100)}% ได้เขย่าฟรี`);return o.join(" · ")}
 /* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3), 3-slot showcase, avatar pet + frame */
 const MAX_SCORE=()=>PETS.length*3;
-function myShowcase(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n])}
+function myShowcase(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).slice(0,SHOW_MAX)}
 function myAvatar(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?a:-1}
 function myFrame(){return FRAMES.some(f=>f.id===S.frame)?S.frame:"none"}
 function saveShowcase(arr){act("showcase",{pis:arr.slice(0,SHOW_MAX)}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
@@ -1556,16 +1588,15 @@ $("inv").addEventListener("click",e=>{if(burnSel){const card=e.target.closest(".
 /* ---------- rank screen: my profile + leaderboard ---------- */
 function renderMyProfile(){const sc=myShowcase(),score=collScore(),av=myAvatar();const nm=typeof PROFILE!=="undefined"&&PROFILE?PROFILE.name:(S.uname||"คุณ");
   $("myProfile").innerHTML=`<div class="mp-top">${avatarHTML(av,av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1,myFrame(),84)}<div class="mp-who"><b>${esc(nm)}</b><span class="small" style="text-align:left">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="mini" id="mpEdit" type="button">แก้โปรไฟล์</button></div>
-   <span class="small" style="text-align:left">เพื่อนที่โชว์</span>
-   <div class="pc-slots">${[0,1,2].map(i=>{const pi=sc[i];if(pi==null)return `<button class="pc-slot empty" type="button" data-slot="${i}"><span>＋</span><small>เลือกเพื่อนโชว์</small></button>`;const p=PETS[pi];
-     return `<button class="pc-slot" type="button" data-slot="${i}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),64)}<small>${formName(p)}</small></button>`}).join("")}</div>
+   ${(()=>{const pi=sc[0];if(pi==null)return `<button class="pc-slot one empty" type="button" data-slot="0"><span>＋</span><div><b>เลือกเพื่อนโชว์</b><small>เพื่อนตัวนี้จะอยู่ข้างรูปคุณในหน้าอันดับ</small></div></button>`;const p=PETS[pi],L=lvOf(S.owned[p.n],p);
+     return `<button class="pc-slot one" type="button" data-slot="0" style="--tier-c:${RAR[p.t].c}">${formHTML(p,L,76)}<div><span class="small" style="text-align:left">เพื่อนที่โชว์ · แตะเพื่อเปลี่ยน</span><b>${formName(p,L)}</b><small>${RAR[p.t].name} · Lv.${L}</small></div></button>`})()}
    <p class="note">เพื่อน Lv.1 = 1 คะแนน · Lv.2 = 2 · Lv.3 = 3 รวมทุกตัว</p>`}
 function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||lvOf(S.owned[PETS[b].n],PETS[b])-lvOf(S.owned[PETS[a].n],PETS[a]));
-  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนโชว์ช่อง ${slot+1}</h2><button class="ghost" data-close type="button">ปิด</button></div>
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนที่จะโชว์</h2><button class="ghost" data-close type="button">ปิด</button></div>
    ${own.length?`<div class="pick-grid">${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${sc.includes(pi)?" on":""}" type="button" data-pi="${pi}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),56)}<small>${formName(p)}</small></button>`}).join("")}</div>`:`<div class="placeholder">ยังไม่มีเพื่อน ลองเขย่าเซียมซีก่อนนะคะ</div>`}
-   ${sc[slot]!=null?`<button class="ghost" type="button" id="pickClear">เอาออกจากช่องนี้</button>`:""}`;
+   ${sc[slot]!=null?`<button class="ghost" type="button" id="pickClear">ไม่โชว์เพื่อน</button>`:""}`;
   $("petModal").hidden=false;
-  $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{const pi=+b.dataset.pi,arr=myShowcase().filter(x=>x!==pi);arr.splice(Math.min(slot,arr.length),0,pi);$("petModal").hidden=true;saveShowcase(arr)}));
+  $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{$("petModal").hidden=true;saveShowcase([+b.dataset.pi])}));
   const cl=$("pickClear");if(cl)cl.addEventListener("click",()=>{const arr=myShowcase();arr.splice(slot,1);$("petModal").hidden=true;saveShowcase(arr)})}
 function openProfileEdit(){let av=myAvatar(),fr=myFrame();const own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]);
   const draw=()=>{const L=av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1;
@@ -1583,22 +1614,30 @@ function openProfileEdit(){let av=myAvatar(),fr=myFrame();const own=PETS.map((p,
   draw();$("petModal").hidden=false}
 function lbRowHTML(r,i){const shows=(r.showcase||[]).filter(x=>PETS[x.pi]).slice(0,3).map(x=>`<span class="lb-pet" title="${esc(formName(PETS[x.pi],x.L))}">${petFace(PETS[x.pi],x.L)}</span>`).join("");
   return `<div class="lb-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank r${i+1}">${i<3?["🥇","🥈","🥉"][i]:i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div><span class="lb-pets">${shows}</span><b class="lb-score">${r.score}</b></div>`}
+/* top 3 on a podium: 2nd · 1st · 3rd */
+function podiumHTML(top){const order=[1,0,2],medal=["🥇","🥈","🥉"];
+  return `<div class="podium">${order.map(i=>{const r=top[i];if(!r)return `<div class="pd p${i+1} empty"><div class="pd-who"><span class="pd-ghost">?</span><b>ยังว่าง</b></div><div class="pd-step"><span>${i+1}</span></div></div>`;
+    const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0];
+    return `<div class="pd p${i+1}${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}>${i===0?'<span class="pd-rays" aria-hidden="true"></span><span class="pd-crown" aria-hidden="true">👑</span>':""}
+      <div class="pd-who"><span class="pd-av">${avatarHTML(r.avatar,r.avL,r.frame,i===0?92:70)}${sp?`<span class="pd-pet">${petFace(PETS[sp.pi],sp.L)}</span>`:""}</span><b>${esc(r.name)}</b><span class="pd-score">${r.score} <small>คะแนน</small></span></div>
+      <div class="pd-step"><span>${medal[i]}</span></div></div>`}).join("")}</div>`}
+function rowsHTML(top){return podiumHTML(top)+(top.length>3?`<div class="lb-rest">${top.slice(3).map((r,i)=>lbRowHTML(r,i+3)).join("")}</div>`:"")}
 let LB=null;
 async function loadLeaderboard(){$("lbList").innerHTML=`<div class="placeholder">กำลังโหลดอันดับ…</div>`;
   try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("lbList").innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ")}</div>`;return}
   $("lbMe").textContent=`คุณอันดับ ${LB.myRank} · ${LB.myScore} คะแนน`;
-  $("lbList").innerHTML=(LB.top.length?LB.top.map((r,i)=>lbRowHTML(r,i)).join(""):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`)+(LB.top.some(r=>r.me)?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้</p>`)+`<p class="note">แตะชื่อเพื่อดูโปรไฟล์ · สูงสุด ${MAX_SCORE()} คะแนน</p>`}
+  $("lbList").innerHTML=(LB.top.length?rowsHTML(LB.top):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`)+(LB.top.some(r=>r.me)?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้</p>`)+`<p class="note">แตะชื่อเพื่อดูโปรไฟล์ · สูงสุด ${MAX_SCORE()} คะแนน</p>`}
 async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}catch(e){if(e!=="locked")toast(e);return}
   const pets=(r.showcase||[]).filter(x=>PETS[x.pi]);
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" data-close type="button">ปิด</button></div>
    <div class="pe-preview">${avatarHTML(r.avatar,r.avL,r.frame,104)}</div>
    <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b></p>
-   <div class="prof-pets">${pets.length?pets.map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,88)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
+   <div class="prof-pets">${pets.length?pets.slice(0,1).map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,120)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
   $("petModal").hidden=false}
 
 function renderRank(){renderMyProfile();loadLeaderboard()}
 document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-slot");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#mpEdit")){openProfileEdit();return}
-  const row=e.target.closest(".lb-row[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
+  const row=e.target.closest(".lb-row[data-code],.pd[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
 function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
   const bp=buddyPet();
   $("buddyCard").innerHTML=bp?`<div class="expcard"><div class="pet">${formHTML(bp,lvOf(S.owned[bp.n],bp),76)}</div><div class="meta"><span class="small" style="text-align:left">คู่หูตอนนี้ · ${(ROLE[bp.role]||[""," "])[0]} ${(ROLE[bp.role]||["",""])[1]}</span><b>${formName(bp)} · Lv.${lvOf(S.owned[bp.n],bp)}</b><span class="small" style="text-align:left;color:var(--lav-soft)">${petDesc(bp,S.owned[bp.n])}</span></div></div>`:`<div class="placeholder">ยังไม่มีคู่หู เขย่าเซียมซีเพื่อหาเพื่อนตัวแรก แล้วกดเพื่อนในสมุดเพื่อตั้งเป็นคู่หู</div>`;
@@ -1621,7 +1660,7 @@ function openPet(pi){const p=PETS[pi],k=S.owned[p.n]||0,r=RAR[p.t];
     $("petBig").addEventListener("click",()=>petPlay($("petBig"),$("petSay"),p));
     $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(p.n+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})});
     const am=$("avMe");if(am)am.addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(pi,myFrame())});
-    const sb=$("showMe");if(sb)sb.addEventListener("click",()=>{const arr=myShowcase().filter(x=>x!==pi);if(myShowcase().includes(pi)){saveShowcase(arr)}else{if(arr.length>=SHOW_MAX)arr.pop();arr.unshift(pi);saveShowcase(arr)}$("petModal").hidden=true})}
+    const sb=$("showMe");if(sb)sb.addEventListener("click",()=>{saveShowcase(myShowcase().includes(pi)?[]:[pi]);$("petModal").hidden=true})}
   $("petModal").hidden=false;$("petPop").querySelector("[data-close]").focus()}
 $("petModal").addEventListener("click",e=>{if(e.target.id==="petModal"||e.target.closest("[data-close]"))$("petModal").hidden=true});
 $("book").addEventListener("click",e=>{const sl=e.target.closest(".slot[data-pi]");if(sl)openPet(+sl.dataset.pi)});

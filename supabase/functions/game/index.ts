@@ -124,7 +124,7 @@ function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArr
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
-const SHOW_MAX=3;
+const SHOW_MAX=1;
 const FRAMES=[{id:"none",n:"ไม่มีกรอบ"},{id:"gold",n:"ทองมงคล"},{id:"sakura",n:"ซากุระ"},{id:"star",n:"ดาวราตรี"}];
 function actProfile(avatar,frame){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้"}else avatar=-1;
   if(!FRAMES.some(f=>f.id===frame))throw "ไม่มีกรอบนี้";S.avatar=avatar;S.frame=frame;return{avatar,frame}}
@@ -132,7 +132,7 @@ function avatarOut(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PET
 function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
   for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
   S.showcase=out;return{showcase:out}}
-function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
+function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).slice(0,SHOW_MAX).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
 function buffOf(f){return{type:f%3,s:LVPOW[F[f][0]]}}
 function activeBuff(){return S.active&&S.active.until>now()?Object.assign(buffOf(S.active.f),{f:S.active.f}):null}
 function buddyPet(){const i=S.buddy;return i!=null&&PETS[i]&&S.owned[PETS[i].n]?PETS[i]:null}
