@@ -196,6 +196,46 @@ function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.ow
 const SB_URL = Deno.env.get("SUPABASE_URL");
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const sb = createClient(SB_URL, SB_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+/* SMS (ThaiBulkSMS). Keys live in Supabase secrets, never in code */
+const TBS_KEY = Deno.env.get("TBS_KEY") || "", TBS_SECRET = Deno.env.get("TBS_SECRET") || "", TBS_SENDER = Deno.env.get("TBS_SENDER") || "", TBS_FORCE = Deno.env.get("TBS_FORCE") || "standard";
+const OTP_TTL = 5 * 60e3, OTP_GAP = 60e3, OTP_PER_HOUR = 5, OTP_DAY_CAP = +(Deno.env.get("OTP_DAY_CAP") || 300), OTP_TRIES = 5;
+async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function pin6() { const a = new Uint32Array(1); crypto.getRandomValues(a); return String(a[0] % 1000000).padStart(6, "0"); }
+async function sendSms(phone, message) {
+  if (!TBS_KEY || !TBS_SECRET) throw "ระบบ SMS ยังไม่พร้อม ทักแอดมินที่ LINE @fortuniehoro นะคะ";
+  const body = new URLSearchParams({ msisdn: phone, message, force: TBS_FORCE }); if (TBS_SENDER) body.set("sender", TBS_SENDER);
+  let r, j;
+  try { r = await fetch("https://api-v2.thaibulksms.com/sms", { method: "POST", headers: { Authorization: "Basic " + btoa(TBS_KEY + ":" + TBS_SECRET), "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" }, body }); j = await r.json().catch(() => ({})); }
+  catch (e) { throw "ส่ง SMS ไม่สำเร็จ ลองใหม่อีกครั้ง"; }
+  if (!r.ok || j.error) { console.error("sms", r.status, JSON.stringify(j).slice(0, 300)); throw "ส่ง SMS ไม่สำเร็จ ลองใหม่อีกครั้ง"; }
+  return j;
+}
+/* step 1 of sign-up: text a 6-digit code; limited per number and per day so nobody can drain the credit */
+async function otpSend(p) {
+  const cfg = await getConfig(); if (!cfg.sms_verify) return fail("ตอนนี้ยังไม่ต้องยืนยันเบอร์ สมัครได้เลยค่ะ");
+  const phone = normPhone(p.phone); if (!phone) return fail("เบอร์โทรไม่ถูกต้อง ใส่เบอร์มือถือ 10 หลัก เช่น 0812345678");
+  const { data: dp } = await sb.from("profiles").select("id").eq("phone", phone).maybeSingle(); if (dp) return fail("เบอร์นี้สมัครไว้แล้ว ลองเข้าสู่ระบบ หรือทักแอดมินถ้าลืมรหัส");
+  const now = Date.now(), day = new Date(now + 7 * 3600e3).toISOString().slice(0, 10);
+  const { data: row } = await sb.from("otp_codes").select("*").eq("phone", phone).maybeSingle();
+  if (row && now - Date.parse(row.last_sent) < OTP_GAP) return fail(`รอสักครู่ ส่งรหัสใหม่ได้อีก ${Math.ceil((OTP_GAP - (now - Date.parse(row.last_sent))) / 1000)} วินาที`);
+  const inHour = row && now - Date.parse(row.window_start) < 3600e3 ? row.sent_in_window : 0;
+  if (inHour >= OTP_PER_HOUR) return fail("ขอรหัสเบอร์นี้บ่อยเกินไป ลองใหม่อีกครั้งในอีก 1 ชั่วโมงนะคะ");
+  const { count } = await sb.from("events").select("id", { count: "exact", head: true }).eq("kind", "otp_send").gte("at", day + "T00:00:00+07:00");
+  if ((count || 0) >= OTP_DAY_CAP) return fail("วันนี้มีคนสมัครเยอะมาก ระบบส่ง SMS เต็มแล้ว ลองพรุ่งนี้หรือทักแอดมินนะคะ");
+  const code = pin6();
+  await sendSms(phone, `รหัสยืนยัน Fortunie ของคุณคือ ${code} ใช้ได้ 5 นาที ห้ามบอกใคร`);
+  await sb.from("otp_codes").upsert({ phone, code_hash: await sha(phone + ":" + code + ":" + SB_KEY.slice(-12)), expires_at: new Date(now + OTP_TTL).toISOString(), tries: 0, last_sent: new Date(now).toISOString(), window_start: inHour ? row.window_start : new Date(now).toISOString(), sent_in_window: inHour + 1 });
+  await sb.from("events").insert({ user_id: null, kind: "otp_send", data: { tail: phone.slice(-3) } });
+  return out({ ok: true, res: { ttl: OTP_TTL / 1000, gap: OTP_GAP / 1000 } });
+}
+async function otpCheck(phone, code) {
+  const { data: row } = await sb.from("otp_codes").select("*").eq("phone", phone).maybeSingle();
+  if (!row) return "กดส่งรหัสยืนยันไปที่เบอร์ก่อนนะคะ";
+  if (Date.parse(row.expires_at) < Date.now()) return "รหัสหมดอายุแล้ว กดส่งรหัสใหม่ได้เลย";
+  if (row.tries >= OTP_TRIES) return "กรอกรหัสผิดหลายครั้ง กดส่งรหัสใหม่นะคะ";
+  if (row.code_hash !== await sha(phone + ":" + String(code || "").trim() + ":" + SB_KEY.slice(-12))) { await sb.from("otp_codes").update({ tries: row.tries + 1 }).eq("phone", phone); return "รหัสยืนยันไม่ถูกต้อง"; }
+  return "";
+}
 const EMAIL_DOMAIN = "players.fortunie.app";
 const LOGIN_RE = /^[a-z0-9_]{3,16}$/;
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,24}$/i;
@@ -213,7 +253,7 @@ const fail = (msg, status = 400) => out({ error: String(msg) }, status);
 const cleanName = v => String(v || "").replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 16);
 const int = (v, lo, hi) => { const n = Math.trunc(Number(v) || 0); return Math.max(lo, Math.min(hi, n)); };
 
-async function getConfig() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false }; }
+async function getConfig() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
 async function loadState(uid) {
   const { data } = await sb.from("player_state").select("state,ver").eq("id", uid).maybeSingle();
   return data ? { st: Object.assign(fresh(), data.state), ver: data.ver } : { st: fresh(), ver: -1 };
@@ -245,15 +285,18 @@ async function signUp(p) {
   if (pass.length < 6 || pass.length > 72) return fail("รหัสผ่านต้องยาว 6 ตัวขึ้นไป");
   const { data: de } = await sb.from("profiles").select("id").eq("email", email).maybeSingle(); if (de) return fail("อีเมลนี้สมัครไว้แล้ว ลองเข้าสู่ระบบ หรือทักแอดมินถ้าลืมรหัส");
   const { data: dp } = await sb.from("profiles").select("id").eq("phone", phone).maybeSingle(); if (dp) return fail("เบอร์นี้สมัครไว้แล้ว ลองเข้าสู่ระบบ หรือทักแอดมินถ้าลืมรหัส");
+  const cfg = await getConfig();
+  if (cfg.sms_verify) { const bad = await otpCheck(phone, p.otp); if (bad) return fail(bad); }
   const code = await genCode(), login = code.toLowerCase().replace(/[^a-z0-9]/g, ""), name = cleanName(p.name) || ("ผู้เล่น " + code.slice(-4));
-  const cfg = await getConfig(), approved = !cfg.signup_approval;
+  const approved = !cfg.signup_approval;
   const { data, error } = await sb.auth.admin.createUser({ email: `${login}@${EMAIL_DOMAIN}`, password: pass, email_confirm: true, user_metadata: { login } });
   if (error || !data.user) return fail(error && /already/i.test(error.message) ? "ไอดีนี้มีคนใช้แล้ว ลองไอดีอื่นนะคะ" : "สมัครไม่สำเร็จ ลองใหม่อีกครั้ง");
   const uid = data.user.id;
   const { error: e2 } = await sb.from("profiles").insert({ id: uid, login, name, code, email, phone, approved, auth_email: `${login}@${EMAIL_DOMAIN}` });
   if (e2) { await sb.auth.admin.deleteUser(uid); return fail("สมัครไม่สำเร็จ ลองใหม่อีกครั้ง"); }
   await sb.from("player_state").insert({ id: uid, state: fresh(), ver: 0 });
-  await log(uid, "signup", { login, pending: !approved });
+  if (cfg.sms_verify) await sb.from("otp_codes").delete().eq("phone", phone);
+  await log(uid, "signup", { login, pending: !approved, sms: !!cfg.sms_verify });
   return out({ ok: true, res: { email: `${login}@${EMAIL_DOMAIN}`, pending: !approved } });
 }
 /* turn what the player typed (email / phone / old id) into the sign-in address; unknown ids get a look-alike so nobody can probe who has an account */
@@ -316,7 +359,7 @@ async function adminAction(a, p, me) {
   if (a === "adm_cfg") {
     const packs = (Array.isArray(p.packs) ? p.packs : []).map(x => ({ baht: int(x.baht, 0, 100000), stars: int(x.stars, 0, 1000000), tag: String(x.tag || "").slice(0, 20) })).filter(x => x.baht > 0 && x.stars > 0).slice(0, 8);
     if (!packs.length) throw "ต้องมีแพ็กอย่างน้อย 1 แพ็ก";
-    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, packs, updated_at: new Date().toISOString() }).eq("id", 1);
+    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, packs, updated_at: new Date().toISOString() }).eq("id", 1);
     return { ok: true };
   }
   if (a === "adm_code") {
@@ -367,7 +410,8 @@ Deno.serve(async (req) => {
   const a = String(p.action || "");
   try {
     if (a === "signup") return await signUp(p);
-    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint, approval: !!c.signup_approval } }); }
+    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint, approval: !!c.signup_approval, sms: !!c.sms_verify } }); }
+    if (a === "otp_send") return await otpSend(p);
     if (a === "resolve") return await resolveId(p);
     const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
     const { data: ud, error: ue } = await sb.auth.getUser(token);
@@ -409,7 +453,7 @@ Deno.serve(async (req) => {
     }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
-    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, approval: !!cfg.signup_approval }, topups: tops || [] });
+    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET) }, topups: tops || [] });
   } catch (e) {
     return fail(typeof e === "string" ? e : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", typeof e === "string" ? 400 : 500);
   }

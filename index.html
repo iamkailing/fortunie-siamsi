@@ -504,6 +504,7 @@ body{-webkit-tap-highlight-color:transparent}
 .login-card input{width:100%;box-sizing:border-box;border:1px solid var(--line);background:#ffffff12;color:var(--text);border-radius:12px;padding:11px 12px;font:inherit;font-size:16px}
 .login-card .lbl-s{margin-top:4px}
 .lg-up{display:flex;flex-direction:column;gap:8px}
+.lg-otp input{flex:1;min-width:0;letter-spacing:.2em}.lg-otp .mini{white-space:nowrap}
 .login-card .go{margin-top:8px;border:0;border-radius:999px;padding:13px 26px;font-family:var(--f-display);font-size:19px;background:linear-gradient(180deg,var(--butter),var(--gold));color:var(--night)}
 .login-card .go:disabled{opacity:.6}
 .login-card .note a{color:var(--gold)}
@@ -626,6 +627,8 @@ body{-webkit-tap-highlight-color:transparent}
         <div id="cfPacks" class="cf-packs"></div>
         <label class="toggle"><input id="cfMaint" type="checkbox"> ปิดปรับปรุงชั่วคราว (ผู้เล่นเข้าเกมไม่ได้ ยกเว้นแอดมิน)</label>
         <label class="toggle"><input id="cfApproval" type="checkbox"> คนสมัครใหม่ต้องรอแอดมินอนุมัติก่อนเล่น</label>
+        <label class="toggle"><input id="cfSms" type="checkbox"> คนสมัครใหม่ต้องยืนยันเบอร์ด้วย SMS</label>
+        <span class="small" id="cfSmsNote" style="text-align:left"></span>
         <button class="primary" id="cfSave" type="button">บันทึกการตั้งค่า</button>
         <span class="small" id="cfMsg" style="text-align:left"></span>
       </div>
@@ -785,6 +788,9 @@ body{-webkit-tap-highlight-color:transparent}
       <input id="lgEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="200" placeholder="name@gmail.com">
       <label class="lbl-s" for="lgPhone">เบอร์มือถือ</label>
       <input id="lgPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0812345678">
+      <div id="lgOtpBox" class="lg-otp" hidden>
+        <div class="row" style="flex-wrap:nowrap"><input id="lgOtp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="รหัส 6 หลักจาก SMS" aria-label="รหัสยืนยันจาก SMS"><button class="mini" id="lgOtpSend" type="button">ส่งรหัสยืนยัน</button></div>
+      </div>
       <label class="lbl-s" for="lgName">ชื่อในเกม</label>
       <input id="lgName" type="text" maxlength="16" placeholder="ชื่อที่อยากให้แสดง ภาษาไทยได้">
     </div>
@@ -1578,7 +1584,7 @@ $("lockLogout").addEventListener("click",logout);
 let loginMode="in";
 function showLogin(){$("loginScreen").hidden=false;setLoginMode(loginMode);setTimeout(()=>$("lgId").focus(),50)}
 function setLoginMode(m){loginMode=m;$("lgTabIn").classList.toggle("on",m==="in");$("lgTabUp").classList.toggle("on",m==="up");
-  document.querySelectorAll("#loginScreen .lg-up").forEach(x=>x.hidden=m!=="up");$("lgInOnly").hidden=m==="up";if(m==="up")api("config").then(()=>{$("lgApproveNote").hidden=!CFG.approval}).catch(()=>{});$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
+  document.querySelectorAll("#loginScreen .lg-up").forEach(x=>x.hidden=m!=="up");$("lgInOnly").hidden=m==="up";if(m==="up")api("config").then(()=>{$("lgApproveNote").hidden=!CFG.approval;$("lgOtpBox").hidden=!CFG.sms}).catch(()=>{});$("lgBtn").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครแล้วเริ่มเล่น";$("lgMsg").textContent="";$("lgPass").autocomplete=m==="in"?"current-password":"new-password"}
 $("lgTabIn").addEventListener("click",()=>setLoginMode("in"));$("lgTabUp").addEventListener("click",()=>setLoginMode("up"));
 const normPhoneC=v=>{let d=String(v||"").replace(/[^0-9]/g,"");if(d.startsWith("66"))d="0"+d.slice(2);return /^0[0-9]{8,9}$/.test(d)?d:""};
 async function doLogin(){const pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn");let authEmail="";
@@ -1589,7 +1595,8 @@ async function doLogin(){const pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn"
       if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(em)){msg.textContent="อีเมลไม่ถูกต้อง ลองเช็กอีกครั้ง";return}
       if(!normPhoneC(ph)){msg.textContent="ใส่เบอร์มือถือ 10 หลัก เช่น 0812345678";return}
       if(pw!==$("lgPass2").value){msg.textContent="รหัสผ่านสองช่องไม่ตรงกัน";return}
-      msg.textContent="กำลังสมัคร…";const r=await api("signup",{email:em,phone:ph,password:pw,name:$("lgName").value.trim()});authEmail=r&&r.email||""}
+      const otp=$("lgOtp").value.trim();if(CFG.sms&&!/^[0-9]{6}$/.test(otp)){msg.textContent="กดส่งรหัสยืนยันแล้วกรอกรหัส 6 หลักจาก SMS ก่อนนะคะ";$("lgOtp").focus();return}
+      msg.textContent="กำลังสมัคร…";const r=await api("signup",{email:em,phone:ph,password:pw,name:$("lgName").value.trim(),otp});authEmail=r&&r.email||""}
     else{const id=$("lgId").value.trim();if(!id){msg.textContent="ใส่อีเมลหรือเบอร์โทรก่อนนะคะ";return}
       msg.textContent="กำลังเข้าสู่ระบบ…";const r=await api("resolve",{id});authEmail=r&&r.email||""}
     msg.textContent="กำลังเข้าสู่ระบบ…";
@@ -1599,7 +1606,14 @@ async function doLogin(){const pw=$("lgPass").value,msg=$("lgMsg"),btn=$("lgBtn"
   }catch(e){msg.textContent=typeof e==="string"?e:"เกิดข้อผิดพลาด ลองใหม่อีกครั้ง"}
   finally{btn.disabled=false}}
 $("lgBtn").addEventListener("click",doLogin);
-["lgId","lgPass","lgPass2","lgName","lgEmail","lgPhone"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+let otpTimer=0;
+function otpCountdown(sec){const b=$("lgOtpSend");clearInterval(otpTimer);let t=sec;b.disabled=true;b.textContent=`ส่งใหม่ได้ใน ${t} วิ`;
+  otpTimer=setInterval(()=>{t--;if(t<=0){clearInterval(otpTimer);b.disabled=false;b.textContent="ส่งรหัสอีกครั้ง"}else b.textContent=`ส่งใหม่ได้ใน ${t} วิ`},1000)}
+$("lgOtpSend").addEventListener("click",async()=>{const msg=$("lgMsg"),ph=$("lgPhone").value.trim();if(!normPhoneC(ph)){msg.textContent="ใส่เบอร์มือถือ 10 หลัก เช่น 0812345678";$("lgPhone").focus();return}
+  const b=$("lgOtpSend");b.disabled=true;msg.textContent="กำลังส่งรหัส…";
+  try{const r=await api("otp_send",{phone:ph});msg.textContent="ส่งรหัส 6 หลักไปที่เบอร์ "+normPhoneC(ph)+" แล้ว ใช้ได้ 5 นาที";$("lgOtp").focus();otpCountdown(r&&r.gap||60)}
+  catch(e){msg.textContent=typeof e==="string"?e:"ส่งรหัสไม่สำเร็จ";b.disabled=false}});
+["lgId","lgPass","lgPass2","lgName","lgEmail","lgPhone","lgOtp"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
 function logout(){setAuth(null);ONLINE=false;OWNER=false;LOCKED=null;S=fresh();PROFILE=null;applyLock();$("adminTab").hidden=true;showTab("home");render();showLogin()}
 
 /* ---------- admin (server checks every admin action) ---------- */
@@ -1652,11 +1666,11 @@ $("plReset").addEventListener("click",()=>{$("plResetYes").hidden=false;plMsg("�
 $("plResetYes").addEventListener("click",()=>{$("plResetYes").hidden=true;plDo("adm_reset",{},"ล้างเกมของผู้เล่นแล้ว")});
 /* game settings */
 let cfgFilled=false;
-function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;$("cfApproval").checked=!!CFG.approval;
+function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;$("cfApproval").checked=!!CFG.approval;$("cfSms").checked=!!CFG.sms;$("cfSmsNote").textContent=CFG.smsReady?"ระบบ SMS พร้อมใช้":"ยังไม่ได้ใส่คีย์ SMS ในหลังบ้าน เปิดไว้คนจะสมัครไม่ได้";
   $("cfPacks").innerHTML=PACKS.concat([{},{}]).slice(0,6).map((p,i)=>`<div class="row cf-row" style="flex-wrap:nowrap"><input type="number" min="0" data-k="baht" value="${p.baht||""}" placeholder="บาท" aria-label="ราคาแพ็ก ${i+1}"><input type="number" min="0" data-k="stars" value="${p.stars||""}" placeholder="ดาว" aria-label="ดาวแพ็ก ${i+1}"><input type="text" maxlength="20" data-k="tag" value="${esc(p.tag||"")}" placeholder="ป้าย" aria-label="ป้ายแพ็ก ${i+1}"></div>`).join("")}
 $("cfSave").addEventListener("click",async()=>{const packs=[...$("cfPacks").querySelectorAll(".cf-row")].map(r=>({baht:+r.querySelector('[data-k="baht"]').value||0,stars:+r.querySelector('[data-k="stars"]').value||0,tag:r.querySelector('[data-k="tag"]').value.trim()})).filter(p=>p.baht>0&&p.stars>0);
   if(!packs.length){$("cfMsg").textContent="ต้องมีแพ็กอย่างน้อย 1 แพ็ก";return}
-  try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
+  try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
 $("ncBtn").addEventListener("click",async()=>{const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),msg=$("ncMsg");
   if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!t){msg.textContent="ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";return}
   const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
