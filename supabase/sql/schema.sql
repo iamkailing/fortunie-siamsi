@@ -128,3 +128,9 @@ create table if not exists public.otp_codes (
 alter table public.otp_codes enable row level security;
 revoke all on public.otp_codes from anon, authenticated;
 alter table public.config add column if not exists sms_verify boolean not null default false;
+
+-- v5: collection leaderboard + profile showcase
+alter table public.profiles add column if not exists score integer not null default 0;
+alter table public.profiles add column if not exists score_at timestamptz not null default now();
+alter table public.profiles add column if not exists showcase jsonb not null default '[]'::jsonb;
+create index if not exists profiles_score_idx on public.profiles (score desc, score_at asc);

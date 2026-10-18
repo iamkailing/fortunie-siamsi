@@ -496,6 +496,29 @@ body{-webkit-tap-highlight-color:transparent}
 #ncKind option{color:#1f1430}
 .full-box{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:1px solid #ff7a5a88;background:#45160fcc;border-radius:18px;padding:12px 16px;margin:8px auto;max-width:340px}.full-box b{color:#ffab8f}.full-box span{font-size:13px;color:var(--lav-soft)}
 
+/* ---- collector score, showcase, leaderboard ---- */
+.profile-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,#3a2560cc,#24173acc);border:1px solid #f0d28a55;border-radius:22px;padding:14px 16px;margin-bottom:12px}
+.pc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pc-top>div{display:flex;flex-direction:column}
+.pc-score{font-family:var(--f-display);font-size:30px;color:var(--butter);line-height:1.1}.pc-score small{font-size:14px;color:var(--muted)}
+.pc-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pc-slot{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--tier-c,var(--line));background:#ffffff0c;border-radius:16px;padding:6px 4px 8px;color:var(--text);font:inherit;cursor:pointer;min-width:0}
+.pc-slot small{font-size:11px;color:var(--lav-soft);text-align:center;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.pc-slot.empty{border-style:dashed;min-height:92px;justify-content:center}.pc-slot.empty span{font-size:24px;color:var(--muted)}
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.pick-pet{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--tier-c,var(--line));background:#ffffff0a;border-radius:14px;padding:6px 4px;font:inherit;color:var(--text);cursor:pointer}
+.pick-pet.on{box-shadow:0 0 0 2px var(--butter)}.pick-pet small{font-size:11px;text-align:center;line-height:1.3;color:var(--lav-soft)}
+.lb-list{display:flex;flex-direction:column;gap:6px}
+.lb-row{display:grid;grid-template-columns:34px 1fr auto 44px;align-items:center;gap:8px;background:#ffffff0a;border:1px solid var(--line);border-radius:14px;padding:8px 10px;cursor:default}
+.lb-row.me{border-color:var(--butter);background:#f0d28a18}
+.lb-row[data-code]{cursor:pointer}
+.lb-rank{font-family:var(--f-display);font-size:16px;text-align:center;color:var(--lav-soft)}
+.lb-who{display:flex;flex-direction:column;min-width:0}.lb-who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb-who small{font-size:11px;color:var(--muted)}
+.lb-pets{display:flex;gap:2px;font-size:22px;line-height:1}.lb-pet img{width:22px;height:22px;border-radius:50%}
+.lb-score{font-family:var(--f-display);font-size:18px;color:var(--butter);text-align:right}
+.lb-me-note{font-size:13px;color:var(--lav-soft);text-align:center}
+.prof-pets{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -582,6 +605,7 @@ body{-webkit-tap-highlight-color:transparent}
   <!-- PETS -->
   <div class="screen" id="scr-pets" hidden>
     <h2 class="screen-title">เพื่อนตัวน้อย</h2>
+    <section class="profile-card" id="profileCard"></section>
     <div id="buddyCard"></div>
     <section id="shardBox"></section>
     <section>
@@ -937,9 +961,16 @@ const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth
 
 function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,pity:0,
-  streakN:0,streakDay:"",inbox:[]}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0]}
+  streakN:0,streakDay:"",inbox:[],showcase:[]}}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
 
+/* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
+function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
+const SHOW_MAX=3;
+function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
+  for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
+  S.showcase=out;return{showcase:out}}
+function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
 function buffOf(f){return{type:f%3,s:LVPOW[F[f][0]]}}
 function activeBuff(){return S.active&&S.active.until>now()?Object.assign(buffOf(S.active.f),{f:S.active.f}):null}
 function buddyPet(){const i=S.buddy;return i!=null&&PETS[i]&&S.owned[PETS[i].n]?PETS[i]:null}
@@ -1083,6 +1114,10 @@ function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);con
   if(a.cdr)o.push(`เวลารอลดลง ${n1(a.cdr*m*100)}%`);if(a.drop)o.push(`โอกาสเจอเพื่อน +${n1(a.drop*m)}%`);if(a.again)o.push(`${n1(a.again*m*100)}% ได้เขย่าฟรีซ้ำ`);
   if(a.cap)o.push(`เก็บสิทธิ์ฟรีเพิ่ม ${a.cap}`);if(a.star)o.push(`+${Math.round(a.star*m)} ดาวต่อครั้ง`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.baseMul)o.push(`โอกาสพื้นฐาน x${n1(a.baseMul+(m-1))}`);if(a.burnFree)o.push(`เผาแล้ว ${n1(Math.min(.6,a.burnFree*m)*100)}% ได้เขย่าฟรี`);return o.join(" · ")}
+/* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3) and the 3-slot showcase */
+const MAX_SCORE=()=>PETS.length*3;
+function myShowcase(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n])}
+function saveShowcase(arr){act("showcase",{pis:arr.slice(0,SHOW_MAX)}).then(()=>toast("อัปเดตโปรไฟล์แล้ว")).catch(()=>{})}
 
 
 /* ---------- sound ---------- */
@@ -1472,7 +1507,38 @@ $("inv").addEventListener("click",e=>{if(burnSel){const card=e.target.closest(".
   else{btn.disabled=true;api("burn_slip",{id}).then(r=>{render();releaseAnim(r.f,r,()=>{doBurnReward(r);render()})}).catch(e=>{if(e!=="locked")toast(e);render()})}});
 
 /* ---------- pets ---------- */
-function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
+function renderShowcaseCard(){const sc=myShowcase(),score=collScore();
+  $("profileCard").innerHTML=`<div class="pc-top"><div><span class="small" style="text-align:left">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="mini" id="lbOpen" type="button">🏆 ดูอันดับ</button></div>
+   <div class="pc-slots">${[0,1,2].map(i=>{const pi=sc[i];if(pi==null)return `<button class="pc-slot empty" type="button" data-slot="${i}"><span>＋</span><small>เลือกเพื่อนโชว์</small></button>`;const p=PETS[pi];
+     return `<button class="pc-slot" type="button" data-slot="${i}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),64)}<small>${formName(p)}</small></button>`}).join("")}</div>
+   <p class="note">แตะช่องเพื่อเลือกเพื่อนที่จะโชว์ในโปรไฟล์ คนอื่นจะเห็นในหน้าอันดับ · เพื่อน Lv.1 = 1 คะแนน Lv.2 = 2 คะแนน Lv.3 = 3 คะแนน</p>`}
+function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||lvOf(S.owned[PETS[b].n],PETS[b])-lvOf(S.owned[PETS[a].n],PETS[a]));
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนโชว์ช่อง ${slot+1}</h2><button class="ghost" data-close type="button">ปิด</button></div>
+   ${own.length?`<div class="pick-grid">${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${sc.includes(pi)?" on":""}" type="button" data-pi="${pi}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),56)}<small>${formName(p)}</small></button>`}).join("")}</div>`:`<div class="placeholder">ยังไม่มีเพื่อน ลองเขย่าเซียมซีก่อนนะคะ</div>`}
+   ${sc[slot]!=null?`<button class="ghost" type="button" id="pickClear">เอาออกจากช่องนี้</button>`:""}`;
+  $("petModal").hidden=false;
+  $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{const pi=+b.dataset.pi,arr=myShowcase().filter(x=>x!==pi);arr.splice(Math.min(slot,arr.length),0,pi);$("petModal").hidden=true;saveShowcase(arr)}));
+  const cl=$("pickClear");if(cl)cl.addEventListener("click",()=>{const arr=myShowcase();arr.splice(slot,1);$("petModal").hidden=true;saveShowcase(arr)})}
+function lbRowHTML(r,i){const shows=(r.showcase||[]).filter(x=>PETS[x.pi]).slice(0,3).map(x=>`<span class="lb-pet" title="${esc(formName(PETS[x.pi],x.L))}">${petFace(PETS[x.pi],x.L)}</span>`).join("");
+  return `<div class="lb-row${r.me?" me":""}"><span class="lb-rank r${i+1}">${i<3?["🥇","🥈","🥉"][i]:i+1}</span><div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code)}</small></div><span class="lb-pets">${shows}</span><b class="lb-score">${r.score}</b></div>`}
+let LB=null;
+async function openLeaderboard(){$("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">🏆 อันดับนักสะสม</h2><button class="ghost" data-close type="button">ปิด</button></div><div class="placeholder">กำลังโหลดอันดับ…</div>`;$("petModal").hidden=false;
+  try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("petPop").querySelector(".placeholder").textContent=typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ";return}
+  const inTop=LB.top.some(r=>r.me);
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">🏆 อันดับนักสะสม</h2><button class="ghost" data-close type="button">ปิด</button></div>
+   <p class="lb-me-note">คุณอยู่อันดับที่ <b>${LB.myRank}</b> · ${LB.myScore} คะแนน</p>
+   <div class="lb-list">${LB.top.length?LB.top.map((r,i)=>lbRowHTML(r,i).replace('<div class="lb-row','<div data-code="'+esc(r.code)+'" class="lb-row')).join(""):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`}</div>
+   ${inTop?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้ เก็บเพื่อนให้ครบแล้วอัปร่างกันเลย</p>`}
+   <p class="note">แตะชื่อเพื่อดูโปรไฟล์ · คะแนน = เลเวลของเพื่อนทุกตัวรวมกัน (สูงสุด ${MAX_SCORE()})</p>`}
+async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}catch(e){if(e!=="locked")toast(e);return}
+  const pets=(r.showcase||[]).filter(x=>PETS[x.pi]);
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" type="button" id="lbBack">กลับ</button></div>
+   <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b></p>
+   <div class="prof-pets">${pets.length?pets.map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,96)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
+  $("lbBack").addEventListener("click",openLeaderboard)}
+document.addEventListener("click",e=>{const row=e.target.closest(".lb-row[data-code]");if(row&&!row.classList.contains("me-self"))openProfileOf(row.dataset.code)});
+document.addEventListener("click",e=>{const sl=e.target.closest("#profileCard .pc-slot");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#lbOpen"))openLeaderboard()});
+function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;renderShowcaseCard();
   const bp=buddyPet();
   $("buddyCard").innerHTML=bp?`<div class="expcard"><div class="pet">${formHTML(bp,lvOf(S.owned[bp.n],bp),76)}</div><div class="meta"><span class="small" style="text-align:left">คู่หูตอนนี้ · ${(ROLE[bp.role]||[""," "])[0]} ${(ROLE[bp.role]||["",""])[1]}</span><b>${formName(bp)} · Lv.${lvOf(S.owned[bp.n],bp)}</b><span class="small" style="text-align:left;color:var(--lav-soft)">${petDesc(bp,S.owned[bp.n])}</span></div></div>`:`<div class="placeholder">ยังไม่มีคู่หู เขย่าเซียมซีเพื่อหาเพื่อนตัวแรก แล้วกดเพื่อนในสมุดเพื่อตั้งเป็นคู่หู</div>`;
   $("shardBox").innerHTML=`<div class="row"><h2>เศษเพื่อน</h2></div><div class="shards">${RAR.map((r,t)=>{const have=S.shards[t]||0,cost=SHARD_COST[t];return `<button type="button" class="shard" data-t="${t}" style="--tier-c:${r.c}" ${have>=cost?"":"aria-disabled=\"true\""}><span class="sh-n">${have}/${cost}</span><span class="sh-k">เศษ${r.name}</span>${have>=cost?`<b>แลกได้!</b>`:""}</button>`}).join("")}</div><p class="note">ได้เพื่อนซ้ำเกินเลเวลสูงสุด จะได้เศษตามระดับ (ธรรมดา หายาก แรร์ 1 เศษ · เอพิก ตำนาน 2 เศษ) เก็บครบแล้วแลกเพื่อนระดับเดียวกันได้ เลือกตัวเองได้เลย</p>`;
@@ -1488,10 +1554,12 @@ function openPet(pi){const p=PETS[pi],k=S.owned[p.n]||0,r=RAR[p.t];
     <div class="forms3">${[1,2,3].map(x=>`<div class="f3${x<=L?"":" off"}">${formHTML(p,x,64,x>L)}<b>ร่าง ${x}</b><span>${x<=L?formName(p,x):x===L+1?"อีก "+toNext(k,p)+" ตัว":"ยังไม่ปลด"}</span></div>`).join("")}</div>
     <div class="row" style="justify-content:center"><span class="tier" style="background:${r.c}">${r.name}${p.sp?" · พิเศษ":""}</span><span class="tier" style="background:#ffffff22">Lv.${L}/${MAXLV}</span><span class="tier" style="background:#ffffff22">ได้มาแล้ว ${k} ตัว</span></div>
     <button class="primary" id="setBuddy" type="button" ${isB?"disabled":""}>${isB?"เป็นคู่หูอยู่แล้ว":"ตั้งเป็นคู่หู"}</button>
+    <button class="ghost" id="showMe" type="button">${myShowcase().includes(pi)?"เอาออกจากโปรไฟล์":"⭐ โชว์ในโปรไฟล์"}</button>
     <div class="pet-info"><b>พลัง</b><span>${petDesc(p,k)}</span>${next?`<b>Lv.${L+1}</b><span>${next} · เก็บอีก ${toNext(k,p)} ตัวเพื่ออัป (มีแล้ว ${k}/${NEED(p)[L]})</span>`:`<b>เลเวลสูงสุด</b><span>ได้ซ้ำจะได้เศษ${r.name} +${SHARD_GET[p.t]} เศษ ใช้แลกเพื่อนระดับเดียวกันแบบเลือกเองได้</span>`}
     <b>วิธีได้</b><span>${p.sp?"เช็กอินครบ 7 วัน":"เขย่าเซียมซีหรือใช้ตั๋วสุ่มเพื่อน · โอกาสระดับนี้ "+r.share+"% เมื่อเจอเพื่อน"}</span></div>`;
     $("petBig").addEventListener("click",()=>petPlay($("petBig"),$("petSay"),p));
-    $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(p.n+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})})}
+    $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(p.n+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})});
+    const sb=$("showMe");if(sb)sb.addEventListener("click",()=>{const arr=myShowcase().filter(x=>x!==pi);if(myShowcase().includes(pi)){saveShowcase(arr)}else{if(arr.length>=SHOW_MAX)arr.pop();arr.unshift(pi);saveShowcase(arr)}$("petModal").hidden=true})}
   $("petModal").hidden=false;$("petPop").querySelector("[data-close]").focus()}
 $("petModal").addEventListener("click",e=>{if(e.target.id==="petModal"||e.target.closest("[data-close]"))$("petModal").hidden=true});
 $("book").addEventListener("click",e=>{const sl=e.target.closest(".slot[data-pi]");if(sl)openPet(+sl.dataset.pi)});

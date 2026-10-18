@@ -119,9 +119,16 @@ const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth
 
 function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,pity:0,
-  streakN:0,streakDay:"",inbox:[]}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0]}
+  streakN:0,streakDay:"",inbox:[],showcase:[]}}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
 
+/* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
+function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
+const SHOW_MAX=3;
+function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
+  for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
+  S.showcase=out;return{showcase:out}}
+function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
 function buffOf(f){return{type:f%3,s:LVPOW[F[f][0]]}}
 function activeBuff(){return S.active&&S.active.until>now()?Object.assign(buffOf(S.active.f),{f:S.active.f}):null}
 function buddyPet(){const i=S.buddy;return i!=null&&PETS[i]&&S.owned[PETS[i].n]?PETS[i]:null}
@@ -189,7 +196,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
   const dp=powers().daily||0;S.stars+=dp;if(r.s)S.stars+=r.s;if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,s:(r.s||0)+dp,bonus:dp,pet:r.pet||null}}
 function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,actJar,actExchange,actBuddy,actDaily,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,actJar,actExchange,actBuddy,actDaily,actShowcase,collScore,showcaseOut,DEFAULT_PACKS,now };
 }
 
 
@@ -300,6 +307,17 @@ async function signUp(p) {
   return out({ ok: true, res: { email: `${login}@${EMAIL_DOMAIN}`, pending: !approved } });
 }
 /* turn what the player typed (email / phone / old id) into the sign-in address; unknown ids get a look-alike so nobody can probe who has an account */
+async function leaderboard(uid, me) {
+  const base = () => sb.from("profiles").select("id,name,code,score,showcase,score_at").eq("banned", false).neq("approved", false);
+  const { data: top } = await base().order("score", { ascending: false }).order("score_at", { ascending: true }).limit(50);
+  const { count } = await sb.from("profiles").select("id", { count: "exact", head: true }).eq("banned", false).neq("approved", false).gt("score", me.score || 0);
+  return { top: (top || []).map(r => ({ name: r.name, code: r.code, score: r.score || 0, showcase: r.showcase || [], me: r.id === uid })), myRank: (count || 0) + 1, myScore: me.score || 0 };
+}
+async function profileOf(code) {
+  const { data } = await sb.from("profiles").select("name,code,score,showcase,created_at").eq("code", code.toUpperCase()).eq("banned", false).maybeSingle();
+  if (!data) throw "ไม่พบผู้เล่นนี้";
+  return { name: data.name, code: data.code, score: data.score || 0, showcase: data.showcase || [], since: data.created_at };
+}
 async function resolveId(p) {
   const raw = String(p.id || "").trim().toLowerCase(); if (!raw) return fail("ใส่อีเมลหรือเบอร์โทรก่อนนะคะ");
   let q = null;
@@ -430,6 +448,8 @@ Deno.serve(async (req) => {
     if (prof.banned && !ADMIN) return out({ locked: "ban", reason: prof.ban_reason, profile: { name: prof.name, code: prof.code } });
     if (cfg.maint && !ADMIN) return out({ locked: "maint", profile: { name: prof.name, code: prof.code } });
     if (prof.approved === false && !ADMIN) return out({ locked: "pending", profile: { name: prof.name, code: prof.code } });
+    if (a === "leaderboard") return out({ res: await leaderboard(uid, prof) });
+    if (a === "profile_of") return out({ res: await profileOf(String(p.code || "")) });
     if (a.startsWith("adm_")) { if (!ADMIN) return fail("ต้องเป็นแอดมิน", 403); return out({ res: await adminAction(a, p, uid) }); }
 
     let res = null, G = null;
@@ -448,6 +468,7 @@ Deno.serve(async (req) => {
         case "exchange": res = G.actExchange(p.t, p.pi); break;
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
+        case "showcase": res = G.actShowcase(p.pis); break;
         case "ack": G.S.inbox = []; res = { ok: true }; break;
         case "redeem": res = await redeem(G, uid, p.code); break;
         case "topup": res = await submitTopup(uid, prof, p, cfg); break;
@@ -457,6 +478,9 @@ Deno.serve(async (req) => {
       }
       try { await saveState(uid, G.S, ver); break; } catch (e) { if (attempt === 2 || a === "redeem" || a === "topup") throw e; }
     }
+    /* keep the public leaderboard row in step with the saved game */
+    { const sc = G.collScore(), show = G.showcaseOut();
+      if (sc !== (prof.score || 0) || JSON.stringify(show) !== JSON.stringify(prof.showcase || [])) await sb.from("profiles").update(sc !== (prof.score || 0) ? { score: sc, score_at: new Date().toISOString(), showcase: show } : { showcase: show }).eq("id", uid); }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
     return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET) }, topups: tops || [] });
