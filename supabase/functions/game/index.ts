@@ -119,12 +119,16 @@ const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth
 
 function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,pity:0,
-  streakN:0,streakDay:"",inbox:[],showcase:[]}}
+  streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,frame:"none"}}
 function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
 const SHOW_MAX=3;
+const FRAMES=[{id:"none",n:"ไม่มีกรอบ"},{id:"gold",n:"ทองมงคล"},{id:"sakura",n:"ซากุระ"},{id:"star",n:"ดาวราตรี"}];
+function actProfile(avatar,frame){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้"}else avatar=-1;
+  if(!FRAMES.some(f=>f.id===frame))throw "ไม่มีกรอบนี้";S.avatar=avatar;S.frame=frame;return{avatar,frame}}
+function avatarOut(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?{pi:a,L:lvOf(S.owned[PETS[a].n],PETS[a])}:{pi:-1,L:1}}
 function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
   for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
   S.showcase=out;return{showcase:out}}
@@ -196,7 +200,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
   const dp=powers().daily||0;S.stars+=dp;if(r.s)S.stars+=r.s;if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,s:(r.s||0)+dp,bonus:dp,pet:r.pet||null}}
 function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,actJar,actExchange,actBuddy,actDaily,actShowcase,collScore,showcaseOut,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,actJar,actExchange,actBuddy,actDaily,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
 }
 
 
@@ -308,15 +312,15 @@ async function signUp(p) {
 }
 /* turn what the player typed (email / phone / old id) into the sign-in address; unknown ids get a look-alike so nobody can probe who has an account */
 async function leaderboard(uid, me) {
-  const base = () => sb.from("profiles").select("id,name,code,score,showcase,score_at").eq("banned", false).neq("approved", false);
+  const base = () => sb.from("profiles").select("id,name,code,score,showcase,score_at,avatar,avatar_l,frame").eq("banned", false).neq("approved", false);
   const { data: top } = await base().order("score", { ascending: false }).order("score_at", { ascending: true }).limit(50);
   const { count } = await sb.from("profiles").select("id", { count: "exact", head: true }).eq("banned", false).neq("approved", false).gt("score", me.score || 0);
-  return { top: (top || []).map(r => ({ name: r.name, code: r.code, score: r.score || 0, showcase: r.showcase || [], me: r.id === uid })), myRank: (count || 0) + 1, myScore: me.score || 0 };
+  return { top: (top || []).map(r => ({ name: r.name, code: r.code, score: r.score || 0, showcase: r.showcase || [], avatar: r.avatar ?? -1, avL: r.avatar_l ?? 1, frame: r.frame || "none", me: r.id === uid })), myRank: (count || 0) + 1, myScore: me.score || 0 };
 }
 async function profileOf(code) {
-  const { data } = await sb.from("profiles").select("name,code,score,showcase,created_at").eq("code", code.toUpperCase()).eq("banned", false).maybeSingle();
+  const { data } = await sb.from("profiles").select("name,code,score,showcase,created_at,avatar,avatar_l,frame").eq("code", code.toUpperCase()).eq("banned", false).maybeSingle();
   if (!data) throw "ไม่พบผู้เล่นนี้";
-  return { name: data.name, code: data.code, score: data.score || 0, showcase: data.showcase || [], since: data.created_at };
+  return { name: data.name, code: data.code, score: data.score || 0, showcase: data.showcase || [], since: data.created_at, avatar: data.avatar ?? -1, avL: data.avatar_l ?? 1, frame: data.frame || "none" };
 }
 async function resolveId(p) {
   const raw = String(p.id || "").trim().toLowerCase(); if (!raw) return fail("ใส่อีเมลหรือเบอร์โทรก่อนนะคะ");
@@ -469,6 +473,7 @@ Deno.serve(async (req) => {
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
         case "showcase": res = G.actShowcase(p.pis); break;
+        case "profile": res = G.actProfile(p.avatar, String(p.frame || "none")); break;
         case "ack": G.S.inbox = []; res = { ok: true }; break;
         case "redeem": res = await redeem(G, uid, p.code); break;
         case "topup": res = await submitTopup(uid, prof, p, cfg); break;
@@ -479,8 +484,11 @@ Deno.serve(async (req) => {
       try { await saveState(uid, G.S, ver); break; } catch (e) { if (attempt === 2 || a === "redeem" || a === "topup") throw e; }
     }
     /* keep the public leaderboard row in step with the saved game */
-    { const sc = G.collScore(), show = G.showcaseOut();
-      if (sc !== (prof.score || 0) || JSON.stringify(show) !== JSON.stringify(prof.showcase || [])) await sb.from("profiles").update(sc !== (prof.score || 0) ? { score: sc, score_at: new Date().toISOString(), showcase: show } : { showcase: show }).eq("id", uid); }
+    { const sc = G.collScore(), show = G.showcaseOut(), av = G.avatarOut(), fr = G.S.frame || "none";
+      const look = { showcase: show, avatar: av.pi, avatar_l: av.L, frame: fr };
+      const same = JSON.stringify(show) === JSON.stringify(prof.showcase || []) && av.pi === (prof.avatar ?? -1) && av.L === (prof.avatar_l ?? 1) && fr === (prof.frame || "none");
+      if (sc !== (prof.score || 0)) await sb.from("profiles").update({ score: sc, score_at: new Date().toISOString(), ...look }).eq("id", uid);
+      else if (!same) await sb.from("profiles").update(look).eq("id", uid); }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
     return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET) }, topups: tops || [] });

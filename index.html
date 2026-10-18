@@ -241,7 +241,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 
 /* v12: buddy, floating fortune, paper slip, top-up slips, admin */
 [hidden]{display:none!important}
-.tabbar{grid-template-columns:repeat(var(--tabs,5),1fr)}
+.tabbar{grid-template-columns:repeat(var(--tabs,6),1fr)}
 .purple{filter:sepia(1) saturate(4) hue-rotate(220deg) brightness(1.05)}
 .egg:focus-visible,.pet-big:focus-visible,.buddy:focus-visible{outline:none;filter:drop-shadow(0 0 0 transparent) drop-shadow(0 0 18px #fbeec2)}
 .egg:focus{outline:none}
@@ -519,6 +519,32 @@ body{-webkit-tap-highlight-color:transparent}
 .lb-me-note{font-size:13px;color:var(--lav-soft);text-align:center}
 .prof-pets{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
 
+/* ---- profile avatar + frames, rank screen ---- */
+.av{--s:56px;position:relative;width:var(--s);height:var(--s);flex:none;display:inline-grid;place-items:center;border-radius:50%}
+.av-in{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;overflow:hidden;font-size:calc(var(--s)*.56);line-height:1;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--ag) 55%,#fff) 0,color-mix(in srgb,var(--ag) 35%,#1c1226) 70%);box-shadow:inset 0 0 0 2px #ffffff22}
+.av-in img{width:100%;height:100%;object-fit:cover}
+.av-in .purple{filter:sepia(1) saturate(4) hue-rotate(220deg) brightness(1.05)}
+.av-dec{position:absolute;font-style:normal;line-height:1;pointer-events:none}
+.av.fr-gold .av-in{box-shadow:0 0 0 calc(var(--s)*.05) #f6d77a,0 0 0 calc(var(--s)*.085) #9b6a1d,0 0 calc(var(--s)*.25) #f0d28a99}
+.av.fr-gold .d1{top:calc(var(--s)*-.12);left:50%;translate:-50% 0;font-size:calc(var(--s)*.26);color:#f6d77a;text-shadow:0 0 6px #f0d28a}
+.av.fr-sakura .av-in{box-shadow:0 0 0 calc(var(--s)*.05) #ffc2d8,0 0 0 calc(var(--s)*.08) #e886ad,0 0 calc(var(--s)*.22) #ff9cc488}
+.av.fr-sakura .d1{top:calc(var(--s)*-.06);right:calc(var(--s)*-.06);font-size:calc(var(--s)*.3)}
+.av.fr-sakura .d2{bottom:calc(var(--s)*-.04);left:calc(var(--s)*-.06);font-size:calc(var(--s)*.24)}
+.av.fr-star .av-in{box-shadow:0 0 0 calc(var(--s)*.05) #b98ae6,0 0 0 calc(var(--s)*.08) #4b2c7a,0 0 calc(var(--s)*.3) #b98ae6aa}
+.av.fr-star .av-dec{color:#fbeec2;text-shadow:0 0 6px #b98ae6;animation:avtw 2.4s ease-in-out infinite}
+.av.fr-star .d1{top:calc(var(--s)*-.08);left:calc(var(--s)*.08);font-size:calc(var(--s)*.22)}
+.av.fr-star .d2{top:calc(var(--s)*.2);right:calc(var(--s)*-.12);font-size:calc(var(--s)*.2);animation-delay:.8s}
+.av.fr-star .d3{bottom:calc(var(--s)*-.06);left:calc(var(--s)*.3);font-size:calc(var(--s)*.16);animation-delay:1.6s}
+@keyframes avtw{0%,100%{opacity:.4;scale:.8}50%{opacity:1;scale:1.1}}
+.mp-top{display:flex;align-items:center;gap:14px}
+.mp-who{display:flex;flex-direction:column;flex:1;min-width:0}.mp-who>b:first-child{font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-top .mini{align-self:flex-start}
+.pe-preview{display:grid;place-items:center;padding:10px 0 4px}
+.pick-grid.sm{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+.lb-row{grid-template-columns:30px 40px 1fr auto 40px}
+#scr-rank .lb-list{margin-top:6px}
+@media (prefers-reduced-motion:reduce){.av-dec{animation:none!important}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -602,10 +628,18 @@ body{-webkit-tap-highlight-color:transparent}
     </section>
   </div>
 
+  <!-- RANK -->
+  <div class="screen" id="scr-rank" hidden>
+    <h2 class="screen-title">อันดับนักสะสม</h2>
+    <section class="profile-card" id="myProfile"></section>
+    <section>
+      <div class="row"><h2>🏆 ท็อปนักสะสม</h2><span class="small" id="lbMe"></span></div>
+      <div class="lb-list" id="lbList"></div>
+    </section>
+  </div>
   <!-- PETS -->
   <div class="screen" id="scr-pets" hidden>
     <h2 class="screen-title">เพื่อนตัวน้อย</h2>
-    <section class="profile-card" id="profileCard"></section>
     <div id="buddyCard"></div>
     <section id="shardBox"></section>
     <section>
@@ -693,6 +727,7 @@ body{-webkit-tap-highlight-color:transparent}
   <button type="button" data-tab="home" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-1 18H9z M9 7h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เขย่า</span></button>
   <button type="button" data-tab="inv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z M4 7l2-4h12l2 4 M10 11h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>คลัง</span><b class="badge" id="badgeInv" hidden></b></button>
   <button type="button" data-tab="pets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4 0-7-2.5-7-5.5S8 9 12 9s7 2.5 7 5.5S16 20 12 20z M6 8.5a1.6 1.6 0 1 0 0-.1 M18 8.5a1.6 1.6 0 1 0 0-.1 M9.5 5a1.6 1.6 0 1 0 0-.1 M14.5 5a1.6 1.6 0 1 0 0-.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เพื่อน</span></button>
+  <button type="button" data-tab="rank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z M8 6H5a3 3 0 0 0 3 4 M16 6h3a3 3 0 0 1-3 4 M12 13v4 M8.5 20h7 M10 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>อันดับ</span></button>
   <button type="button" data-tab="shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.9 6.4.6-4.9 4.3 1.4 6.3L12 16.9 6.5 20.1l1.4-6.3L3 9.5l6.4-.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>ร้านดาว</span><b class="badge soft" id="badgeShop" hidden></b></button>
   <button type="button" data-tab="info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5 M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>ข้อมูล</span></button>
   <button type="button" data-tab="admin" id="adminTab" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6z M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>แอดมิน</span><b class="badge" id="badgeAdmin" hidden></b></button>
@@ -961,12 +996,16 @@ const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth
 
 function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,pity:0,
-  streakN:0,streakDay:"",inbox:[],showcase:[]}}
+  streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,frame:"none"}}
 function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
 const SHOW_MAX=3;
+const FRAMES=[{id:"none",n:"ไม่มีกรอบ"},{id:"gold",n:"ทองมงคล"},{id:"sakura",n:"ซากุระ"},{id:"star",n:"ดาวราตรี"}];
+function actProfile(avatar,frame){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้"}else avatar=-1;
+  if(!FRAMES.some(f=>f.id===frame))throw "ไม่มีกรอบนี้";S.avatar=avatar;S.frame=frame;return{avatar,frame}}
+function avatarOut(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?{pi:a,L:lvOf(S.owned[PETS[a].n],PETS[a])}:{pi:-1,L:1}}
 function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
   for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
   S.showcase=out;return{showcase:out}}
@@ -1059,7 +1098,7 @@ async function api(action,params){const tk=await token();
   if(j.locked){LOCKED=j;applyLock();throw "locked"}
   if(LOCKED){LOCKED=null;applyLock()}
   if(j.state){S=Object.assign(fresh(),j.state);norm();OFF=j.now-Date.now();ONLINE=true}
-  if(j.profile){PROFILE=j.profile;OWNER=!!j.profile.admin;$("adminTab").hidden=!OWNER;$("tabbar").style.setProperty("--tabs",OWNER?6:5)}
+  if(j.profile){PROFILE=j.profile;OWNER=!!j.profile.admin;$("adminTab").hidden=!OWNER;$("tabbar").style.setProperty("--tabs",OWNER?7:6);if(tab==="rank")renderMyProfile()}
   if(j.cfg){CFG=j.cfg;if(Array.isArray(CFG.packs)&&CFG.packs.length)PACKS=CFG.packs;renderAnn()}
   if(j.topups)MYREQ=j.topups;
   if(S.inbox&&S.inbox.length)showInbox();
@@ -1114,10 +1153,17 @@ function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);con
   if(a.cdr)o.push(`เวลารอลดลง ${n1(a.cdr*m*100)}%`);if(a.drop)o.push(`โอกาสเจอเพื่อน +${n1(a.drop*m)}%`);if(a.again)o.push(`${n1(a.again*m*100)}% ได้เขย่าฟรีซ้ำ`);
   if(a.cap)o.push(`เก็บสิทธิ์ฟรีเพิ่ม ${a.cap}`);if(a.star)o.push(`+${Math.round(a.star*m)} ดาวต่อครั้ง`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.baseMul)o.push(`โอกาสพื้นฐาน x${n1(a.baseMul+(m-1))}`);if(a.burnFree)o.push(`เผาแล้ว ${n1(Math.min(.6,a.burnFree*m)*100)}% ได้เขย่าฟรี`);return o.join(" · ")}
-/* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3) and the 3-slot showcase */
+/* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3), 3-slot showcase, avatar pet + frame */
 const MAX_SCORE=()=>PETS.length*3;
 function myShowcase(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n])}
-function saveShowcase(arr){act("showcase",{pis:arr.slice(0,SHOW_MAX)}).then(()=>toast("อัปเดตโปรไฟล์แล้ว")).catch(()=>{})}
+function myAvatar(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?a:-1}
+function myFrame(){return FRAMES.some(f=>f.id===S.frame)?S.frame:"none"}
+function saveShowcase(arr){act("showcase",{pis:arr.slice(0,SHOW_MAX)}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
+function saveProfile(avatar,frame){act("profile",{avatar,frame}).then(()=>{toast("อัปเดตโปรไฟล์แล้ว");if(tab==="rank")loadLeaderboard()}).catch(()=>{})}
+/* round profile picture: chosen pet (or the Fortunie logo) inside the chosen frame */
+function avatarHTML(pi,L,frame,size){const p=pi!=null&&pi>=0?PETS[pi]:null,f=FRAMES.some(x=>x.id===frame)?frame:"none";
+  const face=p?petFace(p,L||1):`<img src="${LOGO}" alt="">`;const bg=p?RAR[p.t].glow:"#b98ae6";
+  return `<span class="av fr-${f}" style="--s:${size||56}px;--ag:${bg}" aria-hidden="true"><span class="av-in">${face}</span>${f==="sakura"?'<i class="av-dec d1">🌸</i><i class="av-dec d2">🌸</i>':f==="star"?'<i class="av-dec d1">✦</i><i class="av-dec d2">✧</i><i class="av-dec d3">✦</i>':f==="gold"?'<i class="av-dec d1">❖</i>':""}</span>`}
 
 
 /* ---------- sound ---------- */
@@ -1507,11 +1553,13 @@ $("inv").addEventListener("click",e=>{if(burnSel){const card=e.target.closest(".
   else{btn.disabled=true;api("burn_slip",{id}).then(r=>{render();releaseAnim(r.f,r,()=>{doBurnReward(r);render()})}).catch(e=>{if(e!=="locked")toast(e);render()})}});
 
 /* ---------- pets ---------- */
-function renderShowcaseCard(){const sc=myShowcase(),score=collScore();
-  $("profileCard").innerHTML=`<div class="pc-top"><div><span class="small" style="text-align:left">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="mini" id="lbOpen" type="button">🏆 ดูอันดับ</button></div>
+/* ---------- rank screen: my profile + leaderboard ---------- */
+function renderMyProfile(){const sc=myShowcase(),score=collScore(),av=myAvatar();const nm=typeof PROFILE!=="undefined"&&PROFILE?PROFILE.name:(S.uname||"คุณ");
+  $("myProfile").innerHTML=`<div class="mp-top">${avatarHTML(av,av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1,myFrame(),84)}<div class="mp-who"><b>${esc(nm)}</b><span class="small" style="text-align:left">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="mini" id="mpEdit" type="button">แก้โปรไฟล์</button></div>
+   <span class="small" style="text-align:left">เพื่อนที่โชว์</span>
    <div class="pc-slots">${[0,1,2].map(i=>{const pi=sc[i];if(pi==null)return `<button class="pc-slot empty" type="button" data-slot="${i}"><span>＋</span><small>เลือกเพื่อนโชว์</small></button>`;const p=PETS[pi];
      return `<button class="pc-slot" type="button" data-slot="${i}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),64)}<small>${formName(p)}</small></button>`}).join("")}</div>
-   <p class="note">แตะช่องเพื่อเลือกเพื่อนที่จะโชว์ในโปรไฟล์ คนอื่นจะเห็นในหน้าอันดับ · เพื่อน Lv.1 = 1 คะแนน Lv.2 = 2 คะแนน Lv.3 = 3 คะแนน</p>`}
+   <p class="note">เพื่อน Lv.1 = 1 คะแนน · Lv.2 = 2 · Lv.3 = 3 รวมทุกตัว</p>`}
 function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||lvOf(S.owned[PETS[b].n],PETS[b])-lvOf(S.owned[PETS[a].n],PETS[a]));
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนโชว์ช่อง ${slot+1}</h2><button class="ghost" data-close type="button">ปิด</button></div>
    ${own.length?`<div class="pick-grid">${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${sc.includes(pi)?" on":""}" type="button" data-pi="${pi}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),56)}<small>${formName(p)}</small></button>`}).join("")}</div>`:`<div class="placeholder">ยังไม่มีเพื่อน ลองเขย่าเซียมซีก่อนนะคะ</div>`}
@@ -1519,26 +1567,39 @@ function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(
   $("petModal").hidden=false;
   $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{const pi=+b.dataset.pi,arr=myShowcase().filter(x=>x!==pi);arr.splice(Math.min(slot,arr.length),0,pi);$("petModal").hidden=true;saveShowcase(arr)}));
   const cl=$("pickClear");if(cl)cl.addEventListener("click",()=>{const arr=myShowcase();arr.splice(slot,1);$("petModal").hidden=true;saveShowcase(arr)})}
+function openProfileEdit(){let av=myAvatar(),fr=myFrame();const own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]);
+  const draw=()=>{const L=av>=0?lvOf(S.owned[PETS[av].n],PETS[av]):1;
+    $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">แก้โปรไฟล์</h2><button class="ghost" data-close type="button">ปิด</button></div>
+     <div class="pe-preview">${avatarHTML(av,L,fr,110)}</div>
+     <b class="sub-h">รูปโปรไฟล์</b>
+     <div class="pick-grid sm"><button class="pick-pet${av<0?" on":""}" type="button" data-av="-1">${avatarHTML(-1,1,"none",48)}<small>โลโก้</small></button>${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${av===pi?" on":""}" type="button" data-av="${pi}" style="--tier-c:${RAR[p.t].c}">${avatarHTML(pi,lvOf(S.owned[p.n],p),"none",48)}<small>${formName(p)}</small></button>`}).join("")}</div>
+     <b class="sub-h">กรอบ</b>
+     <div class="pick-grid sm">${FRAMES.map(f=>`<button class="pick-pet${fr===f.id?" on":""}" type="button" data-fr="${f.id}">${avatarHTML(av,L,f.id,48)}<small>${f.n}</small></button>`).join("")}</div>
+     <p class="note">กรอบชุดนี้เป็นกรอบทดลอง ใช้ได้ทุกคน เดี๋ยวมีกรอบใหม่ ๆ ตามมา</p>
+     <button class="primary" id="peSave" type="button">บันทึกโปรไฟล์</button>`;
+    $("petPop").querySelectorAll("[data-av]").forEach(b=>b.addEventListener("click",()=>{av=+b.dataset.av;draw()}));
+    $("petPop").querySelectorAll("[data-fr]").forEach(b=>b.addEventListener("click",()=>{fr=b.dataset.fr;draw()}));
+    $("peSave").addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(av,fr)})};
+  draw();$("petModal").hidden=false}
 function lbRowHTML(r,i){const shows=(r.showcase||[]).filter(x=>PETS[x.pi]).slice(0,3).map(x=>`<span class="lb-pet" title="${esc(formName(PETS[x.pi],x.L))}">${petFace(PETS[x.pi],x.L)}</span>`).join("");
-  return `<div class="lb-row${r.me?" me":""}"><span class="lb-rank r${i+1}">${i<3?["🥇","🥈","🥉"][i]:i+1}</span><div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code)}</small></div><span class="lb-pets">${shows}</span><b class="lb-score">${r.score}</b></div>`}
+  return `<div class="lb-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank r${i+1}">${i<3?["🥇","🥈","🥉"][i]:i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div><span class="lb-pets">${shows}</span><b class="lb-score">${r.score}</b></div>`}
 let LB=null;
-async function openLeaderboard(){$("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">🏆 อันดับนักสะสม</h2><button class="ghost" data-close type="button">ปิด</button></div><div class="placeholder">กำลังโหลดอันดับ…</div>`;$("petModal").hidden=false;
-  try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("petPop").querySelector(".placeholder").textContent=typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ";return}
-  const inTop=LB.top.some(r=>r.me);
-  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">🏆 อันดับนักสะสม</h2><button class="ghost" data-close type="button">ปิด</button></div>
-   <p class="lb-me-note">คุณอยู่อันดับที่ <b>${LB.myRank}</b> · ${LB.myScore} คะแนน</p>
-   <div class="lb-list">${LB.top.length?LB.top.map((r,i)=>lbRowHTML(r,i).replace('<div class="lb-row','<div data-code="'+esc(r.code)+'" class="lb-row')).join(""):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`}</div>
-   ${inTop?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้ เก็บเพื่อนให้ครบแล้วอัปร่างกันเลย</p>`}
-   <p class="note">แตะชื่อเพื่อดูโปรไฟล์ · คะแนน = เลเวลของเพื่อนทุกตัวรวมกัน (สูงสุด ${MAX_SCORE()})</p>`}
+async function loadLeaderboard(){$("lbList").innerHTML=`<div class="placeholder">กำลังโหลดอันดับ…</div>`;
+  try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("lbList").innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ")}</div>`;return}
+  $("lbMe").textContent=`คุณอันดับ ${LB.myRank} · ${LB.myScore} คะแนน`;
+  $("lbList").innerHTML=(LB.top.length?LB.top.map((r,i)=>lbRowHTML(r,i)).join(""):`<div class="placeholder">ยังไม่มีใครติดอันดับ</div>`)+(LB.top.some(r=>r.me)?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้</p>`)+`<p class="note">แตะชื่อเพื่อดูโปรไฟล์ · สูงสุด ${MAX_SCORE()} คะแนน</p>`}
 async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}catch(e){if(e!=="locked")toast(e);return}
   const pets=(r.showcase||[]).filter(x=>PETS[x.pi]);
-  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" type="button" id="lbBack">กลับ</button></div>
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" data-close type="button">ปิด</button></div>
+   <div class="pe-preview">${avatarHTML(r.avatar,r.avL,r.frame,104)}</div>
    <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b></p>
-   <div class="prof-pets">${pets.length?pets.map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,96)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
-  $("lbBack").addEventListener("click",openLeaderboard)}
-document.addEventListener("click",e=>{const row=e.target.closest(".lb-row[data-code]");if(row&&!row.classList.contains("me-self"))openProfileOf(row.dataset.code)});
-document.addEventListener("click",e=>{const sl=e.target.closest("#profileCard .pc-slot");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#lbOpen"))openLeaderboard()});
-function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;renderShowcaseCard();
+   <div class="prof-pets">${pets.length?pets.map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,88)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
+  $("petModal").hidden=false}
+
+function renderRank(){renderMyProfile();loadLeaderboard()}
+document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-slot");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#mpEdit")){openProfileEdit();return}
+  const row=e.target.closest(".lb-row[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
+function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
   const bp=buddyPet();
   $("buddyCard").innerHTML=bp?`<div class="expcard"><div class="pet">${formHTML(bp,lvOf(S.owned[bp.n],bp),76)}</div><div class="meta"><span class="small" style="text-align:left">คู่หูตอนนี้ · ${(ROLE[bp.role]||[""," "])[0]} ${(ROLE[bp.role]||["",""])[1]}</span><b>${formName(bp)} · Lv.${lvOf(S.owned[bp.n],bp)}</b><span class="small" style="text-align:left;color:var(--lav-soft)">${petDesc(bp,S.owned[bp.n])}</span></div></div>`:`<div class="placeholder">ยังไม่มีคู่หู เขย่าเซียมซีเพื่อหาเพื่อนตัวแรก แล้วกดเพื่อนในสมุดเพื่อตั้งเป็นคู่หู</div>`;
   $("shardBox").innerHTML=`<div class="row"><h2>เศษเพื่อน</h2></div><div class="shards">${RAR.map((r,t)=>{const have=S.shards[t]||0,cost=SHARD_COST[t];return `<button type="button" class="shard" data-t="${t}" style="--tier-c:${r.c}" ${have>=cost?"":"aria-disabled=\"true\""}><span class="sh-n">${have}/${cost}</span><span class="sh-k">เศษ${r.name}</span>${have>=cost?`<b>แลกได้!</b>`:""}</button>`}).join("")}</div><p class="note">ได้เพื่อนซ้ำเกินเลเวลสูงสุด จะได้เศษตามระดับ (ธรรมดา หายาก แรร์ 1 เศษ · เอพิก ตำนาน 2 เศษ) เก็บครบแล้วแลกเพื่อนระดับเดียวกันได้ เลือกตัวเองได้เลย</p>`;
@@ -1554,11 +1615,12 @@ function openPet(pi){const p=PETS[pi],k=S.owned[p.n]||0,r=RAR[p.t];
     <div class="forms3">${[1,2,3].map(x=>`<div class="f3${x<=L?"":" off"}">${formHTML(p,x,64,x>L)}<b>ร่าง ${x}</b><span>${x<=L?formName(p,x):x===L+1?"อีก "+toNext(k,p)+" ตัว":"ยังไม่ปลด"}</span></div>`).join("")}</div>
     <div class="row" style="justify-content:center"><span class="tier" style="background:${r.c}">${r.name}${p.sp?" · พิเศษ":""}</span><span class="tier" style="background:#ffffff22">Lv.${L}/${MAXLV}</span><span class="tier" style="background:#ffffff22">ได้มาแล้ว ${k} ตัว</span></div>
     <button class="primary" id="setBuddy" type="button" ${isB?"disabled":""}>${isB?"เป็นคู่หูอยู่แล้ว":"ตั้งเป็นคู่หู"}</button>
-    <button class="ghost" id="showMe" type="button">${myShowcase().includes(pi)?"เอาออกจากโปรไฟล์":"⭐ โชว์ในโปรไฟล์"}</button>
+    <div class="row" style="flex-wrap:nowrap"><button class="ghost" id="showMe" type="button">${myShowcase().includes(pi)?"เอาออกจากโปรไฟล์":"⭐ โชว์ในโปรไฟล์"}</button><button class="ghost" id="avMe" type="button" ${myAvatar()===pi?"disabled":""}>${myAvatar()===pi?"เป็นรูปโปรไฟล์แล้ว":"🖼️ ตั้งเป็นรูปโปรไฟล์"}</button></div>
     <div class="pet-info"><b>พลัง</b><span>${petDesc(p,k)}</span>${next?`<b>Lv.${L+1}</b><span>${next} · เก็บอีก ${toNext(k,p)} ตัวเพื่ออัป (มีแล้ว ${k}/${NEED(p)[L]})</span>`:`<b>เลเวลสูงสุด</b><span>ได้ซ้ำจะได้เศษ${r.name} +${SHARD_GET[p.t]} เศษ ใช้แลกเพื่อนระดับเดียวกันแบบเลือกเองได้</span>`}
     <b>วิธีได้</b><span>${p.sp?"เช็กอินครบ 7 วัน":"เขย่าเซียมซีหรือใช้ตั๋วสุ่มเพื่อน · โอกาสระดับนี้ "+r.share+"% เมื่อเจอเพื่อน"}</span></div>`;
     $("petBig").addEventListener("click",()=>petPlay($("petBig"),$("petSay"),p));
     $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(p.n+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})});
+    const am=$("avMe");if(am)am.addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(pi,myFrame())});
     const sb=$("showMe");if(sb)sb.addEventListener("click",()=>{const arr=myShowcase().filter(x=>x!==pi);if(myShowcase().includes(pi)){saveShowcase(arr)}else{if(arr.length>=SHOW_MAX)arr.pop();arr.unshift(pi);saveShowcase(arr)}$("petModal").hidden=true})}
   $("petModal").hidden=false;$("petPop").querySelector("[data-close]").focus()}
 $("petModal").addEventListener("click",e=>{if(e.target.id==="petModal"||e.target.closest("[data-close]"))$("petModal").hidden=true});
@@ -1752,7 +1814,7 @@ $("ncKind").addEventListener("change",syncNcKind);
 
 /* ---------- tabs + info ---------- */
 let tab="home";
-function showTab(t){if(t==="shop"){openSheet();return}tab=t;if(t==="admin")loadAdmin();["home","inv","pets","info","admin"].forEach(k=>$("scr-"+k).hidden=k!==t);
+function showTab(t){if(t==="shop"){openSheet();return}tab=t;if(t==="admin")loadAdmin();["home","inv","pets","rank","info","admin"].forEach(k=>$("scr-"+k).hidden=k!==t);if(t==="rank")renderRank();
   document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));window.scrollTo(0,0);renderMultiBar()}
 $("tabbar").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b)showTab(b.dataset.tab)});
 function renderInfo(){const P=powers(),lvn={"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0};F.forEach(f=>lvn[f[0]]++);
@@ -1771,7 +1833,7 @@ $("resetYes").addEventListener("click",()=>{if(!OWNER)return;paidPending=false;$
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;["scrim","dailyModal","todayModal","petModal","shareModal","plModal"].forEach(i=>$(i).hidden=true)});
 
 /* ---------- render ---------- */
-function render(){prune();regen();const P=powers();
+function render(){prune();regen();const P=powers();if(typeof tab!=="undefined"&&tab==="rank"){renderMyProfile();if(typeof LB_LOCAL!=="undefined")loadLeaderboard()}
   $("stars").textContent=S.stars;
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
   const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
