@@ -467,6 +467,35 @@ body{-webkit-tap-highlight-color:transparent}
 @keyframes fstamp{0%{opacity:0;transform:scale(1.6)}60%{opacity:1;transform:scale(.95)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.fm *{animation:none!important}}
 
+/* ---- skip burn + multi burn ---- */
+.burn-skip{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:60;border:1px solid #ffffff33;background:#0007;color:var(--text);border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+.burn-skip[hidden]{display:none}
+.sel-start{align-self:flex-start;margin-top:4px}
+.sel-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.inv-item.selmode{cursor:pointer;position:relative;transition:transform .12s,box-shadow .12s}
+.inv-item.selmode .row{display:none}
+.inv-item.picked{box-shadow:0 0 0 2px #ff9a4a,0 0 18px #ff7a2a55;transform:scale(.985)}
+.pick-ic{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;border:2px solid #ffffff55;display:grid;place-items:center;font-size:16px;background:#0005}
+.inv-item.picked .pick-ic{border-color:#ff9a4a;background:#ff7a2a33}
+.inv-item.selmode .tier{margin-right:34px}
+.multi-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:40;width:min(520px,calc(100% - 24px));display:flex;align-items:center;gap:8px;background:#1c1226f2;border:1px solid #ffb36b66;border-radius:18px;padding:10px 12px;box-shadow:0 8px 28px #0009}
+.multi-bar[hidden]{display:none}
+.multi-bar span{flex:1;font-size:13px;color:var(--lav-soft);min-width:0}
+.multi-bar .burn:disabled{opacity:.5}
+.inv:has(.selmode){padding-bottom:84px}
+
+/* ---- inventory full warning + code kinds ---- */
+.inv-warn{display:flex;flex-direction:column;gap:6px;align-items:flex-start;border:1px solid #f0b35a88;background:#3a2410cc;border-radius:16px;padding:12px 14px;margin-top:8px}
+.inv-warn b{color:#ffd28a}.inv-warn span{font-size:13px;color:var(--lav-soft);line-height:1.5}
+.inv-warn.full{border-color:#ff7a5a;background:#45160fcc}.inv-warn.full b{color:#ffab8f}
+.inv-full-note{margin:6px 0 0;font-size:13px;color:#ffab8f;text-align:center}
+.badge.warn{background:#ff7a3a}
+.code-kind{font-size:11px;padding:2px 8px;background:var(--lav);vertical-align:middle}
+.code-kind.once{background:#f0b35a;color:#2a1a08}
+#ncKind{width:100%;border-radius:12px;padding:10px 12px;font:inherit;background:#ffffff10;color:var(--text);border:1px solid var(--line)}
+#ncKind option{color:#1f1430}
+.full-box{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:1px solid #ff7a5a88;background:#45160fcc;border-radius:18px;padding:12px 16px;margin:8px auto;max-width:340px}.full-box b{color:#ffab8f}.full-box span{font-size:13px;color:var(--lav-soft)}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -529,6 +558,7 @@ body{-webkit-tap-highlight-color:transparent}
       <button class="hold" id="holdBtn" type="button">กดค้างเพื่อเขย่า</button>
       <p class="small" id="holdHint">หรือแตะปุ่มรัว ๆ ก็ได้</p>
       <p class="small" id="chargeInfo"></p>
+      <div class="full-box" id="fullBox" hidden><b>คลังเต็มแล้ว</b><span>เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้</span><button class="burn" type="button" id="fullGo">🔥 ไปเคลียร์คลัง</button></div>
       <div class="extra" id="extraBox" hidden><button class="ghost" id="extraBtn" type="button">สิทธิ์ฟรีหมดแล้ว · เขย่าเพิ่ม 10 ดาว</button></div>
     </div>
     <div class="chips" id="chips"></div>
@@ -613,6 +643,9 @@ body{-webkit-tap-highlight-color:transparent}
         <input id="ncCode" type="text" maxlength="24" placeholder="โค้ด เช่น LOVE349" autocomplete="off">
         <div class="row" style="flex-wrap:nowrap"><input id="ncStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="ncTickets" type="number" min="0" max="20" placeholder="ตั๋ว"></div>
         <input id="ncNote" type="text" maxlength="60" placeholder="หมายเหตุ เช่น ซื้อ PB01">
+        <label class="lbl-s" for="ncKind">แบบโค้ด</label>
+        <select id="ncKind"><option value="each">คนละครั้ง · ใครก็ใช้ได้ คนละ 1 ครั้ง</option><option value="once">ครั้งเดียวหมด · คนแรกที่ใช้ได้ไป แล้วโค้ดหมด</option></select>
+        <div class="row" style="flex-wrap:nowrap"><input id="ncMax" type="number" min="0" max="100000" placeholder="จำกัดกี่คน (เว้นว่าง = ไม่จำกัด)"><input id="ncDays" type="number" min="0" max="365" placeholder="ใช้ได้กี่วัน (ว่าง = ตลอด)"></div>
         <button class="primary" id="ncBtn" type="button">สร้างโค้ด</button>
         <span class="small" id="ncMsg" style="text-align:left"></span>
       </div>
@@ -756,10 +789,11 @@ body{-webkit-tap-highlight-color:transparent}
     <p class="note">ลืมรหัสผ่าน ทักแอดมินที่ LINE @fortuniehoro</p>
   </form>
 </div>
-<div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button></div>
+<div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button><button class="burn-skip" id="burnSkip" type="button" hidden>ข้าม ⏭</button></div>
 <canvas id="burnFxTop" aria-hidden="true"></canvas>
 <div class="evo" id="evoFx" hidden role="dialog" aria-modal="true" aria-label="คู่หูวิวัฒนาการ"><div class="evo-st" id="evoStage"><canvas class="evo-cv" id="evoCv"></canvas><div class="evo-fl"></div><div class="evo-sh"></div>
 <div class="evo-slot" id="evoSlot"></div><div class="evo-t" id="evoT"></div><div class="evo-s" id="evoS"></div><div class="evo-cap" id="evoCap"></div><button class="go" id="evoOk" type="button" hidden>รับร่างใหม่</button></div></div>
+<div class="multi-bar" id="multiBar" hidden><span id="mbCount"></span><button class="ghost" id="mbCancel" type="button">ยกเลิก</button><button class="burn" id="mbBurn" type="button" disabled>เผา</button></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -868,7 +902,7 @@ function rnd(){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a
 /* ===== Fortunie Siamsi game core — shared by server (authoritative) and client (display only) =====
    Expects globals: F, LV, RAR, PETS, S (state), now(), rnd() */
 const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15],[4,5]],SHARD_GET=[1,1,1,2,2],SHARD_COST=[10,8,6,5,4],
-  DAY=24*3600e3,BASE_WAIT=DAY,CDR_CAP=.50,AGAIN_CAP=.50,BURNFREE_CAP=.60,PITY=10,EXP=7*DAY,MAXLV=3,COST=10,INV_MAX=30,LUCKY=22,TZ=7*3600e3;
+  DAY=24*3600e3,BASE_WAIT=DAY,CDR_CAP=.50,AGAIN_CAP=.50,BURNFREE_CAP=.60,PITY=10,EXP=7*DAY,MAXLV=3,COST=10,INV_MAX=30,INV_WARN=25,LUCKY=22,TZ=7*3600e3;
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
@@ -911,12 +945,13 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
   if(S.buddy==null)S.buddy=pi;return{pi,isNew,shard,k:S.owned[n]}}
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
 function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;S.pity=0;return giveCopy(pi)}
-function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});if(S.inv.length>INV_MAX)S.inv.length=INV_MAX}
+/* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
+function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
 function settlePending(){if(S.pend){addInv(S.pend.f);if(S.last)S.last.fate="kept";S.pend=null}}
-function actShake(paid){settlePending();regen();const P=powers();
+function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
   if(S.bonusFree>0)S.bonusFree--;
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
   else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
@@ -940,6 +975,9 @@ function actDecide(fate){if(!S.pend)throw "ไม่มีใบที่รอ�
 function invIndex(id){const i=S.inv.findIndex(x=>x.id===id);if(i<0)throw "ไม่พบใบนี้ในคลัง";return i}
 function actUseSlip(id){settlePending();const i=invIndex(id);if(!canUseToday())throw "วันนี้ใช้ดวงไปแล้ว";const f=S.inv[i].f;S.inv.splice(i,1);activate(f);return{f}}
 function actBurnSlip(id){settlePending();const i=invIndex(id);const f=S.inv[i].f;S.inv.splice(i,1);return Object.assign({f},burnReward())}
+function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)throw "ยังไม่ได้เลือกใบ";const before=S.bp||0,fs=[];let pts=0,golds=0,lucky=0,jar=0;
+  for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
+  if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,jar,before,gold:golds>0}}
 function actTicket(){settlePending();if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;return rollPet()}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -991,6 +1029,9 @@ const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const esc=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function fmt(ms){const mins=Math.max(1,Math.ceil(ms/60000)),h=Math.floor(mins/60),m=mins%60;if(h>24)return `${Math.floor(h/24)} วัน ${h%24} ชม.`;return h?(m?`${h} ชม. ${m} นาที`:`${h} ชม.`):`${m} นาที`}
 const ago=t=>{t=typeof t==="string"?Date.parse(t):t;const m=Math.floor((Date.now()-t)/60000);return m<1?"เมื่อกี้":m<60?m+" นาทีที่แล้ว":m<1440?Math.floor(m/60)+" ชม.ที่แล้ว":Math.floor(m/1440)+" วันที่แล้ว"};
+const codeKind=c=>c.kind==="once"?"ครั้งเดียวหมด":"คนละครั้ง";
+const codeExp=c=>{const e=c.expires_at?Date.parse(c.expires_at):0;return e?(e<Date.now()?"หมดอายุแล้ว":"หมดอายุ "+new Date(e).toLocaleDateString("th-TH",{day:"numeric",month:"short"})):"ไม่มีวันหมดอายุ"};
+const codeUse=c=>{const u=+c.used||0,m=+c.max_uses||0;return c.kind==="once"?(u?"ใช้แล้ว":"ยังไม่มีคนใช้"):(m?`ใช้ ${u}/${m} คน`:`ใช้ ${u} คน`)};
 const n1=x=>String(Math.round(x*10)/10);
 function toast(msg){const el=$("toast");el.textContent=msg;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2600)}
 const formE=(p,L)=>p.fe&&p.fe[L-1]?p.fe[L-1]:p.e;
@@ -1036,8 +1077,10 @@ function chime(notes,step){const a=ac();if(!a)return;notes.forEach((hz,i)=>{cons
 function noiseBuf(a,sec,brown){const sr=a.sampleRate,b=a.createBuffer(1,Math.max(1,Math.floor(sr*sec)),sr),d=b.getChannelData(0);let l=0;
   for(let i=0;i<d.length;i++){const w=Math.random()*2-1;if(brown){l=(l+.02*w)/1.02;d[i]=l*3.5}else d[i]=w}return b}
 function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+let BURN_OUT=null;
+function stopBurnSound(){try{if(BURN_OUT&&AC)BURN_OUT.gain.setTargetAtTime(0,AC.currentTime,.06)}catch(e){}BURN_OUT=null}
 function burnSound(ms){const a=ac();if(!a)return;const t=a.currentTime,sec=ms/1000;
-  const out=a.createGain();out.gain.value=.7;const lp=a.createBiquadFilter();lp.type="lowpass";lp.frequency.value=5200;
+  const out=a.createGain();out.gain.value=.7;BURN_OUT=out;const lp=a.createBiquadFilter();lp.type="lowpass";lp.frequency.value=5200;
   const comp=a.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=3;out.connect(lp).connect(comp).connect(a.destination);
   // 1) match strike
   {const s=a.createBufferSource();s.buffer=noiseBuf(a,.12);const f=a.createBiquadFilter();f.type="bandpass";f.frequency.setValueAtTime(2400,t);f.frequency.exponentialRampToValueAtTime(5200,t+.1);f.Q.value=1.4;
@@ -1063,7 +1106,7 @@ function burnSound(ms){const a=ac();if(!a)return;const t=a.currentTime,sec=ms/10
   vib(35)}
 function goldChime(){const a=ac();if(!a)return;const t=a.currentTime,rv=makeReverb(a,2.2),wet=a.createGain();wet.gain.value=.5;rv.connect(wet).connect(a.destination);
   [1319,1568,1760,2093,2637,3136,3520].forEach((hz,i)=>{const st=t+i*.05,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=hz;g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.09,st+.005);g.gain.exponentialRampToValueAtTime(.0001,st+.9);o.connect(g);g.connect(a.destination);g.connect(rv);o.start(st);o.stop(st+1)})}
-function burnReward(n){const a=ac();vib([18,60,18,60,18,60,40]);if(!a)return;const t=a.currentTime;
+function burnChime(n){const a=ac();vib([18,60,18,60,18,60,40]);if(!a)return;const t=a.currentTime;
   // soft poof as the last ash lifts
   {const s=a.createBufferSource();s.buffer=noiseBuf(a,.5,true);const f=a.createBiquadFilter();f.type="lowpass";f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(150,t+.45);
    const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.5,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.5);s.connect(f).connect(g).connect(a.destination);s.start(t)}
@@ -1093,6 +1136,7 @@ function fx(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l
   $("sticks").innerHTML=h})();
 let energy=0,holding=false,raf=0,last=0,busy=false,lastClack=0,paidPending=false;
 const tube=$("tube"),hb=$("holdBtn");
+const invFull=()=>S.inv.length>=INV_MAX;
 function canDraw(){regen();return ONLINE&&(paidPending||S.charges>0||S.bonusFree>0)}
 function loop(ts){const dt=Math.min(50,ts-(last||ts));last=ts;
   energy=holding?Math.min(1,energy+dt/1700):Math.max(0,energy-dt/2500);$("meter").style.width=(energy*100)+"%";
@@ -1101,12 +1145,12 @@ function loop(ts){const dt=Math.min(50,ts-(last||ts));last=ts;
   if(energy>=1){finishShake();return}
   if(holding||energy>0)raf=requestAnimationFrame(loop);else{raf=0;tube.style.transform=""}}
 function kick(){if(!raf){last=0;raf=requestAnimationFrame(loop)}}
-function startHold(){if(busy||!canDraw())return;holding=true;ac();kick()}
+function startHold(){if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");return}if(busy||!canDraw())return;holding=true;ac();kick()}
 function stopHold(){holding=false}
 hb.addEventListener("pointerdown",e=>{e.preventDefault();startHold()});
 hb.addEventListener("contextmenu",e=>e.preventDefault());
 ["pointerup","pointerleave","pointercancel"].forEach(ev=>hb.addEventListener(ev,stopHold));
-hb.addEventListener("click",e=>{if(busy||!canDraw())return;if(e.detail===0||e.pointerType===""){energy=Math.min(1,energy+.34);kick()}});
+hb.addEventListener("click",e=>{if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");return}if(busy||!canDraw())return;if(e.detail===0||e.pointerType===""){energy=Math.min(1,energy+.34);kick()}});
 hb.addEventListener("keydown",e=>{if((e.key===" "||e.key==="Enter")&&!e.repeat){e.preventDefault();startHold()}});
 hb.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")stopHold()});
 
@@ -1153,7 +1197,7 @@ function slipPaperHTML(f){const [lvn,verse,o,l,w,m,a]=F[f],L=LV[lvn],b=buffOf(f)
 function showSlip(){const R=$("reveal");R.classList.remove("lit");showStep("stepSlip");$("paper").innerHTML=slipPaperHTML(cur.f);
   const P=powers();
   $("slipActions").innerHTML=`${canUseToday()?`<button class="go" type="button" data-fate="use">ใช้เป็นดวงวันนี้</button>`:""}
-   <button class="ghost big-ghost" type="button" data-fate="keep">เก็บเข้าคลัง</button>
+   <button class="ghost big-ghost" type="button" data-fate="keep">เก็บเข้าคลัง${S.inv.length>=INV_WARN?` (${S.inv.length}/${INV_MAX})`:""}</button>${S.inv.length>=INV_MAX-1?`<p class="inv-full-note">เก็บใบนี้แล้วคลังจะเต็ม ต้องเคลียร์ก่อนถึงจะเขย่าต่อได้</p>`:""}
    <button class="burn big-burn" type="button" data-fate="burn">ไม่ชอบ ${relLabel()} (+${BURN_PTS} แต้มเผา)</button>`;
   $("slipActions").querySelector("button").focus()}
 $("slipActions").addEventListener("click",async e=>{const b=e.target.closest("button[data-fate]");if(!b||!cur||b.disabled)return;const fate=b.dataset.fate,bs=$("slipActions").querySelectorAll("button");
@@ -1193,71 +1237,6 @@ const relLabel=()=>"เผาทิ้ง";
 let BURN_R=null;
 function releaseAnim(f,r,done){BURN_R=r;burnAnim(f,done,r.gold)}
 function makeReverb(a,sec){const sr=a.sampleRate,b=a.createBuffer(2,Math.floor(sr*sec),sr);for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.6)}const c=a.createConvolver();c.buffer=b;return c}
-/* original 4-bar lullaby in A minor: Am - F - G - C, music box over a soft pad */
-function memorySong(){const a=ac();if(!a)return;const t=a.currentTime+.05,B=.36;
-  const out=a.createGain();out.gain.value=.6;const rv=makeReverb(a,2.8),wet=a.createGain();wet.gain.value=.55;out.connect(a.destination);out.connect(rv).connect(wet).connect(a.destination);
-  const hz=n=>440*Math.pow(2,(n-69)/12);
-  const chords=[[57,60,64],[53,57,60],[55,59,62],[48,52,55,60]];
-  chords.forEach((ch,i)=>{const st=t+i*4*B,len=i===3?4*B+2.2:4*B+.4;ch.forEach(n=>{[0,7].forEach(det=>{const o=a.createOscillator();o.type="triangle";o.frequency.value=hz(n);o.detune.value=det-3.5;
-      const f=a.createBiquadFilter();f.type="lowpass";f.frequency.value=900;const g=a.createGain();g.gain.setValueAtTime(.0001,st);g.gain.linearRampToValueAtTime(.035,st+.45);g.gain.setValueAtTime(.035,st+len-.6);g.gain.linearRampToValueAtTime(.0001,st+len);
-      o.connect(f).connect(g).connect(out);o.start(st);o.stop(st+len+.05)})})});
-  // low root per bar
-  chords.forEach((ch,i)=>{const st=t+i*4*B,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=hz(ch[0]-12);g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.09,st+.05);g.gain.exponentialRampToValueAtTime(.0001,st+4*B+(i===3?2:0));o.connect(g).connect(out);o.start(st);o.stop(st+4*B+2.1)});
-  // music box melody [midi, beats]
-  const mel=[[76,1],[72,1],[74,1],[76,1],[77,1],[76,1],[72,2],[71,1],[72,1],[74,1],[67,1],[72,1.5],[76,.5],[79,2]];let bt=0;
-  mel.forEach(([n,d])=>{const st=t+bt*B;bt+=d;[[1,.11],[2,.035],[3.01,.018]].forEach(([m,v])=>{const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=hz(n)*m;
-      const rel=Math.min(2.2,.5+d*B*1.6);g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(v,st+.006);g.gain.exponentialRampToValueAtTime(.0001,st+rel);o.connect(g).connect(out);o.start(st);o.stop(st+rel+.05)})});
-  return 16*B}
-function lightReward(n){const a=ac();vib([15,70,15,70,15,70,30]);if(!a)return;const t=a.currentTime;
-  const rv=makeReverb(a,2),wet=a.createGain();wet.gain.value=.4;rv.connect(wet).connect(a.destination);
-  for(let i=0;i<n;i++){const st=t+i*.16,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=[1568,1976,2349,2637,3136][i%5];
-    g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(.14,st+.005);g.gain.exponentialRampToValueAtTime(.0001,st+.7);o.connect(g);g.connect(a.destination);g.connect(rv);o.start(st);o.stop(st+.75)}}
-function lightAnim(f,done){
-  const ov=$("burnFx"),cv2=$("burnCv"),wrap=$("burnWrap"),W=300,H=440;cv2.width=W;cv2.height=H;const c=cv2.getContext("2d");
-  const off=document.createElement("canvas");off.width=W;off.height=H;const o=off.getContext("2d");centerText(o);
-  const [lvn,verse,ov1]=F[f],L=LV[lvn],fam='"Mitr","Noto Sans Thai",sans-serif';
-  const pg=o.createLinearGradient(0,0,0,H);pg.addColorStop(0,"#fbf2da");pg.addColorStop(1,"#efdcae");o.fillStyle=pg;o.fillRect(20,20,W-40,H-40);
-  o.strokeStyle="#c9a24a";o.lineWidth=3;o.strokeRect(32,32,W-64,H-64);
-  o.fillStyle="#b8432f";o.fillRect(W/2-46,46,92,30);o.fillStyle="#fff";o.font="500 16px "+fam;o.fillText("เซียมซี",W/2,67);
-  o.fillStyle="#7a3b2e";o.font="500 54px "+fam;o.fillText(th(f+1),W/2,140);o.fillStyle=L.c;o.font="600 16px "+fam;o.fillText(lvn,W/2,168);
-  o.fillStyle="#3f2a1d";let vs=22;o.font="500 "+vs+"px "+fam;while(o.measureText(verse).width>W-76&&vs>17){vs--;o.font="500 "+vs+"px "+fam}let y=wrapText(o,verse,W/2,214,W-76,vs+8,2);o.font="400 15px "+fam;o.fillStyle="#5c4433";wrapText(o,ov1,W/2,y+16,W-90,24,5);
-  const src=o.getImageData(0,0,W,H).data,img=c.createImageData(W,H),dst=img.data;
-  const G=9,lat=[];for(let i=0;i<(G+2)*(G+2);i++)lat.push(rnd());
-  const nz=(x,y)=>{const gx=x*G,gy=y*G,x0=Math.floor(gx),y0=Math.floor(gy),a1=gx-x0,b1=gy-y0,sx=a1*a1*(3-2*a1),sy=b1*b1*(3-2*b1),i=y0*(G+2)+x0;
-    const A=lat[i],B=lat[i+1],C=lat[i+G+2],D=lat[i+G+3];return (A+(B-A)*sx)*(1-sy)+(C+(D-C)*sx)*sy};
-  const T=new Float32Array(W*H);let mn=1e9,mx=-1e9;
-  for(let yy=0;yy<H;yy++)for(let xx=0;xx<W;xx++){const u=xx/W,v=yy/H,t=v*.5+nz(Math.min(.999,u),Math.min(.999,v))*.26+nz(Math.min(.999,u*5%1),Math.min(.999,v*5%1))*.1+Math.random()*.14;T[yy*W+xx]=t;if(src[(yy*W+xx)*4+3]){if(t<mn)mn=t;if(t>mx)mx=t}}
-  for(let i=0;i<T.length;i++)T[i]=(T[i]-mn)/(mx-mn);
-  c.putImageData(o.getImageData(0,0,W,H),0,0);
-  ov.classList.add("light");ov.hidden=false;ov.style.setProperty("--heat",0);wrap.style.transform="";$("burnLight").hidden=true;$("burnCap").textContent="ขอบคุณที่แวะมา แล้วปล่อยให้เป็นแสง…";
-  const fc=$("burnFxTop"),dpr=Math.min(2,devicePixelRatio||1),fx2=fc.getContext("2d");fc.width=innerWidth*dpr;fc.height=innerHeight*dpr;fx2.setTransform(dpr,0,0,dpr,0,0);
-  const motes=[];let t0=0,homed=0;const dur=5200,wr=$("stars").getBoundingClientRect(),tx=wr.left-10,ty=wr.top+wr.height/2;
-  setTimeout(()=>{memorySong();vib(20);requestAnimationFrame(frame)},250);
-  function frame(ts){if(!t0)t0=ts;const el=ts-t0,k=Math.min(1.3,el/dur),e=k<1?k*k*(3-2*k):1,front=e*1.06-.03,rect=cv2.getBoundingClientRect(),sc=rect.width/W;let edges=0;
-    for(let i=0,n=W*H;i<n;i++){const j=i*4,al=src[j+3];if(!al){dst[j+3]=0;continue}const d=T[i]-front;
-      if(d<0){dst[j+3]=0;continue}
-      if(d<.03){const m=d/.03;dst[j]=255;dst[j+1]=250-10*m;dst[j+2]=225-25*m;dst[j+3]=255*(.35+.65*m);
-        if(++edges%61===0&&motes.length<520){const px=i%W,py=(i/W)|0;motes.push({x:rect.left+px*sc,y:rect.top+py*sc,vx:(rnd()-.5)*.4,vy:-.25-rnd()*.7,l:1,dl:.0035+rnd()*.005,r:1.2+rnd()*2.4,c:rnd()<.6?"255,228,160":"214,180,255",ph:rnd()*6,home:rnd()<.22})}
-        continue}
-      if(d<.11){const m=(d-.03)/.08,w=(1-m)*.7;dst[j]=src[j]+(255-src[j])*w;dst[j+1]=src[j+1]+(250-src[j+1])*w;dst[j+2]=src[j+2]+(235-src[j+2])*w;dst[j+3]=al;continue}
-      dst[j]=src[j];dst[j+1]=src[j+1];dst[j+2]=src[j+2];dst[j+3]=al}
-    c.putImageData(img,0,0);
-    const lift=Math.min(1,k);wrap.style.transform=`translateY(${-lift*12}px) scale(${1+lift*.02})`;wrap.style.filter=`drop-shadow(0 0 ${10+lift*30}px rgba(255,236,190,${.25+lift*.35}))`;
-    ov.style.setProperty("--heat",Math.min(1,k*1.4)*(k<1?1:Math.max(0,1-(k-1)*4)));
-    fx2.clearRect(0,0,innerWidth,innerHeight);fx2.globalCompositeOperation="lighter";
-    for(const p of motes){p.ph+=.05;
-      if(p.home&&k>.55){const dx=tx-p.x,dy=ty-p.y,dist=Math.hypot(dx,dy);const sp=Math.min(9,1.5+(k-.55)*16);p.vx+=(dx/dist*sp-p.vx)*.08;p.vy+=(dy/dist*sp-p.vy)*.08;if(dist<14){p.l=0;homed++;continue}}
-      else{p.vx+=Math.sin(p.ph)*.012;p.vy-=.004}
-      p.x+=p.vx;p.y+=p.vy;p.l-=p.home?p.dl*.3:p.dl;if(p.l<=0)continue;
-      const tw=.7+Math.sin(p.ph*3)*.3,R=p.r*4,g=fx2.createRadialGradient(p.x,p.y,0,p.x,p.y,R);g.addColorStop(0,`rgba(${p.c},${.75*p.l*tw})`);g.addColorStop(.25,`rgba(${p.c},${.28*p.l*tw})`);g.addColorStop(1,`rgba(${p.c},0)`);
-      fx2.fillStyle=g;fx2.beginPath();fx2.arc(p.x,p.y,R,0,7);fx2.fill()}
-    if(homed){const g=fx2.createRadialGradient(tx,ty,0,tx,ty,26);g.addColorStop(0,`rgba(255,236,170,${Math.min(.9,homed/60)})`);g.addColorStop(1,"rgba(255,236,170,0)");fx2.fillStyle=g;fx2.beginPath();fx2.arc(tx,ty,26,0,7);fx2.fill()}
-    fx2.globalCompositeOperation="source-over";
-    for(let i=motes.length-1;i>=0;i--)if(motes[i].l<=0)motes.splice(i,1);
-    if((k<1.05||motes.some(p=>p.home))&&el<dur+2600)requestAnimationFrame(frame);
-    else{fx2.clearRect(0,0,innerWidth,innerHeight);motes.length=0;ov.hidden=true;ov.classList.remove("light");wrap.style.transform="";wrap.style.filter="";
-      lightReward(BURN_BACK);const wl=document.querySelector(".wallet");wl.classList.remove("gain");void wl.offsetWidth;wl.classList.add("gain");done()}}
-}
 const BUDDY_LINES=["ไฟพาไปแล้ว เหลือแต่ความเบา ๆ นะ","ไม่เป็นไรนะ เดี๋ยวใบดี ๆ ก็มา","เก่งมากที่กล้าปล่อย","หายใจลึก ๆ กับเราหน่อย","วันนี้ยังเหลืออีกตั้งเยอะ","เราอยู่ตรงนี้นะ","ใบที่ไม่ใช่ ก็แค่ทางอ้อมเล็ก ๆ","ปล่อยแล้วใจโล่งขึ้นไหม","ขอกอดทีนึงได้ไหม","เผาเสร็จแล้ว ไปหาขนมกินกัน",
 "ความกังวลลอยไปกับควันแล้ว","พรุ่งนี้ฟ้าใหม่เสมอ","ไม่ต้องเก่งทุกวันก็ได้นะ","เราภูมิใจในตัวเธอ","ค่อย ๆ ไปก็ถึงเหมือนกัน","เรื่องหนักใจ ปล่อยให้ไฟถือแทน","ยิ้มหน่อยน้า","วันนี้เธอทำดีที่สุดแล้ว","เก็บแต่เรื่องดี ๆ ไว้ก็พอ","อุ่นเหมือนไฟเลยเนอะ",
 "เหนื่อยก็พักได้นะ","ไม่ต้องรีบก็ได้","ใจดีกับตัวเองหน่อยนะ","ขี้เถ้าก็กลายเป็นปุ๋ยได้นะ","เหลือที่ว่างให้เรื่องใหม่แล้ว","ฟู่ว~ เบาไปเยอะเลย","ดื่มน้ำอุ่น ๆ สักแก้วไหม","เธอไม่ได้อยู่คนเดียวนะ","ขอบคุณที่ไม่ยอมแพ้","ทุกอย่างกำลังค่อย ๆ ดีขึ้น",
@@ -1269,18 +1248,20 @@ const BUDDY_LINES=["ไฟพาไปแล้ว เหลือแต่ค�
 "เมื่อกี้เผาสวยมากเลย","ควันลอยไปพร้อมเรื่องเศร้า","ไม่ต้องอธิบายกับใครก็ได้","ความรู้สึกเธอสำคัญนะ","พักใจตรงนี้ได้เสมอ","ทุกคนมีวันแบบนี้แหละ","วันนี้เธอกล้าหาญมาก","เราจะอยู่เป็นคู่หูไปนาน ๆ","มีเรื่องอยากเล่าก็เล่าได้นะ","ยิ้มให้กระจกหนึ่งที",
 "ความสุขเล็ก ๆ ก็นับนะ","เก็บพลังไว้ใช้พรุ่งนี้","ขอบคุณที่มาเล่นกับเรา","ขอให้วันนี้จบแบบนุ่ม ๆ","ลมเย็น ๆ พัดมาแล้ว","ไปต่อกันเลย ลุย!","ใจเบา ตัวก็เบา","เธอคู่ควรกับเรื่องดี ๆ","แสงไฟบอกว่าเธอเก่ง","จบแล้ว เบาแล้ว ไปต่อกัน"];
 function walkIn(bb,bud){$("bbFace").innerHTML=bud?petFace(bud):`<img src="${LOGO}" alt="">`;$("bbSay").hidden=true;bb.hidden=false;bb.classList.remove("in");void bb.offsetWidth;bb.classList.add("in");clack();setTimeout(clack,280);setTimeout(clack,560)}
-function burnEnd(gold,bb,bud,close){if(bb.hidden)walkIn(bb,bud);const line=BUDDY_LINES[Math.floor(rnd()*BUDDY_LINES.length)],say=$("bbSay"),end=$("burnEnd"),pts=(BURN_R&&BURN_R.pts)||(BURN_PTS+(powers().bp||0))*(gold?GOLD_X:1),tot=(BURN_R?BURN_R.before:0)+pts,ashN=tot>=JAR?JAR:tot;
+function burnEnd(gold,bb,bud,close,M){if(bb.hidden)walkIn(bb,bud);const line=BUDDY_LINES[Math.floor(rnd()*BUDDY_LINES.length)],say=$("bbSay"),end=$("burnEnd"),pts=(BURN_R&&BURN_R.pts)||(BURN_PTS+(powers().bp||0))*(gold?GOLD_X:1),tot=(BURN_R?BURN_R.before:0)+pts,ashN=tot>=JAR?JAR:tot;
+  const PTS=M?M.pts:pts,TOT=M?M.before+M.pts:tot,ASH=Math.min(JAR,TOT),GF=M?M.golds:(gold?1:0),LK=M?M.lucky:0;
   say.textContent=line;say.hidden=false;bb.classList.add("talk");chime([880,1175],.07);
   $("burnCap").textContent=gold?"✦ ไฟทอง ✦":"ปล่อยวางแล้ว";
-  end.innerHTML=`<div class="be-card${gold?" gold":""}"><span class="be-k">${gold?"รางวัลไฟทอง · แต้ม x"+GOLD_X:"ได้จากการเผา"}</span>
-    <div class="be-row"><span class="be-item"><span class="flame-ic" aria-hidden="true">🔥</span><b>+${pts}</b> แต้มเผา</span>${gold?`<span class="be-item"><b>+1</b> เขย่าฟรี</span>`:""}</div>
-    <div class="jbar"><i style="width:${ashN/JAR*100}%"></i></div><small>โหลขี้เถ้า ${ashN}/${JAR}${tot>=JAR?" · เต็มแล้ว! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง":""}</small>
+  end.innerHTML=`<div class="be-card${gold?" gold":""}"><span class="be-k">${M&&M.n>1?`เผา ${M.n} ใบ${GF?` · ไฟทอง ${GF} ใบ`:""}`:gold?"รางวัลไฟทอง · แต้ม x"+GOLD_X:"ได้จากการเผา"}</span>
+    <div class="be-row"><span class="be-item"><span class="flame-ic" aria-hidden="true">🔥</span><b>+${PTS}</b> แต้มเผา</span>${GF?`<span class="be-item"><b>+${GF}</b> เขย่าฟรี</span>`:""}${LK?`<span class="be-item"><b>+${LK}</b> คู่หูแถมเขย่า</span>`:""}</div>
+    <div class="jbar"><i style="width:${ASH/JAR*100}%"></i></div><small>${M&&M.jar?`โหลเต็ม ${M.jar} โหล! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง · ตอนนี้ ${S.bp||0}/${JAR}`:`โหลขี้เถ้า ${ASH}/${JAR}${TOT>=JAR?" · เต็มแล้ว! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง":""}`}</small>
     <button class="go" id="beOk" type="button">${gold?"รับของ":"ไปต่อ"}</button></div>`;
   end.hidden=false;const ok=$("beOk");ok.focus();let done=false;const fin=()=>{if(done)return;done=true;clearTimeout(t);close()};ok.addEventListener("click",fin);const t=0}
-function burnAnim(f,done,goldIn){
+function burnAnim(f,done,goldIn,M){
   const ov=$("burnFx"),cv2=$("burnCv"),wrap=$("burnWrap"),W=300,H=440,SC=(devicePixelRatio||1)>1.2?1.7:1,PW=Math.round(W*SC),PH=Math.round(H*SC);cv2.width=PW;cv2.height=PH;cv2.style.width=W+"px";const c=cv2.getContext("2d");
   const off=document.createElement("canvas");off.width=PW;off.height=PH;const o=off.getContext("2d");o.scale(SC,SC);centerText(o);
   const [lvn,verse,ov1]=F[f],L=LV[lvn],fam='"Mitr","Noto Sans Thai",sans-serif';
+  if(M&&M.n>1){[[-9,8,-.06],[8,5,.05]].slice(0,M.n>2?2:1).forEach(([dx,dy,rot])=>{o.save();o.translate(W/2,H/2);o.rotate(rot);o.translate(-W/2+dx,-H/2+dy);o.fillStyle="#e7d3a1";o.fillRect(24,24,W-48,H-48);o.strokeStyle="#c9a24a88";o.lineWidth=2;o.strokeRect(34,34,W-68,H-68);o.restore()})}
   const pg=o.createLinearGradient(0,0,0,H);pg.addColorStop(0,"#fbf2da");pg.addColorStop(1,"#efdcae");o.fillStyle=pg;o.fillRect(20,20,W-40,H-40);
   o.strokeStyle="#c9a24a";o.lineWidth=3;o.strokeRect(32,32,W-64,H-64);
   o.fillStyle="#b8432f";o.fillRect(W/2-46,46,92,30);o.fillStyle="#fff";o.font="500 16px "+fam;o.fillText("เซียมซี",W/2,67);
@@ -1299,12 +1280,15 @@ function burnAnim(f,done,goldIn){
   c.putImageData(o.getImageData(0,0,PW,PH),0,0);
   ov.classList.remove("light","gold");ov.hidden=false;ov.style.setProperty("--heat",0);wrap.style.transform="";$("burnLight").hidden=true;$("worry").hidden=true;$("burnEnd").hidden=true;
   const GOLD=!!goldIn,bud=buddyPet(),bb=$("burnBuddy");let walked=false;bb.hidden=true;bb.className="burn-buddy";
-  if(GOLD){ov.classList.add("gold");$("burnCap").textContent="✦ ไฟทอง! ใบนี้มีของพิเศษ ✦";wrap.classList.add("gold-glow")}else{$("burnCap").textContent="ปล่อยวางสิ่งที่ไม่ต้องการ…";wrap.classList.remove("gold-glow")}
+  if(GOLD){ov.classList.add("gold");$("burnCap").textContent=M&&M.n>1?`✦ ไฟทอง! เผา ${M.n} ใบ มีของพิเศษ ✦`:"✦ ไฟทอง! ใบนี้มีของพิเศษ ✦";wrap.classList.add("gold-glow")}else{$("burnCap").textContent=M&&M.n>1?`ปล่อยวางพร้อมกัน ${M.n} ใบ…`:"ปล่อยวางสิ่งที่ไม่ต้องการ…";wrap.classList.remove("gold-glow")}
+  let skip=false,finished=false;const sk=$("burnSkip");sk.hidden=false;sk.onclick=()=>{if(skip)return;skip=true;stopBurnSound();if(!started){started=true;requestAnimationFrame(frame)}};
   setTimeout(ignite,GOLD?900:350);if(GOLD){goldChime();vib([30,40,30])}
   const fc=$("burnFxTop"),dpr=Math.min(2,devicePixelRatio||1),fx2=fc.getContext("2d");fc.width=innerWidth*dpr;fc.height=innerHeight*dpr;fx2.setTransform(dpr,0,0,dpr,0,0);
   const flames=[],embers=[],smoke=[],ash=[];let t0=0,started=false;const dur=4600;
   function ignite(){if(started)return;started=true;burnSound(dur+600);requestAnimationFrame(frame)}
-  function frame(ts){if(!t0)t0=ts;const k=Math.min(1.2,(ts-t0)/dur),front=Math.pow(k,1.15)*1.1-.03,rect=cv2.getBoundingClientRect(),sc=rect.width/PW;
+  function fin(){if(finished)return;finished=true;sk.hidden=true;sk.onclick=null;fx2.clearRect(0,0,innerWidth,innerHeight);if(skip)c.clearRect(0,0,PW,PH);flames.length=embers.length=smoke.length=ash.length=0;wrap.style.transform="";wrap.classList.remove("gold-glow");ov.style.setProperty("--heat",0);burnChime(GOLD?5:3);
+      burnEnd(GOLD,bb,bud,()=>{ov.hidden=true;ov.classList.remove("gold");bb.hidden=true;$("burnEnd").hidden=true;burst(GOLD?4:2,"#f0d28a");done({gold:GOLD})},M)}
+  function frame(ts){if(skip){fin();return}if(!t0)t0=ts;const k=Math.min(1.2,(ts-t0)/dur),front=Math.pow(k,1.15)*1.1-.03,rect=cv2.getBoundingClientRect(),sc=rect.width/PW;
     const flick=.85+Math.sin(ts/53)*.08+Math.sin(ts/31)*.07,gz=GOLD;let edges=0;
     if(k>.5&&!walked){walked=true;walkIn(bb,bud)}
     for(let i=0,n=PW*PH;i<n;i++){const j=i*4,al=src[j+3];if(!al){dst[j+3]=0;continue}const d=T[i]-front;
@@ -1337,9 +1321,20 @@ function burnAnim(f,done,goldIn){
     fx2.globalCompositeOperation="source-over";fx2.globalAlpha=1;
     const clean=arr=>{for(let i=arr.length-1;i>=0;i--)if((arr[i].l??0)<=0)arr.splice(i,1)};clean(flames);clean(embers);clean(smoke);clean(ash);
     if(k<1.12||flames.length||embers.length)requestAnimationFrame(frame);
-    else{fx2.clearRect(0,0,innerWidth,innerHeight);smoke.length=ash.length=0;wrap.style.transform="";wrap.classList.remove("gold-glow");burnReward(GOLD?5:3);
-      burnEnd(GOLD,bb,bud,()=>{ov.hidden=true;ov.classList.remove("gold");bb.hidden=true;$("burnEnd").hidden=true;burst(GOLD?4:2,"#f0d28a");done({gold:GOLD})})}}
+    else fin()}
 }
+
+/* ---------- burn many slips at once ---------- */
+let burnSel=null;
+function afterMany(r){const w=HEAL[Math.floor(rnd()*HEAL.length)];sayLock=Date.now()+9000;
+  $("bubble").innerHTML=`<b>ปล่อยวางไป ${r.n} ใบ</b> ${w}${r.jar?" โหลขี้เถ้าเต็มแล้ว ไปเปิดที่คลังได้เลยค่ะ":""}`;
+  toast(`เผา ${r.n} ใบ +${r.pts} แต้มเผา${r.golds?` · ไฟทอง ${r.golds} ใบ`:""}${r.golds+r.lucky?` · เขย่าฟรี +${r.golds+r.lucky}`:""}`)}
+function renderMultiBar(){const bar=$("multiBar");if(!burnSel||tab!=="inv"){bar.hidden=true;return}const n=burnSel.size,per=BURN_PTS+(powers().bp||0);
+  bar.hidden=false;$("mbCount").textContent=n?`เลือก ${n} ใบ · ได้อย่างน้อย +${n*per} แต้ม`:"แตะใบที่อยากเผา";$("mbBurn").disabled=!n;$("mbBurn").textContent=n?`เผา ${n} ใบ`:"เผา"}
+async function doBurnSelected(){if(!burnSel||!burnSel.size)return;const ids=[...burnSel];$("mbBurn").disabled=true;
+  let r;try{r=await api("burn_many",{ids})}catch(e){$("mbBurn").disabled=false;if(e!=="locked")toast(e);return}
+  burnSel=null;renderMultiBar();render();releaseMany(r,()=>{afterMany(r);render()})}
+function releaseMany(r,done){burnAnim(r.f,done,r.gold,r)}
 
 /* ---------- today fortune ---------- */
 function showToday(f){const [lvn,verse,o,,,,a]=F[f],L=LV[lvn],b=buffOf(f);
@@ -1365,7 +1360,8 @@ $("buddy").addEventListener("click",()=>{const p=buddyPet();if(p)petPlay($("budd
 let sayLock=0;
 function hostSay(){if(Date.now()<sayLock)return;const st=streakState(),h=new Date(now()).getHours(),soon=S.inv.find(it=>it.at&&it.at+EXP-now()<DAY);
   const greet=h<11?"อรุณสวัสดิ์ค่ะ":h<16?"สวัสดีตอนบ่ายค่ะ":h<20?"สวัสดีตอนเย็นค่ะ":"ดึกแล้ว พักผ่อนบ้างนะคะ";let m;
-  if(!st.claimed)m=`<b>${greet}</b> วันนี้มีของขวัญเช็กอินรออยู่ กดไอคอนของขวัญด้านบนได้เลย`;
+  if(invFull())m=`<b>คลังเต็มแล้ว ${S.inv.length}/${INV_MAX} ใบ</b> เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้นะคะ`;
+  else if(!st.claimed)m=`<b>${greet}</b> วันนี้มีของขวัญเช็กอินรออยู่ กดไอคอนของขวัญด้านบนได้เลย`;
   else if(soon)m=`<b>ใกล้หมดอายุ</b> ใบที่ ${th(soon.f+1)} ในคลังจะหมดอายุใน ${fmt(soon.at+EXP-now())}`;
   else if(S.tickets)m=`<b>มีตั๋วสุ่มเพื่อน ${S.tickets} ใบ</b> ไปเปิดที่คลังได้เลยค่ะ`;
   else if(canDraw())m=`<b>${greet}</b> ตั้งคำถามในใจหนึ่งข้อ แล้วกดค้างเพื่อเขย่าเซียมซีนะคะ`;
@@ -1395,14 +1391,29 @@ function renderInv(){const b=activeBuff(),ready=canUseToday();let h="";
   else h=`<div class="active-buff"><b>${ready?"วันนี้ยังไม่ได้ใช้โชค":"รอใช้ใบถัดไป"}</b><span>${ready?"เลือกใบแล้วกด \"ใช้วันนี้\" โชคจะมีผล 24 ชั่วโมง":"ใช้ใบถัดไปได้ใน "+fmt(S.useReadyAt-now())}</span></div>`;
   h+=`<div class="jar"><div class="row"><b>โหลขี้เถ้า</b><span>${S.bp||0}/${JAR} แต้ม</span></div><div class="jbar"><i style="width:${(S.bp||0)/JAR*100}%"></i></div><small>เผา 1 ใบ = ${BURN_PTS} แต้ม · ไฟทอง x${GOLD_X} · ครบ ${JAR} สุ่มเพื่อนแรร์ขึ้นไป (แรร์ 80% เอพิก 15% ตำนาน 5%)</small>${S.jarT?`<button class="ticket jar-open" id="jarBtn" type="button">เปิดโหลขี้เถ้า · มี ${S.jarT} โหล</button>`:""}</div>`;
   if(S.tickets)h+=`<button class="ticket" id="ticketBtn" type="button">ใช้ตั๋วสุ่มเพื่อน · มี ${S.tickets} ใบ</button>`;
-  $("invHead").innerHTML=h;const tb=$("ticketBtn");if(tb)tb.addEventListener("click",useTicket);const jb=$("jarBtn");if(jb)jb.addEventListener("click",openJar);
-  $("invCount").textContent=S.inv.length+" / "+INV_MAX+" ใบ";
-  if(!S.inv.length){$("inv").innerHTML=`<div class="placeholder">เขย่าแล้วกด "เก็บเข้าคลัง" ใบเซียมซีจะมาอยู่ตรงนี้</div>`;return}
-  $("inv").innerHTML=S.inv.map(it=>{const lv=F[it.f][0],L=LV[lv],bf=buffOf(it.f),left=it.at+EXP-now();return `<div class="inv-item" style="--tier-c:${L.c}" data-id="${it.id}">
+  if(S.inv.length>=INV_WARN)h+=`<div class="inv-warn${S.inv.length>=INV_MAX?" full":""}"><b>${S.inv.length>=INV_MAX?"คลังเต็มแล้ว":"คลังใกล้เต็ม"} ${S.inv.length}/${INV_MAX} ใบ</b><span>${S.inv.length>=INV_MAX?"เขย่าใบใหม่ไม่ได้จนกว่าจะเคลียร์คลัง เผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ":"ครบ "+INV_MAX+" ใบแล้วจะเขย่าใบใหม่ไม่ได้ ลองเผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ"}</span>${burnSel?"":`<button class="burn" type="button" data-sel="on">🔥 เลือกเผาหลายใบ</button>`}</div>`;
+  if(S.inv.length>1&&!(S.inv.length>=INV_WARN&&!burnSel))h+=burnSel?`<div class="sel-tools"><button class="mini" type="button" data-sel="all">เลือกทั้งหมด</button><button class="mini" type="button" data-sel="low">เลือกใบค่อยเป็นค่อยไป</button><button class="mini" type="button" data-sel="soon">ใบใกล้หมดอายุ</button><button class="ghost" type="button" data-sel="off">ยกเลิก</button></div>`
+    :`<button class="mini sel-start" type="button" data-sel="on">🔥 เลือกเผาหลายใบ</button>`;
+  $("invHead").innerHTML=h;const tb2=$("ticketBtn");if(tb2)tb2.addEventListener("click",useTicket);const jb2=$("jarBtn");if(jb2)jb2.addEventListener("click",openJar);
+  if(burnSel)for(const id of [...burnSel])if(!S.inv.some(x=>x.id===id))burnSel.delete(id);
+  $("invCount").textContent=S.inv.length+" / "+INV_MAX+" ใบ";renderMultiBar();
+  if(!S.inv.length){burnSel=null;renderMultiBar();$("inv").innerHTML=`<div class="placeholder">เขย่าแล้วกด "เก็บเข้าคลัง" ใบเซียมซีจะมาอยู่ตรงนี้</div>`;return}
+  const per=BURN_PTS+(powers().bp||0);
+  $("inv").innerHTML=S.inv.map(it=>{const lv=F[it.f][0],L=LV[lv],bf=buffOf(it.f),left=it.at+EXP-now(),on=burnSel&&burnSel.has(it.id);return `<div class="inv-item${burnSel?" selmode":""}${on?" picked":""}" style="--tier-c:${L.c}" data-id="${it.id}"${burnSel?` role="checkbox" aria-checked="${!!on}" tabindex="0"`:""}>${burnSel?`<span class="pick-ic" aria-hidden="true">${on?"🔥":""}</span>`:""}
     <div class="inv-top"><span class="no">ใบที่<b>${th(it.f+1)}</b></span><span class="tier" style="background:${L.c}">${lv} · ${Math.round(bf.s*100)}%</span></div>
     <span class="inv-verse">${F[it.f][1]}</span><span class="inv-buff">${BUFF[bf.type].n}: ${BUFF[bf.type].d(bf.s)}</span><span class="exp${left<DAY?" soon":""}">หมดอายุใน ${fmt(left)}</span>
-    <div class="row" style="justify-content:flex-start"><button class="mini use" type="button" data-act="use" ${ready?"":"disabled"}>ใช้วันนี้</button><button class="mini" type="button" data-act="read">อ่าน</button><button class="burn" type="button" data-act="burn">เผา (+${BURN_PTS} แต้ม)</button></div></div>`}).join("")}
-$("inv").addEventListener("click",e=>{const btn=e.target.closest("button[data-act]");if(!btn)return;const id=btn.closest(".inv-item").dataset.id,i=S.inv.findIndex(x=>x.id===id);if(i<0)return;const it=S.inv[i];
+    <div class="row" style="justify-content:flex-start"><button class="mini use" type="button" data-act="use" ${ready?"":"disabled"}>ใช้วันนี้</button><button class="mini" type="button" data-act="read">อ่าน</button><button class="burn" type="button" data-act="burn">เผา (+${per} แต้ม)</button></div></div>`}).join("")}
+$("invHead").addEventListener("click",e=>{const b=e.target.closest("button[data-sel]");if(!b)return;const k=b.dataset.sel;
+  if(k==="on")burnSel=new Set();else if(k==="off")burnSel=null;
+  else if(k==="all")S.inv.forEach(x=>burnSel.add(x.id));
+  else if(k==="low"){burnSel.clear();S.inv.filter(x=>F[x.f][0]==="ค่อยเป็นค่อยไป").forEach(x=>burnSel.add(x.id))}
+  else if(k==="soon"){burnSel.clear();S.inv.filter(x=>x.at+EXP-now()<2*DAY).forEach(x=>burnSel.add(x.id))}
+  renderInv()});
+function toggleSel(card){const id=card.dataset.id;if(burnSel.has(id))burnSel.delete(id);else burnSel.add(id);renderInv()}
+$("inv").addEventListener("keydown",e=>{if(!burnSel)return;const card=e.target.closest(".inv-item");if(card&&(e.key===" "||e.key==="Enter")){e.preventDefault();toggleSel(card)}});
+$("mbBurn").addEventListener("click",doBurnSelected);
+$("mbCancel").addEventListener("click",()=>{burnSel=null;renderInv()});
+$("inv").addEventListener("click",e=>{if(burnSel){const card=e.target.closest(".inv-item");if(card)toggleSel(card);return}const btn=e.target.closest("button[data-act]");if(!btn)return;const id=btn.closest(".inv-item").dataset.id,i=S.inv.findIndex(x=>x.id===id);if(i<0)return;const it=S.inv[i];
   if(btn.dataset.act==="use"){if(!canUseToday())return;btn.disabled=true;api("use_slip",{id}).then(r=>{chime(CH.slip[F[r.f][0]]);render();showToday(r.f)}).catch(e=>{if(e!=="locked")toast(e);render()})}
   else if(btn.dataset.act==="read"){$("todayPop").innerHTML=slipPaperHTML(it.f)+`<button class="primary" id="todayOk" type="button">ปิด</button>`;$("todayModal").hidden=false;$("todayOk").addEventListener("click",()=>{$("todayModal").hidden=true});$("todayOk").focus()}
   else{btn.disabled=true;api("burn_slip",{id}).then(r=>{render();releaseAnim(r.f,r,()=>{doBurnReward(r);render()})}).catch(e=>{if(e!=="locked")toast(e);render()})}});
@@ -1445,7 +1456,8 @@ function openShardPick(t){const r=RAR[t],list=PETS.map((p,i)=>[p,i]).filter(([p]
 /* ---------- daily check-in ---------- */
 async function claimStreak(){const st=streakState();if(st.claimed)return;$("dailyClaim").disabled=true;let r;try{r=await api("daily")}catch(e){if(e!=="locked")toast(e);render();return}
   chime([659,784,988,1319]);burst(2,"#f0d28a");sayLock=Date.now()+6000;
-  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.s+" ดาว"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render()}
+  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.s+" ดาว"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
+  if(r.pet){const bp=PETS.find(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bp&&k>1&&lvOf(k,bp)>lvOf(k-1,bp))setTimeout(()=>evolveFx(bp,lvOf(k-1,bp),lvOf(k,bp)),700)}}
 function renderDaily(){const st=streakState(),doneN=st.claimed?S.streakN:st.next-1;
   $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"เข้าเกมต่อเนื่องครบ 7 วัน รับน้องหมีเด้ง เพื่อนพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
   $("days").innerHTML=REW.map((r,i)=>{const d=i+1,state=d<=doneN?"done":(!st.claimed&&d===st.next?"now":"");
@@ -1504,7 +1516,8 @@ function openSheet(){$("scrim").hidden=false;$("confirm").hidden=!chosen;renderS
 function closeSheet(){$("scrim").hidden=true}
 $("topupBtn").addEventListener("click",openSheet);$("closeSheet").addEventListener("click",closeSheet);
 $("scrim").addEventListener("click",e=>{if(e.target.id==="scrim")closeSheet()});
-$("extraBtn").addEventListener("click",()=>{if(S.stars<COST){openSheet();toast("ดาวไม่พอ เติมดาวก่อนนะคะ");return}paidPending=true;render();hb.focus();toast("พร้อมแล้ว กดค้างเพื่อเขย่าใบเพิ่ม")});
+$("fullGo").addEventListener("click",()=>{showTab("inv");burnSel=new Set();renderInv()});
+$("extraBtn").addEventListener("click",()=>{if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");showTab("inv");return}if(S.stars<COST){openSheet();toast("ดาวไม่พอ เติมดาวก่อนนะคะ");return}paidPending=true;render();hb.focus();toast("พร้อมแล้ว กดค้างเพื่อเขย่าใบเพิ่ม")});
 
 /* ---------- lock screen (ban / maintenance) + announcement ---------- */
 function renderAnn(){const el=$("annBar");el.hidden=!CFG.ann;el.textContent=CFG.ann||""}
@@ -1548,7 +1561,7 @@ function renderAdmin(){if(!OWNER)return;const pend=ADM.pending,hist=ADM.history;
      <span>${+r.baht} บาท → ${+r.stars} ดาว</span>${r.slip_url?`<a href="${esc(r.slip_url)}" target="_blank" rel="noopener"><img class="slip-img" src="${esc(r.slip_url)}" alt="สลิปโอนเงิน"></a>`:""}
      <input type="text" class="rej-reason" maxlength="80" placeholder="เหตุผลถ้าไม่อนุมัติ (ไม่บังคับ)"><div class="row" style="justify-content:flex-start"><button class="primary" type="button" data-adm="ok">อนุมัติ เติม ${+r.stars} ดาว</button><button class="ghost" type="button" data-adm="no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีคำขอที่รออยู่</div>`;
   $("playerList").innerHTML=ADM.players.length?ADM.players.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b>${p.is_admin?` <span class="tier" style="background:var(--lav)">แอดมิน</span>`:""}${p.banned?` <span class="tier" style="background:#e27a7a">ระงับ</span>`:""}<span class="small" style="text-align:left;display:block">ไอดี ${esc(p.login)} · ดาว ${+p.stars||0} · เขย่า ${+p.shakes||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท · เห็นล่าสุด ${ago(p.last_seen)}</span></div><button class="mini" type="button" data-adm="pl">จัดการ</button></div>`).join(""):`<div class="placeholder">ยังไม่มีผู้เล่น</div>`;
-  $("codeList").innerHTML=ADM.codes.length?ADM.codes.map(c=>`<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b><span class="small" style="text-align:left;display:block">${c.s?+c.s+" ดาว ":""}${c.t?+c.t+" ตั๋ว ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span></div><button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button></div>`).join(""):`<div class="placeholder">ยังไม่มีโค้ด</div>`;
+  $("codeList").innerHTML=ADM.codes.length?ADM.codes.map(c=>`<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" ดาว ":""}${c.t?+c.t+" ตั๋ว ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div><button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button></div>`).join(""):`<div class="placeholder">ยังไม่มีโค้ด</div>`;
   $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?"อนุมัติ":"ไม่อนุมัติ"} ${ago(r.done_at||r.created_at)}</span></div>${r.slip_url?`<a class="mini" href="${esc(r.slip_url)}" target="_blank" rel="noopener">ดูสลิป</a><button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
   fillCfg()}
 document.addEventListener("click",async e=>{const b=e.target.closest("button[data-adm]");if(!b||!OWNER)return;const a=b.dataset.adm,card=b.closest(".adm-card");
@@ -1590,12 +1603,15 @@ $("cfSave").addEventListener("click",async()=>{const packs=[...$("cfPacks").quer
   try{await api("adm_cfg",{pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,packs});await api("me");fillCfg(true);$("cfMsg").textContent="บันทึกแล้ว ผู้เล่นเห็นทันที";toast("บันทึกการตั้งค่าแล้ว")}catch(e){$("cfMsg").textContent=e==="locked"?"":e}});
 $("ncBtn").addEventListener("click",async()=>{const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),msg=$("ncMsg");
   if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!t){msg.textContent="ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";return}
-  try{await api("adm_code",{code,s,t,note:$("ncNote").value.trim()});msg.textContent="สร้างโค้ด "+code+" แล้ว ผู้เล่นแต่ละคนใช้ได้คนละครั้ง";["ncCode","ncStars","ncTickets","ncNote"].forEach(i=>$(i).value="");loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}});
+  const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
+  try{await api("adm_code",{code,s,t,note:$("ncNote").value.trim(),kind,max,days});msg.textContent=`สร้างโค้ด ${code} แล้ว · ${codeKind({kind})}${kind==="each"&&max?" สูงสุด "+max+" คน":""}${days?" · ใช้ได้ "+days+" วัน":""}`;["ncCode","ncStars","ncTickets","ncNote","ncMax","ncDays"].forEach(i=>$(i).value="");$("ncKind").value="each";syncNcKind();loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}});
+function syncNcKind(){$("ncMax").hidden=$("ncKind").value==="once"}
+$("ncKind").addEventListener("change",syncNcKind);
 
 /* ---------- tabs + info ---------- */
 let tab="home";
 function showTab(t){if(t==="shop"){openSheet();return}tab=t;if(t==="admin")loadAdmin();["home","inv","pets","info","admin"].forEach(k=>$("scr-"+k).hidden=k!==t);
-  document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));window.scrollTo(0,0)}
+  document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));window.scrollTo(0,0);renderMultiBar()}
 $("tabbar").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b)showTab(b.dataset.tab)});
 function renderInfo(){const P=powers(),lvn={"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0};F.forEach(f=>lvn[f[0]]++);
   $("profileBox").innerHTML=PROFILE?`<div class="tc-row"><div><b>${esc(PROFILE.name)} · รหัสผู้เล่น ${esc(PROFILE.code)}</b><span>ไอดี ${esc(PROFILE.login)} · บันทึกบนเซิร์ฟเวอร์ เข้าจากเครื่องไหนก็เล่นต่อได้ · ลืมรหัสผ่านให้ทักแอดมินที่ LINE @fortuniehoro</span></div><button class="mini" type="button" id="logoutBtn">ออกจากระบบ</button></div>`:"";
@@ -1616,11 +1632,11 @@ document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;["scrim","dai
 function render(){prune();regen();const P=powers();
   $("stars").textContent=S.stars;
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
-  hb.disabled=!ready||busy;hb.textContent=paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");
-  $("holdHint").hidden=!ready;$("extraBox").hidden=ready;
+  const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
+  $("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;
   $("chargeInfo").innerHTML=`สิทธิ์เขย่าฟรี <b>${S.charges}/${P.max}</b>${S.bonusFree?` + โบนัส <b>${S.bonusFree}</b>`:""}${S.charges<P.max&&S.regenAt?` · ได้สิทธิ์ถัดไปใน ${fmt(S.regenAt-now())}`:""}`;
   $("lastBox").innerHTML=S.last?lastHTML(S.last):`<div class="placeholder">ยังไม่ได้เขย่า ใบเซียมซีของคุณจะมาอยู่ตรงนี้</div>`;const sb=$("shareBtn");if(sb)sb.addEventListener("click",makeShare);
-  const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),n=(S.tickets+(S.jarT||0))||(canUse?"!":"");bi.hidden=!n;bi.textContent=n;
+  const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),nearFull=S.inv.length>=INV_WARN,n=nearFull?"!":((S.tickets+(S.jarT||0))||(canUse?"!":""));bi.hidden=!n;bi.textContent=n;bi.classList.toggle("warn",nearFull);
   hostSay();renderChips();renderFortuneFloat();renderBuddy();renderInv();renderPets();renderDaily();renderInfo();
   $("soundBtn").textContent="เสียง: "+(PREF.sound?"เปิด":"ปิด");$("soundBtn").setAttribute("aria-pressed",PREF.sound?"true":"false")}
 setInterval(()=>{if(!busy&&$("reveal").hidden){render();autoDaily()}},30000);

@@ -103,7 +103,7 @@ function Game(init, nowBase, admin) {
 /* ===== Fortunie Siamsi game core — shared by server (authoritative) and client (display only) =====
    Expects globals: F, LV, RAR, PETS, S (state), now(), rnd() */
 const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15],[4,5]],SHARD_GET=[1,1,1,2,2],SHARD_COST=[10,8,6,5,4],
-  DAY=24*3600e3,BASE_WAIT=DAY,CDR_CAP=.50,AGAIN_CAP=.50,BURNFREE_CAP=.60,PITY=10,EXP=7*DAY,MAXLV=3,COST=10,INV_MAX=30,LUCKY=22,TZ=7*3600e3;
+  DAY=24*3600e3,BASE_WAIT=DAY,CDR_CAP=.50,AGAIN_CAP=.50,BURNFREE_CAP=.60,PITY=10,EXP=7*DAY,MAXLV=3,COST=10,INV_MAX=30,INV_WARN=25,LUCKY=22,TZ=7*3600e3;
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
@@ -146,12 +146,13 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
   if(S.buddy==null)S.buddy=pi;return{pi,isNew,shard,k:S.owned[n]}}
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
 function rollPet(){const r=pickRarity(),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;S.pity=0;return giveCopy(pi)}
-function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});if(S.inv.length>INV_MAX)S.inv.length=INV_MAX}
+/* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
+function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
 function settlePending(){if(S.pend){addInv(S.pend.f);if(S.last)S.last.fate="kept";S.pend=null}}
-function actShake(paid){settlePending();regen();const P=powers();
+function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
   if(S.bonusFree>0)S.bonusFree--;
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
   else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
@@ -175,6 +176,9 @@ function actDecide(fate){if(!S.pend)throw "ไม่มีใบที่รอ�
 function invIndex(id){const i=S.inv.findIndex(x=>x.id===id);if(i<0)throw "ไม่พบใบนี้ในคลัง";return i}
 function actUseSlip(id){settlePending();const i=invIndex(id);if(!canUseToday())throw "วันนี้ใช้ดวงไปแล้ว";const f=S.inv[i].f;S.inv.splice(i,1);activate(f);return{f}}
 function actBurnSlip(id){settlePending();const i=invIndex(id);const f=S.inv[i].f;S.inv.splice(i,1);return Object.assign({f},burnReward())}
+function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)throw "ยังไม่ได้เลือกใบ";const before=S.bp||0,fs=[];let pts=0,golds=0,lucky=0,jar=0;
+  for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
+  if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,jar,before,gold:golds>0}}
 function actTicket(){settlePending();if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;return rollPet()}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -185,7 +189,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
   const dp=powers().daily||0;S.stars+=dp;if(r.s)S.stars+=r.s;if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,s:(r.s||0)+dp,bonus:dp,pet:r.pet||null}}
 function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actTicket,actJar,actExchange,actBuddy,actDaily,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,actJar,actExchange,actBuddy,actDaily,DEFAULT_PACKS,now };
 }
 
 
@@ -254,6 +258,9 @@ async function adminList() {
     sb.from("topups").select("*").neq("status", "pending").order("done_at", { ascending: false }).limit(30),
     sb.from("codes").select("*").order("created_at", { ascending: false }).limit(200),
   ]);
+  const { data: reds } = await sb.from("redemptions").select("code").limit(20000);
+  const used = {}; for (const r of reds || []) used[r.code] = (used[r.code] || 0) + 1;
+  for (const c of codes || []) c.used = used[c.code] || 0;
   const sum = {}; for (const r of states || []) { const G = Game(Object.assign(fresh(), r.state), Date.now(), false); G.norm(); sum[r.id] = G.summary(); }
   const sign = async (rows) => Promise.all((rows || []).map(async r => { let url = ""; if (r.slip_path) { const { data } = await sb.storage.from("slips").createSignedUrl(r.slip_path, 3600); url = data ? data.signedUrl : ""; } return { ...r, slip_url: url }; }));
   return { players: (profs || []).map(p => ({ ...p, ...(sum[p.id] || {}) })), pending: await sign(pend), history: await sign(hist), codes: codes || [] };
@@ -292,7 +299,9 @@ async function adminAction(a, p, me) {
     const code = String(p.code || "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 24); if (!code) throw "ใส่โค้ดก่อน";
     if (p.toggle) { await sb.from("codes").update({ off: !!p.off }).eq("code", code); return { ok: true }; }
     const s = int(p.s, 0, 99999), t = int(p.t, 0, 99); if (!s && !t) throw "ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";
-    const { error } = await sb.from("codes").upsert({ code, s, t, note: String(p.note || "").slice(0, 60), off: false }); if (error) throw "สร้างโค้ดไม่สำเร็จ";
+    const kind = p.kind === "once" ? "once" : "each", max_uses = kind === "once" ? 1 : int(p.max, 0, 100000), days = int(p.days, 0, 365);
+    const expires_at = days ? new Date(Date.now() + days * 864e5).toISOString() : null;
+    const { error } = await sb.from("codes").upsert({ code, s, t, note: String(p.note || "").slice(0, 60), off: false, kind, max_uses, expires_at }); if (error) throw "สร้างโค้ดไม่สำเร็จ";
     return { ok: true, code };
   }
   if (a === "adm_delslip") { const { data: t } = await sb.from("topups").select("slip_path").eq("id", p.id).single(); if (t && t.slip_path) await sb.storage.from("slips").remove([t.slip_path]); await sb.from("topups").update({ slip_path: null }).eq("id", p.id); return { ok: true }; }
@@ -318,7 +327,12 @@ async function redeem(G, uid, code) {
   code = String(code || "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 24); if (!code) throw "ใส่โค้ดก่อนนะคะ";
   let c = null; const { data } = await sb.from("codes").select("*").eq("code", code).maybeSingle(); if (data && !data.off) c = data;
   if (!c && ADMIN && TEST_CODES[code]) { if ((S.redeemedTest || []).includes(code)) throw "โค้ดนี้ใช้ไปแล้ว"; S.redeemedTest = (S.redeemedTest || []).concat(code); c = TEST_CODES[code]; }
-  else { if (!c) throw "โค้ดนี้ใช้ไม่ได้ ลองเช็กตัวสะกดอีกครั้ง"; const { error } = await sb.from("redemptions").insert({ code, user_id: uid }); if (error) throw "โค้ดนี้ใช้ไปแล้ว"; }
+  else {
+    if (!c) throw "โค้ดนี้ใช้ไม่ได้ ลองเช็กตัวสะกดอีกครั้ง";
+    /* one database call checks expiry, one-time / max-user limits and records the use, so two people can't both win a one-time code */
+    const { data: r, error } = await sb.rpc("redeem_code", { p_code: code, p_uid: uid }); if (error || !r) throw "รับโค้ดไม่สำเร็จ ลองใหม่อีกครั้ง";
+    if (r.err) throw ({ bad: "โค้ดนี้ใช้ไม่ได้ ลองเช็กตัวสะกดอีกครั้ง", expired: "โค้ดนี้หมดอายุแล้ว", used: "โค้ดนี้ใช้ไปแล้ว", full: c.kind === "once" ? "โค้ดนี้มีคนใช้ไปแล้ว" : "โค้ดนี้ครบจำนวนคนแล้ว" })[r.err] || "โค้ดนี้ใช้ไม่ได้";
+  }
   if (c.s) S.stars += +c.s; if (c.t) S.tickets += +c.t; await log(uid, "redeem", { code });
   return { s: +c.s || 0, t: +c.t || 0 };
 }
@@ -352,6 +366,7 @@ Deno.serve(async (req) => {
         case "decide": res = G.actDecide(String(p.fate)); break;
         case "use_slip": res = G.actUseSlip(String(p.id)); break;
         case "burn_slip": res = G.actBurnSlip(String(p.id)); break;
+        case "burn_many": res = G.actBurnMany(Array.isArray(p.ids) ? p.ids.slice(0, 30).map(String) : []); break;
         case "ticket": res = G.actTicket(); break;
         case "jar": res = G.actJar(); break;
         case "exchange": res = G.actExchange(p.t, p.pi); break;
