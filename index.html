@@ -118,7 +118,7 @@ tr:last-child td{border-bottom:0}
   padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));text-align:center}
 .reveal .big{font-family:var(--f-display);font-size:min(30vw,150px);line-height:1;color:var(--butter);text-shadow:0 0 30px var(--glow)}
 .reveal .lbl{font-family:var(--f-display);font-size:18px;color:var(--lav-soft)}
-.rays{position:absolute;width:140vmax;height:140vmax;left:50%;top:42%;translate:-50% -50%;pointer-events:none;opacity:0;
+.rays{position:absolute;width:140vmax;height:140vmax;left:50%;top:42%;translate:-50% -50%;z-index:-1;pointer-events:none;opacity:0;
   background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--glow) 55%,#fff) 0 7deg,transparent 7deg 18deg);mask:radial-gradient(circle,#000 0,#000a 30%,transparent 62%);-webkit-mask:radial-gradient(circle,#000 0,#000a 30%,transparent 62%)}
 .reveal.lit .rays{opacity:.38;animation:fspin 18s linear infinite}/* rotate property keeps the centring transform intact */
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
