@@ -1911,7 +1911,7 @@ $("egg").addEventListener("click",()=>{const p=PETS[cur.pet],r=RAR[p.t],R=$("rev
   pc.innerHTML=`<span class="tier" style="background:${r.c}">${r.name}</span><div class="e">${formHTML(p,lvOf(k,p),petImg(p,lvOf(k,p))?136:112)}</div><span class="pn">${formName(p,lvOf(k,p))}</span><span class="abil">${petDesc(p,k)}</span><small>${k===1?(S.buddy===cur.pet?"เพื่อนใหม่! เป็นคู่หูของคุณแล้ว":"เพื่อนใหม่! เข้าสมุดสะสมแล้ว"):lvOf(k,p)>lvOf(k-1,p)?`เลเวลอัปเป็น Lv.${lvOf(k,p)}!`:k<=maxCopies(p)?`เก็บเพิ่มได้ ${k}/${NEED(p)[lvOf(k,p)]} ตัว สู่ Lv.${lvOf(k,p)+1}`:`เลเวลสูงสุดแล้ว ได้เศษ${RAR[p.t].name} +${SHARD_GET[p.t]} เศษ`}</small>`;
   if(!evo){pc.hidden=false;if(FX_STYLE()==="brass"||p.t>=3)burst(FX_STYLE()==="brass"?p.t+1:1,r.glow);pullFx(p,lvOf(k,p))}
   if(!evo){$("petDone").hidden=false;$("petDone").focus()}});
-$("petDone").addEventListener("click",()=>{if(PREVIEW){ticketMode=false;closeReveal();return}if(ticketMode){ticketMode=false;closeReveal();showTab("pets");return}showSlip()});
+$("petDone").addEventListener("click",()=>{if(PREVIEW){ticketMode=false;closeReveal();return}if(ticketMode){ticketMode=false;const back=EGG_BACK||"pets";EGG_BACK=null;closeReveal();showTab(back);return}showSlip()});
 
 /* paper slip with keep / use / burn */
 function slipPaperHTML(f){const [lvn,verse,o,l,w,m,a]=F[f],L=LV[lvn],b=buffOf(f);
@@ -2765,6 +2765,7 @@ function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t
   const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
   e.preventDefault();e.stopPropagation();if(e.type==="click")coachNudge()}
 ["click","pointerdown","keydown"].forEach(ev=>document.addEventListener(ev,tutBlock,true));
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#scr-inv")&&e.target.closest("#jarBtn,button[data-tk],[data-ticket],.ticket"))EGG_BACK="inv"},true);
 /* clear any highlight a fast double-click leaves on the reveal screen */
 document.addEventListener("mousedown",e=>{if(e.detail>1&&e.target.closest&&e.target.closest("#reveal,.burnfx,.today-pop"))e.preventDefault()},true);
 /* bubble + arrow */
