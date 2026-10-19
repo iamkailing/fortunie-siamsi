@@ -808,6 +808,8 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .pop-btn.pop-hot .pop-glow{animation:pophot .6s ease-out}
 @keyframes pophot{0%{transform:scale(1);opacity:1}40%{transform:scale(1.25);opacity:1;filter:brightness(1.6)}100%{transform:scale(1)}}
 .slip-auto{display:flex;flex-direction:column;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.auto-note{color:#f5c27a;text-align:left}
+.pack-any{display:flex;flex-direction:column;gap:6px;text-align:left;cursor:default}.pack-any.on{border-color:var(--butter)}.pack-any input{min-width:0;flex:1}
+.packs .pack-any{grid-column:1/-1}.pack-any input{flex:1;min-width:0;box-sizing:border-box;border:1px solid var(--line);background:#ffffff10;color:var(--text);border-radius:12px;padding:9px 12px;font:inherit;font-size:16px}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -2213,14 +2215,21 @@ $("shareClose").addEventListener("click",()=>{$("shareModal").hidden=true});
 
 /* ---------- shop: top-up with slip ---------- */
 let chosen=null,chosenI=-1,slipFile=null;
+/* โอนกี่บาทได้กี่ดาว: rate of the biggest pack the amount reaches, minimum TOPUP_MIN baht (same rule on the server) */
+const TOPUP_MIN=50;
+function starsFor(baht){baht=Math.floor(+baht||0);if(baht<TOPUP_MIN)return 0;const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);if(!ps.length)return 0;
+  let t=ps[0];for(const p of ps)if(p.baht<=baht)t=p;return Math.floor(baht*t.stars/t.baht)}
 function renderShop(){
-  $("shopNote").textContent=ONLINE?"เลือกแพ็ก โอนเงิน แล้วอัปโหลดสลิป แอดมินจะตรวจและเติมดาวให้":GUEST?"โหมดผู้เยี่ยมชม: เล่นและใช้โค้ดได้ เกมเซฟไว้ในเครื่องนี้ ส่วนการเติมดาวทักแอดมินที่ LINE @fortuniehoro":"ยังไม่ได้เชื่อมบัญชี ตอนนี้เติมดาวไม่ได้ ลองปิดแล้วเปิดเกมใหม่";
-  $("packs").innerHTML=PACKS.map((p,i)=>`<button class="pack" type="button" data-i="${i}" aria-pressed="${chosenI===i}"><b><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${p.stars}</b><span>${p.baht} บาท · เขย่าเพิ่มได้ ${Math.floor(p.stars/COST)} ใบ</span>${p.tag?`<em>${p.tag}</em>`:""}</button>`).join("");
-  $("slipLabel").hidden=!ONLINE;$("confirmBtn").textContent="ส่งสลิปให้แอดมิน";$("confirmBtn").disabled=!ONLINE;
+  $("shopNote").textContent=ONLINE?(CFG.autoSlip?"เลือกแพ็กหรือใส่ยอดเอง โอนเงิน แล้วแนบสลิป ระบบตรวจให้อัตโนมัติ ดาวเข้าทันที":"เลือกแพ็ก โอนเงิน แล้วอัปโหลดสลิป แอดมินจะตรวจและเติมดาวให้"):GUEST?"โหมดผู้เยี่ยมชม: เล่นและใช้โค้ดได้ เกมเซฟไว้ในเครื่องนี้ ส่วนการเติมดาวทักแอดมินที่ LINE @fortuniehoro":"ยังไม่ได้เชื่อมบัญชี ตอนนี้เติมดาวไม่ได้ ลองปิดแล้วเปิดเกมใหม่";
+  $("packs").innerHTML=PACKS.map((p,i)=>`<button class="pack" type="button" data-i="${i}" aria-pressed="${chosenI===i}"><b><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${p.stars}</b><span>${p.baht} บาท · เขย่าเพิ่มได้ ${Math.floor(p.stars/COST)} ใบ</span>${p.tag?`<em>${p.tag}</em>`:""}</button>`).join("")+`<div class="pack pack-any${chosen&&chosen.custom?" on":""}"><b>💸 โอนยอดอื่น</b><span>ขั้นต่ำ ${TOPUP_MIN} บาท · ได้ดาวตามยอดที่โอน</span><div class="row" style="flex-wrap:nowrap"><input id="anyBaht" type="number" inputmode="numeric" min="${TOPUP_MIN}" step="1" placeholder="ใส่ยอดเงิน (บาท)" value="${chosen&&chosen.custom?chosen.baht:""}" aria-label="ยอดเงินที่จะโอน"><button class="mini" id="anyGo" type="button">เลือก</button></div><span class="small" id="anyStars"></span></div>`;
+  $("slipLabel").hidden=!ONLINE;$("confirmBtn").textContent=CFG.autoSlip?"ส่งสลิป ✨ ตรวจอัตโนมัติ":"ส่งสลิปให้แอดมิน";$("confirmBtn").disabled=!ONLINE;
   $("payInfo").textContent=ONLINE?(CFG.pay?"โอนตามยอดไปที่: "+CFG.pay+" แล้วแนบรูปสลิป":"แอดมินยังไม่ได้ใส่ข้อมูลรับเงิน ทักแอดมินก่อนโอนนะคะ"):"";
   const pend=MYREQ.filter(r=>r.status==="pending").length;$("badgeShop").hidden=!pend;$("badgeShop").textContent=pend||"";
   $("myReqs").innerHTML=MYREQ.length?`<b class="small" style="text-align:left">คำขอเติมดาวของคุณ</b>`+MYREQ.slice(0,6).map(r=>`<div class="req"><span>${r.baht} บาท · ${r.stars} ดาว</span><span class="st ${r.status}">${{pending:"รอตรวจ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"}[r.status]||r.status}</span>${r.reason?`<span class="small" style="text-align:left;width:100%">${esc(r.reason)}</span>`:""}</div>`).join(""):""}
-$("packs").addEventListener("click",e=>{const b=e.target.closest(".pack");if(!b)return;chosenI=+b.dataset.i;chosen=PACKS[chosenI];renderShop();$("confirm").hidden=false;$("payMsg").textContent="";
+$("packs").addEventListener("input",e=>{if(e.target.id!=="anyBaht")return;const v=Math.floor(+e.target.value||0);$("anyStars").textContent=v>=TOPUP_MIN?`ได้ ${starsFor(v)} ดาว`:`ขั้นต่ำ ${TOPUP_MIN} บาท`});
+$("packs").addEventListener("click",e=>{if(e.target.closest("#anyGo")){const v=Math.floor(+$("anyBaht").value||0);if(v<TOPUP_MIN){$("anyStars").textContent=`ขั้นต่ำ ${TOPUP_MIN} บาท`;return}
+    chosen={baht:v,stars:starsFor(v),custom:true};if(typeof chosenI!=="undefined")chosenI=-1;renderShop();$("confirm").hidden=false;$("payMsg").textContent="";$("confirmText").textContent=`${chosen.stars} ดาว ราคา ${chosen.baht} บาท`;return}
+  const b=e.target.closest(".pack[data-i]");if(!b)return;chosenI=+b.dataset.i;chosen=PACKS[chosenI];renderShop();$("confirm").hidden=false;$("payMsg").textContent="";
   $("confirmText").textContent=`${chosen.stars} ดาว ราคา ${chosen.baht} บาท`});
 $("slipIn").addEventListener("change",()=>{slipFile=$("slipIn").files[0]||null;$("slipName").textContent=slipFile?slipFile.name:"แตะเพื่อเลือกรูปสลิป";
   const pv=$("slipPreview");if(slipFile){pv.src=URL.createObjectURL(slipFile);pv.hidden=false}else pv.hidden=true});
@@ -2228,7 +2237,7 @@ $("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$
   if(!ONLINE){msg.textContent="เข้าสู่ระบบก่อนนะคะ";return}
   if(!slipFile){msg.textContent="แนบรูปสลิปก่อนนะคะ";return}
   const btn=$("confirmBtn");btn.disabled=true;msg.textContent="กำลังส่งสลิป…";
-  try{const img=await shrink(slipFile);msg.textContent="กำลังตรวจสลิป…";const r=await api("topup",{pack:chosenI,img});
+  try{const img=await shrink(slipFile);msg.textContent="กำลังตรวจสลิป…";const r=await api("topup",chosen.custom?{baht:chosen.baht,img}:{pack:chosenI,img});
     if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว ✨`;toast(`เติม ${r.baht} บาทสำเร็จ +${r.stars} ดาว`);chime(CH.slip["ดีมาก"]);try{await api("me")}catch(_){}}
     else msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเองเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="แตะเพื่อเลือกรูปสลิป";$("slipPreview").hidden=true;chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}
   catch(e){msg.textContent=e==="locked"?"":(typeof e==="string"?e:"ส่งไม่สำเร็จ ลองใหม่อีกครั้ง")}
