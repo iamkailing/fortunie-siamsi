@@ -982,6 +982,11 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 @keyframes waitWob{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
 @media (prefers-reduced-motion:reduce){.stage.waiting #tube{animation:none}}
 
+/* v93 no accidental text highlight when clicking fast on desktop */
+#reveal,#reveal *,.paper,.paper *,.today-pop,.today-pop *,.burnfx,.burnfx *,.coach,.coach *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body{-webkit-user-select:none;user-select:none}
+input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr-admin *,#plModal *{-webkit-user-select:text;user-select:text}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -2760,6 +2765,8 @@ function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t
   const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
   e.preventDefault();e.stopPropagation();if(e.type==="click")coachNudge()}
 ["click","pointerdown","keydown"].forEach(ev=>document.addEventListener(ev,tutBlock,true));
+/* clear any highlight a fast double-click leaves on the reveal screen */
+document.addEventListener("mousedown",e=>{if(e.detail>1&&e.target.closest&&e.target.closest("#reveal,.burnfx,.today-pop"))e.preventDefault()},true);
 /* bubble + arrow */
 let coachEl=null,coachTarget=null,arrowEl=null;
 function coachMake(){if(coachEl)return;coachEl=document.createElement("div");coachEl.className="coach";coachEl.id="coach";coachEl.hidden=true;coachEl.setAttribute("role","dialog");coachEl.setAttribute("aria-label","Fortunie สอนเล่น");
@@ -2839,6 +2846,7 @@ function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=
     if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>นักป๊อป: แตะคู่หูของคุณรัว ๆ เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
     setTimeout(tutTick,60)};
   const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===7)tutSet(8);else if(s===8)tutSet(9);else if(s===13&&!(S.jarT>0))tutSet(14)}setTimeout(tutTick,300)};
+  const _od=openDaily;openDaily=function(){if(!$("reveal").hidden||($("burnFx")&&!$("burnFx").hidden))return;return _od.apply(this,arguments)};
   const _ad=autoDaily;autoDaily=function(){if(tutForced())return;return _ad.apply(this,arguments)};
   const _or=openReveal;openReveal=function(){const r=_or.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===1)tutSet(2);else if(s===6)tutSet(7)}setTimeout(tutTick,80);return r};
   const _ss=showSlip;showSlip=function(){_ss.apply(this,arguments);setTimeout(tutTick,80)};
