@@ -941,6 +941,21 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .leaf-how b{color:#efe3ff}
 @media (max-width:360px){.top{gap:6px}.top .row{gap:6px!important}#soundBtn{padding:6px 8px;font-size:12px}.wallet{padding:3px 3px 3px 8px;gap:3px}.wallet .leafw{padding:2px}.wallet button#topupBtn{padding:6px 8px;font-size:12px}.wallet .wsep{margin:0 1px}}
 
+/* v88 tutorial coach */
+.coach{position:fixed;left:0;right:0;margin:0 auto;z-index:90;box-sizing:border-box;width:min(380px,calc(100vw - 24px));display:flex;gap:10px;align-items:flex-start;background:#fff8ea;color:#3a2550;border-radius:20px;padding:12px 12px 10px;box-shadow:0 14px 40px #0009,0 0 0 2px #f0d28a;animation:sayin .3s ease both}
+.coach.top{top:max(12px,env(safe-area-inset-top))!important;bottom:auto!important}
+.coach-av{width:44px;height:44px;border-radius:50%;flex:none;background:#fff;box-shadow:0 0 0 2px #e7c9ff}
+.coach-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.coach-b p{margin:0;font-size:14px;line-height:1.6;text-align:left}
+.coach-b b{color:#6b3fa8}
+.coach-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.coach-skip{background:none;border:0;color:#8a7a9c;font-size:12px;padding:6px 2px;text-decoration:underline}
+.coach-next{background:#7c4dc4!important;color:#fff!important;padding:8px 16px!important;border-radius:999px}
+.coach-next[hidden]{display:none}
+.coach-hl{position:relative;z-index:85;box-shadow:0 0 0 3px #f0d28a,0 0 0 9px #f0d28a44,0 0 30px #f0d28a88!important;border-radius:16px;animation:coachPulse 1.6s ease-in-out infinite}
+@keyframes coachPulse{50%{box-shadow:0 0 0 3px #f0d28a,0 0 0 14px #f0d28a22,0 0 36px #f0d28aaa}}
+@media (prefers-reduced-motion:reduce){.coach,.coach-hl{animation:none}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -2683,8 +2698,71 @@ const isRareLeaf=id=>id==="rt";
 $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListener("click",()=>{$("leafModal").hidden=true});
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
+/* ---------- first-time tutorial: Fortunie walks a new player through one system at a time ---------- */
+const TUT_ORDER=["shake","pet","slip","buddyTab","buddy","daily","leaf","extra","done"];
+let TUT=null,TUT_KEY="";
+const tutKey=()=>"ftn_tut_"+((typeof PROFILE!=="undefined"&&PROFILE&&PROFILE.code)||S.code||(typeof UID!=="undefined"&&UID)||"me");
+function tutReady(){if(typeof PROFILE!=="undefined"&&typeof ONLINE!=="undefined"&&ONLINE===false&&!PROFILE)return false;
+  if(typeof LOCKED!=="undefined"&&LOCKED)return false;const lg=document.getElementById("loginScreen");if(lg&&!lg.hidden)return false;
+  if(typeof PREVIEW!=="undefined"&&PREVIEW)return false;return true}
+function tutLoad(){const k=tutKey();if(TUT&&TUT_KEY===k)return TUT;TUT_KEY=k;let v=null;try{v=JSON.parse(localStorage.getItem(k)||"null")}catch(e){}
+  if(!v)v=(S.shakes||0)>0?{step:"done",nb:false,seen:{}}:{step:"shake",nb:true,seen:{}};TUT=v;tutSave();return TUT}
+function tutSave(){try{localStorage.setItem(TUT_KEY,JSON.stringify(TUT))}catch(e){}}
+const tutOn=()=>TUT&&TUT.step!=="done";
+function tutGo(step){if(!TUT)return;TUT.step=step;tutSave();tutTick()}
+function tutSkip(){if(!TUT)return;TUT.step="done";TUT.nb=false;tutSave();coachHide()}
+/* bubble UI */
+let coachEl=null,coachTarget=null;
+function coachMake(){if(coachEl)return coachEl;coachEl=document.createElement("div");coachEl.className="coach";coachEl.id="coach";coachEl.hidden=true;coachEl.setAttribute("role","dialog");coachEl.setAttribute("aria-label","Fortunie สอนเล่น");
+  coachEl.innerHTML=`<img class="coach-av" src="${LOGO}" alt=""><div class="coach-b"><p id="coachTxt" aria-live="polite"></p><div class="coach-row"><button type="button" class="coach-skip" id="coachSkip">ข้ามการสอน</button><button type="button" class="mini coach-next" id="coachNext">ต่อไป</button></div></div>`;
+  document.body.appendChild(coachEl);$("coachSkip").addEventListener("click",tutSkip);$("coachNext").addEventListener("click",()=>{const f=coachEl._next;if(f)f()});
+  addEventListener("resize",()=>{if(!coachEl.hidden)coachPlace()});addEventListener("scroll",()=>{if(!coachEl.hidden)coachPlace()},true);return coachEl}
+function coachHide(){if(coachEl)coachEl.hidden=true;if(coachTarget)coachTarget.classList.remove("coach-hl");coachTarget=null}
+function coachPlace(){const c=coachEl,t=coachTarget;c.style.top=c.style.bottom="";if(!t){c.style.bottom="calc(84px + env(safe-area-inset-bottom))";return}
+  const r=t.getBoundingClientRect();if(r.top+r.height/2>innerHeight*.5)c.style.bottom=Math.max(8,innerHeight-r.top+12)+"px";else c.style.top=Math.min(innerHeight-160,r.bottom+12)+"px"}
+function coach(target,html,nextLabel,next,opts){coachMake();opts=opts||{};if(coachTarget&&coachTarget!==target)coachTarget.classList.remove("coach-hl");coachTarget=target||null;
+  if(coachTarget&&!opts.noRing)coachTarget.classList.add("coach-hl");$("coachTxt").innerHTML=html;const nb=$("coachNext");nb.hidden=!next;nb.textContent=nextLabel||"ต่อไป";coachEl._next=next||null;
+  coachEl.classList.toggle("top",!!opts.top);coachEl.hidden=false;coachPlace();if(next&&opts.focus!==false)setTimeout(()=>nb.focus(),30)}
+/* what to show for the current step */
+function tutTick(){if(!tutReady())return;tutLoad();if(!tutOn()){coachHide();return}
+  const st=TUT.step,rv=!$("reveal").hidden,home=typeof tab==="undefined"||tab==="home",bfx=$("burnFx")&&!$("burnFx").hidden;
+  const modal=[...document.querySelectorAll(".scrim")].some(m=>!m.hidden);
+  if(bfx){coachHide();return}
+  if(st==="shake"){if(rv||busy||holding||!home||modal){coachHide();return}
+    coach(hb,`ยินดีต้อนรับสู่<b>เซียมซีฮีลใจ</b>ค่ะ 🌙<br>มาเปิดเซียมซีใบแรกกันเลย ${phoneLike()&&MO.ok!==false&&!S.noMotion?"แตะปุ่มนี้แล้ว<b>เขย่ามือถือ</b> หรือ<b>กดค้าง</b>ไว้":"<b>กดค้าง</b>ปุ่มนี้"}จนหลอดเต็มนะคะ`);return}
+  if(st==="pet"||st==="slip"){if(!rv)coachHide();return}
+  if(st==="buddyTab"){if(rv||modal||busy){coachHide();return}if(tab==="pets"){tutGo("buddy");return}
+    coach(document.querySelector('#tabbar [data-tab="pets"]'),`ไปดู<b>คู่หู</b>ของคุณกันค่ะ 💜<br>แตะที่เมนู <b>"เพื่อน"</b> ด้านล่างได้เลย`);return}
+  if(st==="buddy"){if(rv||modal){coachHide();return}if(tab!=="pets"){showTab("pets");return}
+    const bp=S.buddy!=null?PETS[S.buddy]:null,pw=bp?petDesc(bp,S.owned[bp.n]||1):"";
+    coach($("buddyCard"),`นี่คือคู่หูของคุณ${bp?` <b>${esc(formName(bp,lvOf(S.owned[bp.n]||1,bp)))}</b>`:""} ✨<br>${pw?`พลัง: ${pw}<br>`:""}คู่หูช่วยให้คุณโชคดีขึ้นทุกครั้งที่เขย่า เปลี่ยนคู่หูได้ตลอด แค่แตะเพื่อนในสมุดแล้วกด "ตั้งเป็นคู่หู" · ได้ตัวซ้ำครบจะเลเวลอัป พลังแรงขึ้นค่ะ`,"ต่อไป",()=>{showTab("home");tutGo("daily")});return}
+  if(st==="daily"){if(rv||modal){coachHide();return}if(!home){showTab("home");return}
+    coach($("giftBtn"),`🎁 อย่าลืม<b>เช็กอินทุกวัน</b>ที่ไอคอนกล่องของขวัญนะคะ<br>7 ครั้งแรกแจกใบไม้เยอะเป็นพิเศษ ครบ 7 วันได้<b>น้องหมีเด้ง</b>ด้วย`,"ต่อไป",()=>tutGo("leaf"));return}
+  if(st==="leaf"){if(rv||modal){coachHide();return}
+    coach($("leafBtn"),`🍃 <b>ใบไม้</b>ได้จากการเล่น เช่น เช็กอิน และใบเซียมซีที่หมดอายุ<br>เอาไปแลก<b>ตั๋วสุ่มเพื่อน</b>ที่ร้านใบไม้ได้ แตะตรงนี้เพื่อเปิดร้านค่ะ`,"ต่อไป",()=>tutGo("extra"));return}
+  if(st==="extra"){if(rv||modal){coachHide();return}
+    coach($("chargeInfo").textContent.trim()?$("chargeInfo"):hb,`⏳ สิทธิ์<b>เขย่าฟรี</b>จะกลับมาเองตามเวลา<br>ถ้าอยากเขย่าเพิ่มทันที ใช้ ${COST} ดาวต่อครั้ง (ดาวได้จากการเติมเงิน)<br>เท่านี้ก็พร้อมแล้ว ขอให้โชคดีนะคะ 🌟`,"เริ่มเล่นเลย",()=>{TUT.step="done";tutSave();coachHide();render()});return}
+  coachHide()}
+/* one-time tips the first time a new player opens other systems */
+function tutTip(id,target,html){if(!TUT||!TUT.nb||tutOn()||TUT.seen[id])return;TUT.seen[id]=1;tutSave();setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,"เข้าใจแล้ว",coachHide)},350)}
+/* hooks into the existing flow */
+(function(){const _st=showTab;showTab=function(t){_st.apply(this,arguments);if(!TUT)return;
+    if(t==="inv")tutTip("inv",$("invHead")&&$("invHead").firstElementChild||$("scr-inv"),`📦 <b>คลัง</b>เก็บใบเซียมซีได้ ${INV_MAX} ใบ ใบจะหมดอายุใน ${Math.round(EXP/DAY)} วัน แล้วกลายเป็นใบไม้<br>🔥 เผาใบที่ไม่ชอบเพื่อเติม<b>โหลขี้เถ้า</b> ครบ ${JAR} แต้มเปิดสุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`);
+    if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>นักป๊อป: แตะคู่หูของคุณรัว ๆ เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
+    tutTick()};
+  const _ss=showSlip;showSlip=function(){_ss.apply(this,arguments);if(!TUT||!(TUT.step==="shake"||TUT.step==="pet"||TUT.step==="slip"))return;TUT.step="slip";tutSave();
+    setTimeout(()=>coach($("slipActions"),`📜 นี่คือ<b>คำทำนาย</b>ของคุณ เลือกได้ 3 ทาง<br>✨ <b>ใช้เป็นดวงวันนี้</b> ได้พลังพิเศษ 24 ชม. · 📦 <b>เก็บเข้าคลัง</b>ไว้ใช้วันหลัง · 🔥 ไม่ชอบก็<b>เผาทิ้ง</b> ได้แต้มเผาค่ะ`,"เข้าใจแล้ว",()=>coachHide(),{noRing:true,top:true}),250)};
+  const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(TUT&&(TUT.step==="slip"||TUT.step==="pet")){TUT.step="buddyTab";tutSave()}setTimeout(tutTick,400)};
+  const _ad=autoDaily;autoDaily=function(){if(tutReady())tutLoad();if(TUT&&TUT.nb&&tutOn())return;return _ad.apply(this,arguments)};
+  $("egg").addEventListener("click",()=>{if(!TUT||!(TUT.step==="shake"||TUT.step==="pet"))return;TUT.step="pet";tutSave();
+    setTimeout(()=>{const ev=$("evoFx");if(ev&&!ev.hidden)return;coach($("petCard"),`ว้าว โชคดีมาก! 🎉 ได้<b>คู่หู</b>ตั้งแต่ใบแรกเลย<br>รู้ไหมคะ ปกติการเขย่าแต่ละครั้งมีโอกาสเจอเพื่อนแค่ <b>${n1(BASE_DROP)}%</b> เท่านั้น ใบแรกนี้ Fortunie ให้เป็นของขวัญต้อนรับค่ะ<br>เพื่อนตัวนี้เป็นคู่หูของคุณแล้ว คู่หูจะช่วยให้คุณได้โอกาสที่ดีขึ้น`,"ต่อไป",()=>coachHide(),{noRing:true,top:true})},900)});
+  hb.addEventListener("pointerdown",()=>{if(TUT&&TUT.step==="shake")coachHide()});
+  const _or=openReveal;openReveal=function(){if(TUT&&TUT.step==="shake")coachHide();return _or.apply(this,arguments)};
+  const _fs=finishShake;finishShake=function(){if(TUT&&TUT.step==="shake")coachHide();return _fs.apply(this,arguments)};
+})();
+
 /* ---------- render ---------- */
-function render(){prune();regen();const P=powers();if(typeof tab!=="undefined"&&tab==="rank"){renderMyProfile();if(typeof LB_LOCAL!=="undefined")loadLeaderboard()}
+function render(){setTimeout(()=>{try{tutTick()}catch(e){}},0);prune();regen();const P=powers();if(typeof tab!=="undefined"&&tab==="rank"){renderMyProfile();if(typeof LB_LOCAL!=="undefined")loadLeaderboard()}
   $("stars").textContent=S.stars;$("leaves").textContent=S.leaves||0;if(!$("leafModal").hidden)renderLeafShop();
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
   const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
