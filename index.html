@@ -807,6 +807,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 @keyframes popspark{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
 .pop-btn.pop-hot .pop-glow{animation:pophot .6s ease-out}
 @keyframes pophot{0%{transform:scale(1);opacity:1}40%{transform:scale(1.25);opacity:1;filter:brightness(1.6)}100%{transform:scale(1)}}
+.slip-auto{display:flex;flex-direction:column;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.auto-note{color:#f5c27a;text-align:left}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -1066,6 +1067,11 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
         <label class="toggle"><input id="cfSms" type="checkbox"> คนสมัครใหม่ต้องยืนยันเบอร์ด้วย SMS</label>
         <div class="row" style="flex-wrap:nowrap"><input id="cfSmsPhone" type="tel" inputmode="tel" maxlength="16" placeholder="เบอร์สำหรับส่ง SMS ทดสอบ"><button class="mini" id="cfSmsTest" type="button">ส่ง SMS ทดสอบ</button></div>
         <span class="small" id="cfSmsNote" style="text-align:left"></span>
+        <div class="slip-auto"><b class="sub-h">🤖 ตรวจสลิปอัตโนมัติ</b>
+        <label class="toggle"><input id="cfSlipAuto" type="checkbox"> เปิดตรวจสลิปอัตโนมัติ (ผ่านแล้วเติมดาวทันที ไม่ผ่านจะเข้าคิวรอทำ)</label>
+        <input id="cfSlipName" type="text" maxlength="80" placeholder="ชื่อบัญชีรับเงิน เช่น ฮีลจง ฮีลใจ" aria-label="ชื่อบัญชีรับเงิน">
+        <div class="row" style="flex-wrap:nowrap"><input id="cfSlipTail" type="text" inputmode="numeric" maxlength="6" placeholder="เลขบัญชี 4 ตัวท้าย" aria-label="เลขบัญชีรับเงิน 4 ตัวท้าย"><input id="cfSlipHours" type="number" min="1" max="168" placeholder="สลิปไม่เก่ากว่า (ชม.)" aria-label="อายุสลิปสูงสุด ชั่วโมง"></div>
+        <span class="small" id="cfSlipNote" style="text-align:left"></span></div>
         <label class="lbl-s" for="cfPay">ข้อมูลรับเงิน (ผู้เล่นเห็นตอนเติมดาว)</label>
         <textarea id="cfPay" rows="3" maxlength="300" placeholder="เช่น พร้อมเพย์ 08x-xxx-xxxx ชื่อบัญชี ..."></textarea>
         <button class="primary" id="cfSave2" type="button">บันทึกประกาศและตั้งค่า</button>
@@ -2222,8 +2228,9 @@ $("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$
   if(!ONLINE){msg.textContent="เข้าสู่ระบบก่อนนะคะ";return}
   if(!slipFile){msg.textContent="แนบรูปสลิปก่อนนะคะ";return}
   const btn=$("confirmBtn");btn.disabled=true;msg.textContent="กำลังส่งสลิป…";
-  try{const img=await shrink(slipFile);await api("topup",{pack:chosenI,img});
-    msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเองเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="แตะเพื่อเลือกรูปสลิป";$("slipPreview").hidden=true;chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}
+  try{const img=await shrink(slipFile);msg.textContent="กำลังตรวจสลิป…";const r=await api("topup",{pack:chosenI,img});
+    if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว ✨`;toast(`เติม ${r.baht} บาทสำเร็จ +${r.stars} ดาว`);chime(CH.slip["ดีมาก"]);try{await api("me")}catch(_){}}
+    else msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเองเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="แตะเพื่อเลือกรูปสลิป";$("slipPreview").hidden=true;chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}
   catch(e){msg.textContent=e==="locked"?"":(typeof e==="string"?e:"ส่งไม่สำเร็จ ลองใหม่อีกครั้ง")}
   btn.disabled=false});
 async function shrink(file){const url=URL.createObjectURL(file);try{const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะคะ");i.src=url});
@@ -2316,12 +2323,12 @@ function renderAdmin(){if(!AROLE())return;const pend=ADM.pending,hist=ADM.histor
   {const today=dk(Date.now()),baht=hist.filter(r=>r.status==="approved"&&dk(tsOf(r.done_at||r.created_at))===today).reduce((s,r)=>s+(+r.baht||0),0),act=ADM.players.filter(p=>p.last_seen&&dk(tsOf(p.last_seen))===today).length,old=pend.length?Date.now()-tsOf(pend[0].created_at):0;
    $("admSum").innerHTML=`<div class="sum-tile${n?" hot":""}"><b>${n}</b><span>งานรอทำ (สลิป ${pend.length} · สมัคร ${waiting.length})</span></div><div class="sum-tile"><b>${baht.toLocaleString()}</b><span>บาท เติมวันนี้</span></div><div class="sum-tile"><b>${act}</b><span>คนเล่นวันนี้</span></div><div class="sum-tile"><b>${ADM.players.length}</b><span>ผู้เล่นทั้งหมด</span></div>${old>3600e3?`<div class="sum-warn">⚠️ มีสลิปรอนานกว่า 1 ชั่วโมง (เก่าสุด ${ago(tsOf(pend[0].created_at))})</div>`:""}`}
   $("pendList").innerHTML=pend.length?pend.map(r=>`<div class="adm-card" data-rid="${esc(r.id)}"><div class="row"><b>${nmOf(r.user_id)}</b><span class="small">${ago(tsOf(r.created_at))}</span></div>
-     <span>${+r.baht} บาท → ${+r.stars} ดาว</span>${r.slip_url?`<a href="${esc(r.slip_url)}" target="_blank" rel="noopener"><img class="slip-img" src="${esc(r.slip_url)}" alt="สลิปโอนเงิน"></a>`:""}
+     <span>${+r.baht} บาท → ${+r.stars} ดาว</span>${r.auto_note?`<span class="small auto-note">🤖 ตรวจอัตโนมัติไม่ผ่าน: ${esc(r.auto_note)}</span>`:""}${r.slip_url?`<a href="${esc(r.slip_url)}" target="_blank" rel="noopener"><img class="slip-img" src="${esc(r.slip_url)}" alt="สลิปโอนเงิน"></a>`:""}
      <input type="text" class="rej-reason" maxlength="80" placeholder="เหตุผลถ้าไม่อนุมัติ (ไม่บังคับ)"><div class="row" style="justify-content:flex-start"><button class="primary" type="button" data-adm="ok">อนุมัติ เติม ${+r.stars} ดาว</button><button class="ghost" type="button" data-adm="no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีสลิปที่รออยู่</div>`;
   $("signupCount").textContent=waiting.length?waiting.length+" คน":"";
   $("signupList").innerHTML=waiting.length?waiting.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b><span class="small" style="text-align:left;display:block">${esc(p.email||"")} · ${esc(p.phone||"")}${p.created_at?" · สมัคร "+ago(tsOf(p.created_at)):""}</span></div><div class="row" style="flex-wrap:nowrap"><button class="mini" type="button" data-adm="su_ok">อนุมัติ</button><button class="mini" type="button" data-adm="su_no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีคนรออนุมัติ</div>`;
   renderPlayers();renderCodes();
-  $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?"อนุมัติ":"ไม่อนุมัติ"} ${ago(tsOf(r.done_at||r.created_at))}</span></div>${r.slip_path&&isOwn()?`<button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
+  $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?(r.auto?"🤖 อนุมัติอัตโนมัติ":"อนุมัติ"):"ไม่อนุมัติ"} ${ago(tsOf(r.done_at||r.created_at))}</span></div>${r.slip_path&&isOwn()?`<button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
   renderStaff();if(isOwn())fillCfg();mgPreview()}
 document.addEventListener("click",async e=>{const b=e.target.closest("button[data-adm]");if(!b||!AROLE())return;const a=b.dataset.adm,card=b.closest(".adm-card");
   if(!isOwn()&&!["ok","no","su_ok","su_no","pl"].includes(a)){toast("สิทธิ์สตาฟทำรายการนี้ไม่ได้");return}
@@ -2337,7 +2344,7 @@ $("codeList").addEventListener("click",async e=>{const b=e.target.closest("[data
   if(b.dataset.bc==="show"){const t=card.querySelector(".bview");t.hidden=!t.hidden;b.textContent=t.hidden?"ดูโค้ด":"ซ่อน";return}
   if(b.dataset.bc==="off"&&isOwn()){b.disabled=true;try{await api("adm_batch_off",{batch:card.dataset.batch});toast("ปิดทั้งชุดแล้ว");await loadAdmin()}catch(err){if(err!=="locked")toast(err);b.disabled=false}}});
 /* log (owner) */
-const LOG_TXT={topup_ok:["topup","อนุมัติเติมดาว",d=>`${d.baht} บาท → ${d.stars} ดาว`],topup_no:["topup","ไม่อนุมัติเติมดาว",d=>`${d.baht} บาท`],give:["player","ส่ง/หักของ",d=>[d.s?"ดาว "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
+const LOG_TXT={topup_ok:["topup","อนุมัติเติมดาว",d=>`${d.baht} บาท → ${d.stars} ดาว${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมดาว",d=>`${d.baht} บาท`],give:["player","ส่ง/หักของ",d=>[d.s?"ดาว "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
   approve:["player","อนุมัติสมัคร",()=>""],deny:["player","ไม่อนุมัติสมัคร",()=>""],ban:["player","ระงับบัญชี",d=>d.reason?"เหตุผล: "+d.reason:""],unban:["player","ปลดระงับ",()=>""],reset:["player","ล้างข้อมูลเกม",()=>""],setpass:["player","ตั้งรหัสผ่านใหม่",()=>""],
   admin:["player","เปลี่ยนสิทธิ์แอดมิน",d=>d.on?"ให้สิทธิ์":"ปลดสิทธิ์"],staff_on:["player","ตั้งเป็นสตาฟ",()=>""],staff_off:["player","ปลดสิทธิ์สตาฟ",()=>""],rename:["player","เปลี่ยนชื่อ",d=>`จาก ${d.from||"-"} เป็น ${d.to||"-"}`],
   mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" ดาว":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],
@@ -2409,7 +2416,7 @@ function readRates(){const g=(k,from)=>RAR.map((r,i)=>{if(i<from)return 0;const 
   const n=g("n",0),r=g("r",2),ok=a=>Math.abs(a.reduce((x,y)=>x+y,0)-100)<0.05;return ok(n)&&ok(r)?{n,r}:null}
 document.addEventListener("input",e=>{if(e.target.matches&&e.target.matches("[data-rk]"))showRateSums()});
 $("rtReset").addEventListener("click",()=>{$("rtN").innerHTML=rateRow("n",RATE_N0,0);$("rtR").innerHTML=rateRow("r",RATE_R0,2);showRateSums()});
-function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;fillRates();$("cfApproval").checked=!!CFG.approval;$("cfSms").checked=!!CFG.sms;$("cfSmsNote").textContent=CFG.smsReady?"ระบบ SMS พร้อมใช้":"ยังไม่ได้ใส่คีย์ SMS ในหลังบ้าน เปิดไว้คนจะสมัครไม่ได้";
+function fillCfg(force){if(cfgFilled&&!force)return;cfgFilled=true;$("cfPay").value=CFG.pay||"";$("cfAnn").value=CFG.ann||"";$("cfMaint").checked=!!CFG.maint;fillRates();$("cfApproval").checked=!!CFG.approval;if($("cfSlipAuto")){$("cfSlipAuto").checked=!!CFG.slipAuto;$("cfSlipName").value=CFG.slipName||"";$("cfSlipTail").value=CFG.slipTail||"";$("cfSlipHours").value=CFG.slipHours||24;$("cfSlipNote").textContent=CFG.slipReady?"✅ ใส่คีย์ตรวจสลิปแล้ว พร้อมใช้":"⚠️ ยังไม่ได้ใส่คีย์ตรวจสลิป (SLIP_KEY) ในหลังบ้าน เปิดไว้ก็ยังตรวจมือเหมือนเดิม"}$("cfSms").checked=!!CFG.sms;$("cfSmsNote").textContent=CFG.smsReady?"ระบบ SMS พร้อมใช้":"ยังไม่ได้ใส่คีย์ SMS ในหลังบ้าน เปิดไว้คนจะสมัครไม่ได้";
   $("cfPacks").innerHTML=PACKS.concat([{},{}]).slice(0,6).map((p,i)=>`<div class="row cf-row" style="flex-wrap:nowrap"><input type="number" min="0" data-k="baht" value="${p.baht||""}" placeholder="บาท" aria-label="ราคาแพ็ก ${i+1}"><input type="number" min="0" data-k="stars" value="${p.stars||""}" placeholder="ดาว" aria-label="ดาวแพ็ก ${i+1}"><input type="text" maxlength="20" data-k="tag" value="${esc(p.tag||"")}" placeholder="ป้าย" aria-label="ป้ายแพ็ก ${i+1}"></div>`).join("")}
 $("cfSmsTest").addEventListener("click",async()=>{const ph=$("cfSmsPhone").value.trim(),m=$("cfSmsNote");if(!ph){m.textContent="ใส่เบอร์ที่จะส่งทดสอบก่อน";return}
   const b=$("cfSmsTest");b.disabled=true;m.textContent="กำลังส่ง SMS ทดสอบ…";
@@ -2419,7 +2426,7 @@ $("cfSave2").addEventListener("click",()=>$("cfSave").click());
 $("cfSave").addEventListener("click",async()=>{if(!isOwn())return;const packs=[...$("cfPacks").querySelectorAll(".cf-row")].map(r=>({baht:+r.querySelector('[data-k="baht"]').value||0,stars:+r.querySelector('[data-k="stars"]').value||0,tag:r.querySelector('[data-k="tag"]').value.trim()})).filter(p=>p.baht>0&&p.stars>0);
   if(!packs.length){cfMsgAll("ต้องมีแพ็กอย่างน้อย 1 แพ็ก");return}
   const rates=readRates();if(!rates){cfMsgAll("เรทสุ่มต้องรวมได้ 100% ทั้งสองแบบ");return}
-  try{await api("adm_cfg",{rates,pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,packs});await api("me");render();fillCfg(true);loadLogs();cfMsgAll("บันทึกแล้ว ผู้เล่นเห็นทันที");toast("บันทึกการตั้งค่าแล้ว")}catch(e){cfMsgAll(e==="locked"?"":e)}});
+  try{await api("adm_cfg",{rates,pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,...($("cfSlipAuto")?{slipAuto:$("cfSlipAuto").checked,slipName:$("cfSlipName").value.trim(),slipTail:$("cfSlipTail").value.trim(),slipHours:parseInt($("cfSlipHours").value)||24}:{}),packs});await api("me");render();fillCfg(true);loadLogs();cfMsgAll("บันทึกแล้ว ผู้เล่นเห็นทันที");toast("บันทึกการตั้งค่าแล้ว")}catch(e){cfMsgAll(e==="locked"?"":e)}});
 $("ncBtn").addEventListener("click",async()=>{if(!isOwn())return;const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),rt=Math.max(0,Math.min(20,parseInt($("ncRTickets").value)||0)),msg=$("ncMsg");
   if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!t&&!rt){msg.textContent="ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";return}
   const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
