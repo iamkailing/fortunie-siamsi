@@ -833,6 +833,57 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .paid-stars{font-family:var(--f-display);font-size:44px;line-height:1.1;color:var(--butter);text-shadow:0 0 20px #f0d28a66;font-variant-numeric:tabular-nums}
 .paid-pop .primary{margin-top:12px;width:100%}
 @media (prefers-reduced-motion:reduce){.paid-ic svg{animation:none}}
+/* ---- top-up v80 (brief: calm premium purple, two cards) — scoped to .ps-mode ---- */
+.sheet.ps-mode{--ps-bg:#171126;--ps-card:#241B34;--ps-sf:#2E223F;--ps-line:#473956;--ps-tx:#F7F4FF;--ps-tx2:#C4B8D5;--ps-gold:#F3D68D;background:var(--ps-bg);color:var(--ps-tx);font-size:16px;line-height:1.65}
+.ps-mode #sheetTitle{font-family:var(--f-display);font-size:29px;font-weight:600;color:var(--ps-tx)}
+.ps-mode .packs{display:block}
+.ps-mode .pay-simple,.ps-mode .ps-lead{grid-column:auto}
+.ps-lead{margin:-6px 0 18px;color:var(--ps-tx2);font-size:15px}
+.ps-rate{padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--ps-line)}
+.ps-rate p{margin:0}
+.ps-rate1{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.ps-rate1 b{font-family:var(--f-display);font-size:22px;color:var(--ps-gold)}.ps-rate1 span{color:var(--ps-tx2);font-size:15px}
+.ps-rate2{color:var(--ps-tx);font-size:15px;margin-top:4px!important}
+.ps-disc{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:none;color:var(--ps-tx2);font:inherit;font-size:14px;cursor:pointer}
+.ps-disc:focus-visible,.ps-copy:focus-visible,.ps-link:focus-visible,.ps-mode #confirmBtn:focus-visible,.ps-mode .upload:focus-within{outline:2px solid var(--ps-gold);outline-offset:2px;border-radius:8px}
+.ps-chev{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;rotate:45deg;translate:0 -2px;transition:rotate .2s}
+.ps-disc[aria-expanded="true"] .ps-chev{rotate:225deg;translate:0 2px}
+.ps-rates-body{margin-top:4px;padding:12px 14px;border-radius:14px;background:var(--ps-sf);font-size:14px;color:var(--ps-tx2)}
+.ps-rates-body table{width:100%;border-collapse:collapse}.ps-rates-body td{padding:4px 0}.ps-rates-body td+td{text-align:right;color:var(--ps-tx)}
+.ps-rates-body p{margin:8px 0 0;font-size:13px}
+.ps-mode .ps-card{display:flex;flex-direction:column;gap:6px;background:var(--ps-card);border:1px solid var(--ps-line);border-radius:18px;padding:20px;margin:0 0 22px;box-shadow:none;text-align:left;align-items:stretch}
+.ps-card h3{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--ps-tx)}
+.ps-step{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--ps-line);color:var(--ps-gold);font-size:15px;font-family:inherit}
+.ps-k{color:var(--ps-tx2);font-size:14px}
+.ps-acctrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.ps-acct{font-family:var(--f-display);font-size:26px;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:var(--ps-tx);word-break:keep-all;white-space:nowrap}
+.ps-copy{min-height:44px;min-width:76px;padding:0 16px;border-radius:12px;border:1px solid var(--ps-line);background:var(--ps-sf);color:var(--ps-tx);font:inherit;font-size:15px;cursor:pointer}
+.ps-name{color:var(--ps-tx2);font-size:15px}
+.ps-copied{min-height:1em;font-size:13px;color:var(--ps-gold)}
+.ps-qrwrap{border-top:1px solid var(--ps-line);margin-top:8px;padding-top:4px}
+.ps-qrbtn{width:100%;justify-content:space-between;color:var(--ps-tx);font-size:15px}
+.ps-qrbox{padding:6px 0 4px;text-align:center}
+.ps-qr{width:min(260px,100%);height:auto;border-radius:12px;background:#fff;padding:10px;box-sizing:border-box;image-rendering:auto}
+.ps-mode #confirm{gap:10px}
+.ps-mode .upload{display:flex;align-items:center;gap:14px;min-height:72px;padding:16px;border-radius:14px;border:1.5px solid var(--ps-line);background:var(--ps-sf);color:var(--ps-tx);cursor:pointer;position:relative}
+.ps-mode .upload::before{content:"";width:22px;height:22px;flex:none;background:var(--ps-tx2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3l5 5h-3v7h-4V8H7zM5 19h14v2H5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3l5 5h-3v7h-4V8H7zM5 19h14v2H5z'/%3E%3C/svg%3E") center/contain no-repeat}
+.ps-mode #slipName{font-weight:600}
+.ps-mode #slipPreview{max-height:180px;width:auto;max-width:100%;align-self:flex-start;border-radius:10px;border:1px solid var(--ps-line)}
+.ps-file{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;color:var(--ps-tx2)}.ps-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ps-link{min-height:44px;padding:0 6px;border:0;background:none;color:var(--ps-gold);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
+.ps-note{margin:2px 0 4px;font-size:14px;color:var(--ps-tx2);line-height:1.6}
+.ps-mode #confirmBtn{min-height:52px;border-radius:14px;background:var(--ps-gold);color:#241B34;font-family:var(--f-display);font-size:17px;font-weight:600;border:0}
+.ps-mode #confirmBtn:disabled{background:var(--ps-sf);color:var(--ps-tx2);border:1px dashed var(--ps-line);cursor:not-allowed;opacity:1}
+.ps-mode #confirmBtn[aria-busy="true"]{background:#c9b073;color:#241B34;border:0;cursor:progress}
+.ps-hint{margin:0;text-align:center;font-size:13px;color:var(--ps-tx2);min-height:1em}
+.ps-mode #payMsg{font-size:14px;color:var(--ps-tx)}
+.ps-mode #payInfo{color:var(--ps-tx2);font-size:14px}
+.ps-mode #psBaht{width:100%;box-sizing:border-box;min-height:44px;border:1px solid var(--ps-line);background:var(--ps-sf);color:var(--ps-tx);border-radius:12px;padding:10px 12px;font:inherit;margin:6px 0 22px}
+@media (max-width:340px){.ps-acct{font-size:22px}.ps-mode .ps-card{padding:18px}}
+.ps-mode .ps-acct{display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left;align-items:initial;flex:0 1 auto;min-width:0}
+.ps-mode .upload{justify-content:flex-start;text-align:left}
+.ps-mode .upload span{text-align:left}
+.ps-mode .ps-acctrow{flex-wrap:nowrap}.ps-mode .ps-acct{font-size:clamp(20px,6.2vw,26px)}
+@media (max-width:340px){.ps-mode .ps-acctrow{flex-wrap:wrap}}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -2254,21 +2305,37 @@ let chosen=null,chosenI=-1,slipFile=null;
 const TOPUP_MIN=50;
 function starsFor(baht){baht=Math.floor(+baht||0);if(baht<TOPUP_MIN)return 0;const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);if(!ps.length)return 0;
   let t=ps[0];for(const p of ps)if(p.baht<=baht)t=p;return Math.floor(baht*t.stars/t.baht)}
-/* simple top-up (like big games): one account card + QR, attach slip, the server reads the amount */
+/* simple top-up: header + rates, card 1 = transfer, card 2 (#confirm) = attach slip. UI only: rates, account and checks come from the server */
 function renderPaySimple(){chosen={simple:true};const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);
-  const rate=p=>Math.round(p.stars/p.baht*100)/100;
-  $("packs").innerHTML=`<div class="pay-simple">
-    <div class="ps-head"><b>เติมดาว</b><span>โอนเข้าบัญชีธนาคาร · ขั้นต่ำ ${TOPUP_MIN} บาท</span></div>
-    <div class="ps-rates">${ps.map(p=>`<span>${p.baht} บาทขึ้นไป · บาทละ ${rate(p)} ดาว</span>`).join("")}</div>
-    <div class="ps-acct"><span class="small">โอนเข้าบัญชีธนาคาร</span><b class="ps-name">${esc(CFG.payName||"")}</b>
-      <div class="ps-no"><div><span class="small">${esc(CFG.payBank||"")}</span><b id="psNo">${esc(CFG.payNo)}</b></div><button class="mini" id="psCopy" type="button">คัดลอก</button></div>
-      ${PAY_QR?`<img class="ps-qr" src="${PAY_QR}" alt="QR พร้อมเพย์ สแกนเพื่อโอนเข้าบัญชีนี้">`:""}
-      <p class="ps-warn">โอนจากแอปธนาคารเท่านั้น<br>ใช้ได้เฉพาะสลิปที่มี QR · สลิปจาก TrueMoney Wallet ใช้ไม่ได้</p></div>
-    ${CFG.autoSlip?"":`<input id="psBaht" type="number" inputmode="numeric" min="${TOPUP_MIN}" placeholder="ยอดที่โอน (บาท)" aria-label="ยอดที่โอน">`}
-    <div class="row ps-sliphead"><b class="small">สลิปการโอน</b><span class="small">ภายใน 24 ชม. หลังโอน</span></div></div>`;
-  $("confirm").hidden=false;$("confirmText").hidden=true;$("payInfo").textContent=CFG.pay||"";$("slipLabel").hidden=false;$("confirmBtn").disabled=false;
-  $("confirmBtn").textContent=CFG.autoSlip?"ตรวจสลิปและเติมดาว":"ส่งสลิปให้แอดมิน";
-  $("shopNote").textContent=CFG.autoSlip?"โอนแล้วแนบสลิป ระบบตรวจให้อัตโนมัติ ดาวเข้าทันที":"โอนแล้วแนบสลิป แอดมินจะตรวจและเติมดาวให้"}
+  const rate=p=>Math.round(p.stars/p.baht*100)/100,base=ps[0],bonus=base&&ps.find(p=>rate(p)>rate(base)),hrs=CFG.slipMaxH||24;
+  const sheet=document.querySelector("#scrim .sheet");if(sheet)sheet.classList.add("ps-mode");$("sheetTitle").textContent="เติมดาว";$("shopNote").hidden=true;
+  $("packs").innerHTML=`<p class="ps-lead">โอนเงิน แล้วแนบสลิปเพื่อตรวจสอบ</p>
+    <div class="ps-rate">${base?`<p class="ps-rate1"><b>เริ่มต้น ${TOPUP_MIN} บาท</b><span>· บาทละ ${rate(base)} ดาว</span></p>`:""}
+      ${bonus?`<p class="ps-rate2">${bonus.baht.toLocaleString()} บาทขึ้นไป รับดาวเพิ่ม</p>`:""}
+      <button class="ps-disc" id="psRatesBtn" type="button" aria-expanded="false" aria-controls="psRates">ดูอัตราทั้งหมด <span class="ps-chev" aria-hidden="true"></span></button>
+      <div id="psRates" class="ps-rates-body" hidden><table><tbody>${ps.map((p,k)=>`<tr><td>${k?"ตั้งแต่ ":""}${(k?p.baht:TOPUP_MIN).toLocaleString()} บาท${k?"":" ขึ้นไป"}</td><td>บาทละ ${rate(p)} ดาว</td></tr>`).join("")}</tbody></table>
+        <p>ดาวคิดจากยอดเงินจริงในสลิป ใช้อัตราของขั้นที่ยอดถึง แล้วปัดเศษลง เช่น โอน ${(bonus?bonus.baht:100).toLocaleString()} บาท ได้ ${starsFor(bonus?bonus.baht:100).toLocaleString()} ดาว</p></div></div>
+    <section class="ps-card" aria-labelledby="psH1"><h3 id="psH1"><span class="ps-step" aria-hidden="true">1</span>โอนเงินเข้าบัญชี</h3>
+      <span class="ps-k">${esc(CFG.payBank||"ธนาคารผู้รับ")}</span>
+      <div class="ps-acctrow"><b class="ps-acct" id="psNo">${esc(CFG.payNo)}</b><button class="ps-copy" id="psCopy" type="button" aria-describedby="psNo">คัดลอก</button></div>
+      <span class="ps-name">${esc(CFG.payName||"")}</span><span class="ps-copied" id="psCopied" role="status" aria-live="polite"></span>
+      ${PAY_QR?`<div class="ps-qrwrap"><button class="ps-disc ps-qrbtn" id="psQrBtn" type="button" aria-expanded="false" aria-controls="psQr">แสดง QR สำหรับโอนเงิน <span class="ps-chev" aria-hidden="true"></span></button>
+        <div id="psQr" class="ps-qrbox" hidden><img class="ps-qr" src="${PAY_QR}" alt="QR พร้อมเพย์ของบัญชีนี้ สแกนด้วยแอปธนาคาร"></div></div>`:""}
+    </section>
+    ${CFG.autoSlip?"":`<label class="ps-k" for="psBaht">ยอดที่โอน (บาท)</label><input id="psBaht" type="number" inputmode="numeric" min="${TOPUP_MIN}" placeholder="เช่น ${TOPUP_MIN}">`}`;
+  const c=$("confirm");c.hidden=false;c.classList.add("ps-card","ps-card2");$("confirmText").hidden=true;
+  if(!$("psH2")){c.insertAdjacentHTML("afterbegin",`<h3 id="psH2"><span class="ps-step" aria-hidden="true">2</span>แนบสลิปการโอน</h3>`);c.setAttribute("aria-labelledby","psH2");
+    $("slipLabel").insertAdjacentHTML("afterend",`<div class="ps-file" id="psFile" hidden><span id="psFileName"></span><button class="ps-link" id="psRemove" type="button">นำออก</button></div><p class="ps-note" id="psNote"></p>`);
+    $("confirmBtn").insertAdjacentHTML("afterend",`<p class="ps-hint" id="psHint"></p>`);
+    $("psRemove").addEventListener("click",()=>{slipFile=null;$("slipIn").value="";$("slipPreview").hidden=true;$("slipName").textContent="เลือกรูปสลิป";syncPaySimple();$("slipIn").focus()});
+    $("slipIn").addEventListener("change",syncPaySimple)}
+  $("psNote").innerHTML=`ใช้สลิปธนาคารไทยที่มี QR<br>ภายใน ${hrs} ชั่วโมงหลังโอน · ไม่รับสลิป TrueMoney Wallet`;
+  $("payMsg").setAttribute("role","status");$("payMsg").setAttribute("aria-live","polite");
+  $("payInfo").textContent=CFG.pay||"";$("payInfo").hidden=!CFG.pay;$("slipLabel").hidden=false;syncPaySimple()}
+function syncPaySimple(){if(!$("psFile"))return;const has=!!slipFile,busyNow=$("confirmBtn").getAttribute("aria-busy")==="true";
+  $("psFile").hidden=!has;$("psFileName").textContent=has?slipFile.name:"";if(!has)$("slipName").textContent="เลือกรูปสลิป";else $("slipName").textContent="เปลี่ยนรูปสลิป";
+  $("confirmBtn").disabled=!has||busyNow;if(!busyNow)$("confirmBtn").textContent="ตรวจสลิปและเติมดาว";
+  $("psHint").textContent=busyNow?"กำลังตรวจสอบสลิป อย่าปิดหน้านี้":has?"":"แนบสลิปก่อนดำเนินการต่อ"}
 /* full success screen after an automatic top-up */
 function showPaid(baht,stars){$("paidStars").textContent="0";$("paidInfo").textContent=`โอน ${(+baht).toLocaleString()} บาท · ตรวจสลิปอัตโนมัติแล้ว`;$("paidTotal").textContent=`ดาวทั้งหมดตอนนี้ ${(+S.stars||0).toLocaleString()} ดาว`;
   $("paidModal").hidden=false;$("paidOk").focus();burst(3,"#f0d28a");try{chime(CH.slip["ดีมาก"])}catch(_){}
@@ -2284,23 +2351,29 @@ function renderMyReqs(){
   const pend=MYREQ.filter(r=>r.status==="pending").length;$("badgeShop").hidden=!pend;$("badgeShop").textContent=pend||"";
   $("myReqs").innerHTML=MYREQ.length?`<b class="small" style="text-align:left">คำขอเติมดาวของคุณ</b>`+MYREQ.slice(0,6).map(r=>`<div class="req"><span>${r.baht} บาท · ${r.stars} ดาว</span><span class="st ${r.status}">${{pending:"รอตรวจ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"}[r.status]||r.status}</span>${r.reason?`<span class="small" style="text-align:left;width:100%">${esc(r.reason)}</span>`:""}</div>`).join(""):""}
 $("packs").addEventListener("input",e=>{if(e.target.id!=="anyBaht")return;const v=Math.floor(+e.target.value||0);$("anyStars").textContent=v>=TOPUP_MIN?`ได้ ${starsFor(v)} ดาว`:`ขั้นต่ำ ${TOPUP_MIN} บาท`});
-$("packs").addEventListener("click",e=>{if(e.target.closest("#psCopy")){const t=CFG.payNo||"";(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("คัดลอกเลขบัญชีแล้ว")).catch(()=>toast("เลขบัญชี "+t));return}
+$("packs").addEventListener("click",e=>{const dz=e.target.closest(".ps-disc");if(dz){const box=$(dz.getAttribute("aria-controls")),open=dz.getAttribute("aria-expanded")!=="true";dz.setAttribute("aria-expanded",open);box.hidden=!open;return}
+  if(e.target.closest("#psCopy")){const t=String(CFG.payNo||"").replace(/\s+/g,""),done=()=>{$("psCopied").textContent="คัดลอกแล้ว";clearTimeout(window._psc);window._psc=setTimeout(()=>{const x=$("psCopied");if(x)x.textContent=""},2200)};
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done).catch(()=>{$("psCopied").textContent="คัดลอกไม่ได้ กดค้างที่เลขบัญชีเพื่อคัดลอกเอง"});return}
   if(e.target.closest("#anyGo")){const v=Math.floor(+$("anyBaht").value||0);if(v<TOPUP_MIN){$("anyStars").textContent=`ขั้นต่ำ ${TOPUP_MIN} บาท`;return}
     chosen={baht:v,stars:starsFor(v),custom:true};if(typeof chosenI!=="undefined")chosenI=-1;renderShop();$("confirm").hidden=false;$("payMsg").textContent="";$("confirmText").textContent=`${chosen.stars} ดาว ราคา ${chosen.baht} บาท`;return}
   const b=e.target.closest(".pack[data-i]");if(!b)return;chosenI=+b.dataset.i;chosen=PACKS[chosenI];renderShop();$("confirm").hidden=false;$("payMsg").textContent="";
   $("confirmText").textContent=`${chosen.stars} ดาว ราคา ${chosen.baht} บาท`});
 $("slipIn").addEventListener("change",()=>{slipFile=$("slipIn").files[0]||null;$("slipName").textContent=slipFile?slipFile.name:"แตะเพื่อเลือกรูปสลิป";
   const pv=$("slipPreview");if(slipFile){pv.src=URL.createObjectURL(slipFile);pv.hidden=false}else pv.hidden=true});
-$("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$("payMsg");
+$("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$("payMsg"),btn=$("confirmBtn");
+  if(btn.getAttribute("aria-busy")==="true")return; /* no double submit while a check is running */
   if(!ONLINE){msg.textContent="เข้าสู่ระบบก่อนนะคะ";return}
   if(!slipFile){msg.textContent="แนบรูปสลิปก่อนนะคะ";return}
-  const btn=$("confirmBtn");btn.disabled=true;msg.textContent="กำลังส่งสลิป…";
-  try{const img=await shrink(slipFile);msg.textContent="กำลังตรวจสลิป…";const r=await api("topup",chosen.simple?{any:1,baht:Math.floor(+(($("psBaht")||{}).value)||0),img}:chosen.custom?{baht:chosen.baht,img}:{pack:chosenI,img});
-    if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว ✨`;try{await api("me")}catch(_){}showPaid(r.baht,r.stars)}
-    else if(r&&r.rejected){msg.textContent="สลิปไม่ผ่าน: "+r.reason;toast("สลิปไม่ผ่าน");btn.disabled=false;try{await api("me")}catch(_){}return}
-    else msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเองเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="แตะเพื่อเลือกรูปสลิป";$("slipPreview").hidden=true;chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}
-  catch(e){msg.textContent=e==="locked"?"":(typeof e==="string"?e:"ส่งไม่สำเร็จ ลองใหม่อีกครั้ง")}
-  btn.disabled=false});
+  const done=()=>{btn.removeAttribute("aria-busy");btn.disabled=false;if(typeof syncPaySimple==="function")syncPaySimple()};
+  btn.setAttribute("aria-busy","true");btn.disabled=true;btn.textContent="กำลังตรวจสลิป…";msg.textContent="";if(typeof syncPaySimple==="function")syncPaySimple();
+  try{const img=await shrink(slipFile);const r=await api("topup",chosen.simple?{any:1,baht:Math.floor(+(($("psBaht")||{}).value)||0),img}:chosen.custom?{baht:chosen.baht,img}:{pack:chosenI,img});
+    if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว`;slipFile=null;$("slipIn").value="";$("slipPreview").hidden=true;done();try{await api("me")}catch(_){}showPaid(r.baht,r.stars);return}
+    if(r&&r.rejected){msg.textContent="สลิปไม่ผ่าน: "+r.reason;done();try{await api("me")}catch(_){}return}
+    msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="เลือกรูปสลิป";$("slipPreview").hidden=true;done();
+    if(!chosen.simple){chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}else{try{await api("me")}catch(_){}}}
+  catch(e){if(e==="locked"){msg.textContent=""}else if(typeof e==="string"&&!/^เชื่อมต่อไม่ได้/.test(e)){msg.textContent=e}
+    else{msg.textContent="ยังไม่แน่ใจว่าระบบได้รับสลิปแล้วหรือยัง ดูสถานะใน “คำขอเติมดาวของคุณ” ด้านล่างก่อนส่งซ้ำนะคะ";try{await api("me")}catch(_){}}
+    done()}});
 async function shrink(file){const url=URL.createObjectURL(file);try{const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะคะ");i.src=url});
   const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.85)}finally{URL.revokeObjectURL(url)}}
 async function redeem(){const v=$("codeIn").value.trim().toUpperCase(),msg=$("codeMsg");if(!v){msg.textContent="ใส่โค้ดก่อนนะคะ";return}
