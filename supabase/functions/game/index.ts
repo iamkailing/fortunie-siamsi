@@ -581,13 +581,19 @@ Deno.serve(async (req) => {
     if (a === "otp_send") return await otpSend(p);
     if (a === "resolve") return await resolveId(p);
     const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
+    /* speed: read the user id hint from the token and start the database reads while the token is being verified.
+       nothing fetched here is used unless the verified id matches */
+    let hint = ""; try { const b = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"); hint = String(JSON.parse(atob(b + "===".slice((b.length + 3) % 4))).sub || ""); } catch (_) {}
+    const TOPS = id => sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", id).order("created_at", { ascending: false }).limit(8);
+    const pre = hint ? { prof: Promise.resolve(sb.from("profiles").select("*").eq("id", hint).single()).catch(() => ({ data: null })), st: loadState(hint).catch(() => null), tops: Promise.resolve(TOPS(hint)).catch(() => ({ data: [] })) } : null;
+    const cfgP = getConfig();
     const { data: ud, error: ue } = await sb.auth.getUser(token);
     if (ue || !ud || !ud.user) return fail("กรุณาเข้าสู่ระบบใหม่", 401);
-    const uid = ud.user.id;
-    const { data: prof } = await sb.from("profiles").select("*").eq("id", uid).single();
+    const uid = ud.user.id, usePre = !!pre && hint === uid;
+    const { data: prof } = usePre ? await pre.prof : await sb.from("profiles").select("*").eq("id", uid).single();
     if (!prof) return fail("ไม่พบบัญชีผู้เล่น", 401);
     const ADMIN = !!prof.is_admin, STAFF = !ADMIN && !!prof.staff;
-    const cfg = await getConfig();
+    const cfg = await cfgP;
     if (prof.banned && !ADMIN) return out({ locked: "ban", reason: prof.ban_reason, profile: { name: prof.name, code: prof.code } });
     if (cfg.maint && !ADMIN && !STAFF) return out({ locked: "maint", profile: { name: prof.name, code: prof.code } });
     if (prof.approved === false && !ADMIN) return out({ locked: "pending", profile: { name: prof.name, code: prof.code } });
@@ -600,7 +606,8 @@ Deno.serve(async (req) => {
 
     let res = null, G = null;
     for (let attempt = 0; attempt < 3; attempt++) {
-      const { st, ver } = await loadState(uid); G = Game(st, Date.now(), ADMIN); G.applyRates(cfg.rates); G.norm();
+      const L0 = attempt === 0 && usePre ? await pre.st : null; const { st, ver } = L0 || await loadState(uid); const snap = ver >= 0 ? JSON.stringify(st) : "";
+      G = Game(st, Date.now(), ADMIN); G.applyRates(cfg.rates); G.norm();
       const expired = G.prune(); G.regen();
       switch (a) {
         case "me": res = { expired }; break;
@@ -623,6 +630,7 @@ Deno.serve(async (req) => {
         case "reset_me": if (!ADMIN) throw "เฉพาะแอดมิน"; G.S = fresh(); res = { ok: true }; break;
         default: return fail("คำสั่งไม่ถูกต้อง");
       }
+      if (snap && a !== "redeem" && JSON.stringify(G.S) === snap) break; /* nothing changed: skip the write */
       try { await saveState(uid, G.S, ver); break; } catch (e) { if (attempt === 2 || a === "redeem") throw e; }
     }
     /* keep the public leaderboard row in step with the saved game */
@@ -632,7 +640,7 @@ Deno.serve(async (req) => {
       if (sc !== (prof.score || 0)) await sb.from("profiles").update({ score: sc, score_at: new Date().toISOString(), ...look }).eq("id", uid);
       else if (!same) await sb.from("profiles").update(look).eq("id", uid); }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
-    const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
+    const { data: tops } = usePre ? await pre.tops : await TOPS(uid);
     return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, staff: STAFF, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, rates: G.applyRates(cfg.rates), approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET), autoSlip: !!(cfg.slip_auto && SLIP_KEY), payBank: cfg.pay_bank || "", payNo: cfg.pay_no || "", payName: cfg.slip_name || "", topupMin: TOPUP_MIN, slipMaxH: cfg.slip_hours || 24, ...(ADMIN ? { slipAuto: !!cfg.slip_auto, slipName: cfg.slip_name || "", slipTail: cfg.slip_tail || "", slipHours: cfg.slip_hours || 24, slipReady: !!SLIP_KEY } : {}) }, topups: tops || [] });
   } catch (e) {
     return fail(typeof e === "string" ? e : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", typeof e === "string" ? 400 : 500);
