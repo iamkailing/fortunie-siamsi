@@ -870,7 +870,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
       <div class="meter" aria-hidden="true"><i id="meter"></i></div>
       <button class="hold" id="holdBtn" type="button">กดค้างเพื่อเขย่า</button>
       <div class="motion-box" id="motionBox" hidden><div class="mo-ic" aria-hidden="true">📳</div><b>เขย่ามือถือได้เลย!</b><span class="small" id="motionHint"></span>
-        <div class="row" style="justify-content:center;gap:8px"><button class="primary" id="motionSkip" type="button">ข้าม ⏭</button><button class="ghost" id="motionCancel" type="button">ยกเลิก</button></div></div>
+        <div class="row" style="justify-content:center;gap:8px"><button class="ghost" id="motionCancel" type="button">ยกเลิก</button></div></div>
       <p class="small" id="holdHint">หรือแตะปุ่มรัว ๆ ก็ได้</p>
       <p class="small" id="chargeInfo"></p>
       <div class="full-box" id="fullBox" hidden><b>คลังเต็มแล้ว</b><span>เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้</span><button class="burn" type="button" id="fullGo">🔥 ไปเคลียร์คลัง</button></div>
@@ -1632,7 +1632,7 @@ const invFull=()=>S.inv.length>=INV_MAX;
 function canDraw(){regen();return ONLINE&&(paidPending||S.charges>0||S.bonusFree>0)}
 function loop(ts){const dt=Math.min(50,ts-(last||ts));last=ts;
   if(MO.on)holding=MO.skip||performance.now()-MO.t<260;
-  energy=holding?Math.min(1,energy+dt/(MO.skip?420:1700)):Math.max(0,energy-dt/(MO.on?4000:2500));$("meter").style.width=(energy*100)+"%";
+  energy=holding?Math.min(1,energy+dt/(MO.on?3400:1700)):Math.max(0,energy-dt/(MO.on?4000:2500));$("meter").style.width=(energy*100)+"%";
   const amp=reduce?0:(holding?4+energy*9:energy*4);tube.style.transform=amp?`rotate(${Math.sin(ts/(70-energy*30))*amp}deg) translateX(${Math.sin(ts/50)*amp*.4}px)`:"";
   if((holding||energy>.05)&&ts-lastClack>(140-energy*80)){clack();lastClack=ts}
   if(energy>=1){finishShake();return}
@@ -1651,9 +1651,8 @@ async function motionStart(){if(invFull()){toast("คลังเต็มแล
   if(MO.ok===false||!phoneLike()||S.noMotion)return false;
   try{if(typeof DeviceMotionEvent.requestPermission==="function"){const r=await DeviceMotionEvent.requestPermission();if(r!=="granted"){MO.ok=false;toast("ไม่ได้อนุญาตเซนเซอร์ กดค้างปุ่มเพื่อเขย่าแทนได้นะคะ");return false}}}catch(_){MO.ok=false;return false}
   ac();MO.on=true;MO.skip=false;MO.got=false;MO.t=0;MO.prev=null;window.addEventListener("devicemotion",onMotion);
-  $("motionBox").hidden=false;hb.hidden=true;$("motionHint").textContent="เขย่ามือถือเบา ๆ จนหลอดเต็ม";kick();
+  $("motionBox").hidden=false;hb.hidden=true;$("motionHint").textContent="เขย่าแรง ๆ ต่อเนื่องจนหลอดเต็ม";kick();
   MO.timer=setTimeout(()=>{if(MO.on&&!MO.got){MO.ok=false;motionOff();toast("เครื่องนี้ไม่มีเซนเซอร์เขย่า กดค้างปุ่มแทนได้เลย")}},1800);return true}
-$("motionSkip").addEventListener("click",()=>{if(!MO.on)return;MO.skip=true;kick()});
 $("motionCancel").addEventListener("click",()=>{motionOff()});
 function syncHoldLabel(){const m=phoneLike()&&MO.ok!==false&&!S.noMotion;hb.textContent=m?"แตะแล้วเขย่ามือถือ":"กดค้างเพื่อเขย่า";$("holdHint").textContent=m?"หรือกดค้างปุ่มไว้ก็ได้":"หรือแตะปุ่มรัว ๆ ก็ได้"}
 let tapT=0;
@@ -1667,7 +1666,7 @@ hb.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")stopHold()});
 
 /* ---------- draw ---------- */
 let cur=null,ticketMode=false;
-async function finishShake(){
+async function finishShake(){motionOff();
   busy=true;holding=false;cancelAnimationFrame(raf);raf=0;energy=0;$("meter").style.width="0";tube.style.transform="";
   let r;try{r=await api("shake",{paid:paidPending})}catch(e){busy=false;if(e!=="locked")toast(e);render();return}
   paidPending=false;cur=r;
