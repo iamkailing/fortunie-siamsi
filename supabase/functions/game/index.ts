@@ -278,7 +278,7 @@ const int = (v, lo, hi) => { const n = Math.trunc(Number(v) || 0); return Math.m
 
 let CFG_C = null, CFG_AT = 0;
 async function getConfig() { if (CFG_C && Date.now() - CFG_AT < 10000) return CFG_C; CFG_C = await getConfigRaw(); CFG_AT = Date.now(); return CFG_C; }
-async function getConfigRaw() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates,slip_auto,slip_name,slip_tail,slip_hours").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
+async function getConfigRaw() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates,slip_auto,slip_name,slip_tail,slip_hours,pay_bank,pay_no").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
 async function loadState(uid) {
   const { data } = await sb.from("player_state").select("state,ver").eq("id", uid).maybeSingle();
   return data ? { st: Object.assign(fresh(), data.state), ver: data.ver } : { st: fresh(), ver: -1 };
@@ -384,6 +384,9 @@ async function adminAction(a, p, me, role) {
   if (a === "adm_list") return await adminList();
   if (a === "adm_topup") {
     const { data: t } = await sb.from("topups").select("*").eq("id", p.id).single(); if (!t || t.status !== "pending") throw "คำขอนี้ถูกจัดการไปแล้ว";
+    if (p.ok && p.baht != null) { const b = int(p.baht, 0, 100000); if (b < 1) throw "ใส่ยอดเงินในสลิปก่อน"; const c = await getConfig(); const packs = Array.isArray(c.packs) && c.packs.length ? c.packs : DEFAULT_PACKS;
+      const ps = packs.filter(x => x.baht > 0 && x.stars > 0).sort((a, z) => a.baht - z.baht); t.baht = b; t.stars = b >= TOPUP_MIN ? starsFor(packs, b) : (ps.length ? Math.floor(b * ps[0].stars / ps[0].baht) : 0);
+      await sb.from("topups").update({ baht: t.baht, stars: t.stars }).eq("id", t.id).eq("status", "pending"); }
     const { data: upd } = await sb.from("topups").update({ status: p.ok ? "approved" : "rejected", reason: p.ok ? "" : String(p.reason || "").slice(0, 80), done_at: new Date().toISOString() }).eq("id", t.id).eq("status", "pending").select("id");
     if (!upd || !upd.length) throw "คำขอนี้ถูกจัดการไปแล้ว";
     if (p.ok) await withPlayer(t.user_id, G => { G.S.stars += t.stars; G.S.topBaht = (G.S.topBaht || 0) + t.baht; inbox(G, `เติม ${t.baht} บาทสำเร็จ +${t.stars} ดาว`); });
@@ -421,7 +424,7 @@ async function adminAction(a, p, me, role) {
     CFG_C = null; { const old = await getConfig(); const diff = [];
       const j = x => JSON.stringify(x || null); if (rates && j(rates) !== j(old.rates)) diff.push("rates"); if (j(packs) !== j(old.packs)) diff.push("packs"); if (String(p.ann || "") !== (old.ann || "")) diff.push("ann"); if (!!p.maint !== !!old.maint) diff.push("maint");
       if (diff.length) await log(me, "cfg", { diff, rates: rates || old.rates || null, old_rates: old.rates || null, packs, ann: String(p.ann || "").slice(0, 120), maint: !!p.maint }, me); }
-    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, slip_auto: !!p.slipAuto, slip_name: String(p.slipName || "").slice(0, 80), slip_tail: String(p.slipTail || "").replace(/\D/g, "").slice(-6), slip_hours: int(p.slipHours || 24, 1, 168), packs, ...(rates ? { rates } : {}), updated_at: new Date().toISOString() }).eq("id", 1);
+    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, slip_auto: !!p.slipAuto, slip_name: String(p.slipName || "").slice(0, 80), slip_tail: String(p.slipTail || "").replace(/\D/g, "").slice(-6), pay_bank: String(p.payBank || "").slice(0, 40), pay_no: String(p.payNo || "").replace(/[^\d-]/g, "").slice(0, 24), slip_hours: int(p.slipHours || 24, 1, 168), packs, ...(rates ? { rates } : {}), updated_at: new Date().toISOString() }).eq("id", 1);
     CFG_C = null;
     return { ok: true };
   }
@@ -499,9 +502,10 @@ function slipProblem(v, cfg, now) {
   if (!v.ref) return "ไม่พบเลขอ้างอิงในสลิป";
   if (!isFinite(v.amount) || v.amount < TOPUP_MIN) return `ยอดในสลิป ${isFinite(v.amount) ? v.amount : "?"} บาท ต่ำกว่าขั้นต่ำ ${TOPUP_MIN} บาท`;
   const want = normName(cfg.slip_name), tail = String(cfg.slip_tail || "").replace(/\D/g, "");
-  if (!want && !tail) return "ยังไม่ได้ตั้งบัญชีรับเงินในหน้าแอดมิน";
+  if (!want && !tail && !String(cfg.pay_no || "").replace(/\D/g, "")) return "ยังไม่ได้ตั้งบัญชีรับเงินในหน้าแอดมิน";
   const nameOk = !!want && v.name.split("|").some(n => { const g = normName(n); return g.length >= 3 && (g.includes(want) || want.includes(g)); });
-  const acctOk = !!tail && v.acct.replace(/\D/g, "").includes(tail);
+  const full = String(cfg.pay_no || "").replace(/\D/g, ""), shown = v.acct.split("|").map(x => x.replace(/\D/g, "")).filter(x => x.length >= 3);
+  const acctOk = (!!full && shown.some(x => full.includes(x))) || (!!tail && v.acct.replace(/\D/g, "").includes(tail));
   if (!nameOk && !acctOk) return "บัญชีผู้รับในสลิปไม่ตรงกับบัญชีร้าน";
   const t = Date.parse(v.date); if (!isFinite(t)) return "อ่านเวลาโอนในสลิปไม่ได้";
   const hrs = Math.max(1, Math.min(168, +cfg.slip_hours || 24));
@@ -515,7 +519,8 @@ function starsFor(packs, baht) { baht = Math.floor(+baht || 0); if (baht < TOPUP
   let t = ps[0]; for (const x of ps) if (x.baht <= baht) t = x; return Math.floor(baht * t.stars / t.baht); }
 async function submitTopup(uid, prof, p, cfg) {
   const packs = Array.isArray(cfg.packs) && cfg.packs.length ? cfg.packs : DEFAULT_PACKS;
-  let pk = p.baht != null ? null : packs[int(p.pack, 0, packs.length - 1)];
+  let pk = p.any || p.baht != null ? null : packs[int(p.pack, 0, packs.length - 1)];
+  if (p.any) { const b = int(p.baht, 0, 100000), auto = !!(cfg.slip_auto && SLIP_KEY); if (b && b < TOPUP_MIN) throw `เติมขั้นต่ำ ${TOPUP_MIN} บาทนะคะ`; if (!b && !auto) throw `ใส่ยอดที่โอนก่อนนะคะ (ขั้นต่ำ ${TOPUP_MIN} บาท)`; pk = { baht: b, stars: starsFor(packs, b) }; }
   if (!pk) { const b = int(p.baht, 0, 100000); if (b < TOPUP_MIN) throw `เติมขั้นต่ำ ${TOPUP_MIN} บาทนะคะ`; pk = { baht: b, stars: starsFor(packs, b) }; }
   const m = /^data:(image\/(jpeg|png|webp));base64,(.+)$/.exec(String(p.img || "")); if (!m) throw "แนบรูปสลิปก่อนนะคะ";
   const bytes = Uint8Array.from(atob(m[3]), c => c.charCodeAt(0)); if (bytes.length > 4.5 * 1024 * 1024) throw "รูปใหญ่เกินไป";
@@ -528,7 +533,7 @@ async function submitTopup(uid, prof, p, cfg) {
   if (!cfg.slip_auto) return { ok: true, auto: false };
   const v = await verifySlip(m[3]); let why = slipProblem(v, cfg, Date.now());
   if (!why) {
-    const baht = Math.floor(v.amount), stars = starsFor(packs, baht), note = baht === pk.baht ? "ตรวจอัตโนมัติผ่าน" : `ตรวจอัตโนมัติผ่าน · ยอดจริง ${baht} บาท (เลือกไว้ ${pk.baht})`;
+    const baht = Math.floor(v.amount), stars = starsFor(packs, baht), note = !pk.baht || baht === pk.baht ? "ตรวจอัตโนมัติผ่าน" : `ตรวจอัตโนมัติผ่าน · ยอดจริง ${baht} บาท (เลือกไว้ ${pk.baht})`;
     pk = { baht, stars };
     const { data: upd, error: ue } = await sb.from("topups").update({ status: "approved", done_at: new Date().toISOString(), slip_ref: v.ref, auto: true, auto_note: note, baht, stars }).eq("id", id).eq("status", "pending").select("id");
     if (ue && String(ue.code) === "23505") why = "สลิปนี้เคยใช้เติมไปแล้ว";
@@ -622,7 +627,7 @@ Deno.serve(async (req) => {
       else if (!same) await sb.from("profiles").update(look).eq("id", uid); }
     const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = await sb.from("topups").select("id,baht,stars,status,reason,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(8);
-    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, staff: STAFF, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, rates: G.applyRates(cfg.rates), approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET), autoSlip: !!(cfg.slip_auto && SLIP_KEY), ...(ADMIN ? { slipAuto: !!cfg.slip_auto, slipName: cfg.slip_name || "", slipTail: cfg.slip_tail || "", slipHours: cfg.slip_hours || 24, slipReady: !!SLIP_KEY } : {}) }, topups: tops || [] });
+    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, staff: STAFF, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, rates: G.applyRates(cfg.rates), approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET), autoSlip: !!(cfg.slip_auto && SLIP_KEY), payBank: cfg.pay_bank || "", payNo: cfg.pay_no || "", payName: cfg.slip_name || "", topupMin: TOPUP_MIN, ...(ADMIN ? { slipAuto: !!cfg.slip_auto, slipName: cfg.slip_name || "", slipTail: cfg.slip_tail || "", slipHours: cfg.slip_hours || 24, slipReady: !!SLIP_KEY } : {}) }, topups: tops || [] });
   } catch (e) {
     return fail(typeof e === "string" ? e : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", typeof e === "string" ? 400 : 500);
   }
