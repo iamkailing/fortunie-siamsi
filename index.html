@@ -885,6 +885,35 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .ps-mode .ps-acctrow{flex-wrap:nowrap}.ps-mode .ps-acct{font-size:clamp(20px,6.2vw,26px)}
 @media (max-width:340px){.ps-mode .ps-acctrow{flex-wrap:wrap}}
 
+/* v81 siamsi art */
+.stage .moon.shrine{width:min(360px,calc(100vw - 24px));height:calc(100% + 8px);top:-4px;aspect-ratio:auto;border-radius:28px;background:#1b1230 var(--ss-bg) center 82%/cover no-repeat;box-shadow:none;filter:brightness(.93) saturate(1.05);
+  -webkit-mask-image:radial-gradient(ellipse 72% 66% at 50% 52%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 72% 66% at 50% 52%,#000 58%,transparent 100%)}
+.cupscene{position:relative;height:min(330px,44dvh);aspect-ratio:300/590;container-type:inline-size}
+.cupscene .sc{position:absolute;top:0;left:-16.667%;width:133.333%;height:101.695%;transform-origin:50% 89.167%;will-change:transform}
+.cupscene img{position:absolute;display:block;pointer-events:none;-webkit-user-drag:none;max-width:none}
+.cupscene .l-cup{left:0;top:30%;width:100%;height:66.667%;z-index:1;filter:drop-shadow(0 10px 14px #0007)}
+.cupscene .l-bundle{left:18.25%;top:17.5%;width:58.75%;height:50%;z-index:2}
+.cupscene .l-front{z-index:4;filter:none;clip-path:polygon(0 14.5%,24% 14.5%,30% 16.5%,38.75% 18%,50% 18.5%,61.25% 18%,70% 16.5%,76% 14.5%,100% 14.5%,100% 100%,0 100%)}
+.cupscene #chosen{position:absolute;left:25%;top:2.5%;width:50%;height:50%;z-index:3;transform:translateY(67%)}
+.out .cupscene #chosen{transform:translateY(0) rotate(-2deg)}
+.cupscene #chosen img{inset:0;width:100%;height:100%}
+.cupscene #stickNo{position:absolute;left:50%;top:27%;transform:translateX(-50%);writing-mode:vertical-rl;font-family:var(--f-display),Mitr,sans-serif;font-size:7cqw;font-weight:600;line-height:1;color:#fff8e6;background:linear-gradient(#9b7fd6,#7458b8);padding:.35em .22em;border-radius:99px;box-shadow:0 0 0 1.5px #f3dfae,0 3px 8px #0005}
+.paper:has(.ss-pw){background:none;box-shadow:none;padding:0;border-radius:0}
+.paper:has(.ss-pw)::before{display:none}
+.ss-pw{container-type:inline-size;width:100%;filter:drop-shadow(0 16px 28px #0009)}
+.ss-paper{box-sizing:border-box;min-height:150cqw;padding:18cqw 14cqw 15cqw;color:#3f2a1d;
+  background:var(--pt) top/100% auto no-repeat,var(--pb) bottom/100% auto no-repeat,var(--pm) center/100% calc(100% - 86cqw) no-repeat}
+.ss-paper dl,.ss-paper .advice{font-size:15px;line-height:1.6}
+.ss-paper .advice{background:#ffffff99}
+.burn-wrap{position:relative}
+.burn-flame{position:absolute;left:58%;top:calc(var(--fy,1)*100%);width:62%;height:auto;translate:-50% -84%;pointer-events:none;opacity:calc(var(--heat,0)*.9);mix-blend-mode:screen;transform-origin:50% 100%;animation:ssflk .22s ease-in-out infinite alternate}
+@keyframes ssflk{from{scale:1 1}to{scale:1.05 1.1}}
+.be-jar{width:96px;height:auto;margin:-4px auto -2px;filter:drop-shadow(0 6px 10px #0008)}
+.jar:has(.jar-img){display:grid;grid-template-columns:64px 1fr;column-gap:12px;align-items:center}
+.jar:has(.jar-img)>*:not(.jar-img){grid-column:2}
+.jar .jar-img{grid-column:1;grid-row:1/span 4;width:64px;height:auto;align-self:center;filter:drop-shadow(0 4px 8px #0008)}
+@media (prefers-reduced-motion:reduce){.burn-flame{animation:none}.cupscene #chosen{transition:none}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -926,21 +955,12 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
     <h1>เซียมซีฮีลใจ</h1>
     <div class="stage" id="stage">
       <div class="moon" aria-hidden="true"></div>
-      <svg viewBox="0 0 200 270" role="img" aria-label="กระบอกเซียมซี 44 ไม้">
-        <g id="tube">
-          <g id="sticks"></g>
-          <g id="chosen">
-            <rect x="93" y="40" width="16" height="122" rx="4" fill="#fff6d8" stroke="#e2c47e"/>
-            <rect x="93" y="40" width="16" height="12" rx="4" fill="#b98ae6"/>
-            <text id="stickNo" x="101" y="82" text-anchor="middle" font-family="Mitr, sans-serif" font-size="14" fill="#3f2560" writing-mode="tb">๐</text>
-          </g>
-          <path d="M46 100 h108 l-8 152 a6 6 0 0 1 -6 6 h-80 a6 6 0 0 1 -6 -6 z" fill="#7d4fb6" stroke="#4a2c75" stroke-width="2"/>
-          <path d="M49 114 h102 M53 236 h94" stroke="#f0d28a" stroke-width="4"/>
-          <g fill="#f0d28a"><path d="M100 146 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z"/><circle cx="70" cy="204" r="3"/><circle cx="130" cy="192" r="2.5"/><circle cx="118" cy="216" r="2"/><circle cx="82" cy="172" r="2"/></g>
-          <path d="M66 198 q8 -12 22 -6 q6 -10 18 -4 q14 -2 18 10 q-30 8 -58 0z" fill="#fff" opacity=".9"/>
-          <ellipse cx="100" cy="100" rx="54" ry="6.5" fill="#5e3a8f" stroke="#4a2c75" stroke-width="2"/>
-        </g>
-      </svg>
+      <div class="cupscene" role="img" aria-label="กระบอกเซียมซี 44 ไม้"><div class="sc" id="tube">
+        <img class="l-cup" data-art="cup" alt="" draggable="false">
+        <img class="l-bundle" data-art="sticks" alt="" draggable="false">
+        <div id="chosen"><img data-art="stick" alt="" draggable="false"><span id="stickNo">๐</span></div>
+        <img class="l-cup l-front" data-art="cup" alt="" draggable="false">
+      </div></div>
       <button class="buddy" id="buddy" type="button" hidden><span class="buddy-say" id="buddySay" hidden></span><span class="buddy-face" id="buddyFace"></span></button>
     </div>
     <div class="controls">
@@ -1333,7 +1353,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
     <p class="note">ลืมรหัสผ่าน ทักแอดมินที่ LINE @fortuniehoro · บัญชีเก่าใช้ไอดีเดิมเข้าได้เหมือนเดิม</p>
   </form>
 </div>
-<div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button><button class="burn-skip" id="burnSkip" type="button" hidden>ข้าม ⏭</button></div>
+<div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas><img class="burn-flame" data-art="flame" alt="" aria-hidden="true" draggable="false"></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button><button class="burn-skip" id="burnSkip" type="button" hidden>ข้าม ⏭</button></div>
 <canvas id="burnFxTop" aria-hidden="true"></canvas>
 <div class="evo" id="evoFx" hidden role="dialog" aria-modal="true" aria-label="คู่หูวิวัฒนาการ"><div class="evo-st" id="evoStage"><canvas class="evo-cv" id="evoCv"></canvas><div class="evo-fl"></div><div class="evo-sh"></div>
 <div class="evo-slot" id="evoSlot"></div><div class="evo-t" id="evoT"></div><div class="evo-s" id="evoS"></div><div class="evo-cap" id="evoCap"></div><button class="go" id="evoOk" type="button" hidden>รับร่างใหม่</button></div></div>
@@ -1717,9 +1737,15 @@ function fx(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l
   cx.globalAlpha=1;if(parts.length)fxRaf=requestAnimationFrame(fx);else{fxRaf=0;cx.clearRect(0,0,innerWidth,innerHeight)}}
 
 /* ---------- sticks + hold to shake ---------- */
-(function(){let h="";for(let i=0;i<44;i++){const col=i%11,row=Math.floor(i/11),x=54+col*8.6+(row%2?3:0),top=14+((i*37)%30)+row*4;
-  h+=`<rect x="${x.toFixed(1)}" y="${top}" width="6.5" height="${110-top+20}" rx="2.5" fill="${["#f6e7b8","#efd896","#f8ebc2","#ecd48c"][i%4]}"/><rect x="${x.toFixed(1)}" y="${top}" width="6.5" height="7" rx="2.5" fill="${i%3?"#c79ae9":"#f4a9c4"}"/>`}
-  $("sticks").innerHTML=h})();
+/* v81 siamsi art: layered cup, tier papers, ash jar, flame. SS_ART = {key: url}; any missing key falls back to the old drawing */
+const SS_ART={"cup": "siamsi-art/cup.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
+(function(){for(const k in SS_ART){if(!SS_ART[k]||/_[tmb]$/.test(k))continue;const im=new Image();im.decoding="async";im.src=SS_ART[k];SS_IMG[k]=im}
+  document.querySelectorAll("img[data-art]").forEach(i=>{const s=SS_ART[i.dataset.art];if(s)i.src=s;else i.hidden=true});
+  const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(!SS_ART.cup)R.classList.add("no-cupart");
+  let css="";for(const k of ["grad","good","vgood"])if(SS_ART["p_"+k+"_t"])css+=`.ssp-${k}{--pt:url("${SS_ART["p_"+k+"_t"]}");--pm:url("${SS_ART["p_"+k+"_m"]}");--pb:url("${SS_ART["p_"+k+"_b"]}")}`;
+  if(css){const st=document.createElement("style");st.textContent=css;document.head.appendChild(st)}})();
+const paperK=lvn=>{const k=PAPER_K[lvn];return k&&SS_ART["p_"+k+"_t"]?k:""};
+const artReady=k=>{const im=SS_IMG[k];return im&&im.complete&&im.naturalWidth>0?im:null};
 let energy=0,holding=false,raf=0,last=0,busy=false,lastClack=0,paidPending=false;
 const tube=$("tube"),hb=$("holdBtn");
 const invFull=()=>S.inv.length>=INV_MAX;
@@ -1727,7 +1753,7 @@ function canDraw(){regen();return ONLINE&&(paidPending||S.charges>0||S.bonusFree
 function loop(ts){const dt=Math.min(50,ts-(last||ts));last=ts;
   if(MO.on)holding=MO.skip||performance.now()-MO.t<260;
   energy=holding?Math.min(1,energy+dt/(MO.on?3400:1700)):Math.max(0,energy-dt/(MO.on?4000:2500));$("meter").style.width=(energy*100)+"%";
-  const amp=reduce?0:(holding?4+energy*9:energy*4);tube.style.transform=amp?`rotate(${Math.sin(ts/(70-energy*30))*amp}deg) translateX(${Math.sin(ts/50)*amp*.4}px)`:"";
+  const amp=reduce?0:SS_ART.cup?(holding?1.5+energy*2.5:energy*1.5):(holding?4+energy*9:energy*4);tube.style.transform=amp?`rotate(${Math.sin(ts/(70-energy*30))*amp}deg) translateX(${Math.sin(ts/50)*amp*.4}px)`:"";
   if((holding||energy>.05)&&ts-lastClack>(140-energy*80)){clack();lastClack=ts}
   if(energy>=1){finishShake();return}
   if(holding||energy>0||MO.on)raf=requestAnimationFrame(loop);else{raf=0;tube.style.transform=""}}
@@ -1795,10 +1821,11 @@ $("petDone").addEventListener("click",()=>{if(PREVIEW){ticketMode=false;closeRev
 
 /* paper slip with keep / use / burn */
 function slipPaperHTML(f){const [lvn,verse,o,l,w,m,a]=F[f],L=LV[lvn],b=buffOf(f);
-  return `<div class="paper-in" style="--tier-c:${L.c}"><div class="paper-top"><span class="seal-red">เซียมซี</span><span class="tier" style="background:${L.c}">${lvn}</span></div>
+  const pk=paperK(lvn);
+  return `${pk?`<div class="ss-pw">`:""}<div class="paper-in${pk?" ss-paper ssp-"+pk:""}" style="--tier-c:${L.c}"><div class="paper-top"><span class="seal-red">เซียมซี</span><span class="tier" style="background:${L.c}">${lvn}</span></div>
    <span class="paper-no">ใบที่ ${th(f+1)}</span><p class="verse">${verse}</p>
    <dl><dt>ภาพรวม</dt><dd>${o}</dd><dt>ความรัก</dt><dd>${l}</dd><dt>การงาน</dt><dd>${w}</dd><dt>การเงิน</dt><dd>${m}</dd></dl>
-   <div class="advice"><b>ทำแบบนี้:</b> ${a}</div><div class="buffline">ถ้าใช้เป็นดวงวันนี้: ${BUFF[b.type].n} · ${BUFF[b.type].d(b.s)}</div></div>`}
+   <div class="advice"><b>ทำแบบนี้:</b> ${a}</div><div class="buffline">ถ้าใช้เป็นดวงวันนี้: ${BUFF[b.type].n} · ${BUFF[b.type].d(b.s)}</div></div>${pk?"</div>":""}`}
 function showSlip(){const R=$("reveal");R.classList.remove("lit");showStep("stepSlip");$("paper").innerHTML=slipPaperHTML(cur.f);
   const P=powers();
   $("slipActions").innerHTML=`${canUseToday()?`<button class="go" type="button" data-fate="use">ใช้เป็นดวงวันนี้</button>`:""}
@@ -1960,19 +1987,26 @@ function burnEnd(gold,bb,bud,close,M){if(bb.hidden)walkIn(bb,bud);const line=BUD
   $("burnCap").textContent=gold?"✦ ไฟทอง ✦":"ปล่อยวางแล้ว";
   end.innerHTML=`<div class="be-card${gold?" gold":""}"><span class="be-k">${M&&M.n>1?`เผา ${M.n} ใบ${GF?` · ไฟทอง ${GF} ใบ`:""}`:gold?"รางวัลไฟทอง · แต้ม x"+GOLD_X:"ได้จากการเผา"}</span>
     <div class="be-row"><span class="be-item"><span class="flame-ic" aria-hidden="true">🔥</span><b>+${PTS}</b> แต้มเผา</span>${GF?`<span class="be-item"><b>+${GF}</b> เขย่าฟรี</span>`:""}${LK?`<span class="be-item"><b>+${LK}</b> คู่หูแถมเขย่า</span>`:""}</div>
-    <div class="jbar"><i style="width:${ASH/JAR*100}%"></i></div><small>${M&&M.jar?`โหลเต็ม ${M.jar} โหล! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง · ตอนนี้ ${S.bp||0}/${JAR}`:`โหลขี้เถ้า ${ASH}/${JAR}${TOT>=JAR?" · เต็มแล้ว! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง":""}`}</small>
+    ${SS_ART.jar0?`<img class="be-jar" src="${ASH>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="${ASH>=JAR?"โหลขี้เถ้าเต็มแล้ว":"โหลขี้เถ้า"}">`:""}<div class="jbar"><i style="width:${ASH/JAR*100}%"></i></div><small>${M&&M.jar?`โหลเต็ม ${M.jar} โหล! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง · ตอนนี้ ${S.bp||0}/${JAR}`:`โหลขี้เถ้า ${ASH}/${JAR}${TOT>=JAR?" · เต็มแล้ว! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง":""}`}</small>
     <button class="go" id="beOk" type="button">${gold?"รับของ":"ไปต่อ"}</button></div>`;
   end.hidden=false;const ok=$("beOk");ok.focus();let done=false;const fin=()=>{if(done)return;done=true;clearTimeout(t);close()};ok.addEventListener("click",fin);const t=0}
 function burnAnim(f,done,goldIn,M){
-  const ov=$("burnFx"),cv2=$("burnCv"),wrap=$("burnWrap"),W=300,H=440,SC=(devicePixelRatio||1)>1.2?1.7:1,PW=Math.round(W*SC),PH=Math.round(H*SC);cv2.width=PW;cv2.height=PH;cv2.style.width=W+"px";const c=cv2.getContext("2d");
+  const ov=$("burnFx"),cv2=$("burnCv"),wrap=$("burnWrap"),W=300,H=450,SC=(devicePixelRatio||1)>1.2?1.7:1,PW=Math.round(W*SC),PH=Math.round(H*SC);cv2.width=PW;cv2.height=PH;cv2.style.width=W+"px";const c=cv2.getContext("2d");
   const off=document.createElement("canvas");off.width=PW;off.height=PH;const o=off.getContext("2d");o.scale(SC,SC);centerText(o);
   const [lvn,verse,ov1]=F[f],L=LV[lvn],fam='"Mitr","Noto Sans Thai",sans-serif';
-  if(M&&M.n>1){[[-9,8,-.06],[8,5,.05]].slice(0,M.n>2?2:1).forEach(([dx,dy,rot])=>{o.save();o.translate(W/2,H/2);o.rotate(rot);o.translate(-W/2+dx,-H/2+dy);o.fillStyle="#e7d3a1";o.fillRect(24,24,W-48,H-48);o.strokeStyle="#c9a24a88";o.lineWidth=2;o.strokeRect(34,34,W-68,H-68);o.restore()})}
+  const GOLD=!!goldIn,PI=artReady(GOLD?"p_gold":"p_"+(PAPER_K[lvn]||""));
+  if(M&&M.n>1){[[-9,8,-.06],[8,5,.05]].slice(0,M.n>2?2:1).forEach(([dx,dy,rot])=>{o.save();o.translate(W/2,H/2);o.rotate(rot);o.translate(-W/2+dx,-H/2+dy);if(PI){o.globalAlpha=.92;o.drawImage(PI,0,0,W,H);o.globalAlpha=1}else{o.fillStyle="#e7d3a1";o.fillRect(24,24,W-48,H-48);o.strokeStyle="#c9a24a88";o.lineWidth=2;o.strokeRect(34,34,W-68,H-68)}o.restore()})}
+  if(PI){/* art paper: text stays inside the safe box (x 15-85%, y 18-82%) */
+    o.drawImage(PI,0,0,W,H);
+    o.fillStyle="#b8432f";o.fillRect(W/2-40,86,80,26);o.fillStyle="#fff";o.font="500 14px "+fam;o.fillText("เซียมซี",W/2,104);
+    o.fillStyle="#7a3b2e";o.font="500 50px "+fam;o.fillText(th(f+1),W/2,164);o.fillStyle=L.c;o.font="600 16px "+fam;o.fillText(lvn,W/2,190);
+    o.fillStyle="#3f2a1d";let vs=20;o.font="500 "+vs+"px "+fam;while(o.measureText(verse).width>W-100&&vs>16){vs--;o.font="500 "+vs+"px "+fam}let y=wrapText(o,verse,W/2,226,W-100,vs+7,2);o.font="400 14px "+fam;o.fillStyle="#5c4433";wrapText(o,ov1,W/2,y+14,W-104,22,4)}
+  else{
   const pg=o.createLinearGradient(0,0,0,H);pg.addColorStop(0,"#fbf2da");pg.addColorStop(1,"#efdcae");o.fillStyle=pg;o.fillRect(20,20,W-40,H-40);
-  o.strokeStyle="#c9a24a";o.lineWidth=3;o.strokeRect(32,32,W-64,H-64);
-  o.fillStyle="#b8432f";o.fillRect(W/2-46,46,92,30);o.fillStyle="#fff";o.font="500 16px "+fam;o.fillText("เซียมซี",W/2,67);
-  o.fillStyle="#7a3b2e";o.font="500 54px "+fam;o.fillText(th(f+1),W/2,140);o.fillStyle=L.c;o.font="600 16px "+fam;o.fillText(lvn,W/2,168);
-  o.fillStyle="#3f2a1d";let vs=22;o.font="500 "+vs+"px "+fam;while(o.measureText(verse).width>W-76&&vs>17){vs--;o.font="500 "+vs+"px "+fam}let y=wrapText(o,verse,W/2,214,W-76,vs+8,2);o.font="400 15px "+fam;o.fillStyle="#5c4433";wrapText(o,ov1,W/2,y+16,W-90,24,5);
+    o.strokeStyle="#c9a24a";o.lineWidth=3;o.strokeRect(32,32,W-64,H-64);
+    o.fillStyle="#b8432f";o.fillRect(W/2-46,46,92,30);o.fillStyle="#fff";o.font="500 16px "+fam;o.fillText("เซียมซี",W/2,67);
+    o.fillStyle="#7a3b2e";o.font="500 54px "+fam;o.fillText(th(f+1),W/2,140);o.fillStyle=L.c;o.font="600 16px "+fam;o.fillText(lvn,W/2,168);
+    o.fillStyle="#3f2a1d";let vs=22;o.font="500 "+vs+"px "+fam;while(o.measureText(verse).width>W-76&&vs>17){vs--;o.font="500 "+vs+"px "+fam}let y=wrapText(o,verse,W/2,214,W-76,vs+8,2);o.font="400 15px "+fam;o.fillStyle="#5c4433";wrapText(o,ov1,W/2,y+16,W-90,24,5);}
   let src=o.getImageData(0,0,PW,PH).data;const img=c.createImageData(PW,PH),dst=img.data;
   const G=10,lat=[];for(let i=0;i<(G+2)*(G+2);i++)lat.push(rnd());
   const nz=(x,y)=>{const gx=x*G,gy=y*G,x0=Math.floor(gx),y0=Math.floor(gy),a1=gx-x0,b1=gy-y0,sx=a1*a1*(3-2*a1),sy=b1*b1*(3-2*b1),i=y0*(G+2)+x0;
@@ -1985,14 +2019,14 @@ function burnAnim(f,done,goldIn,M){
   for(let i=0;i<T.length;i++)T[i]=(T[i]-mn)/(1-mn);
   c.putImageData(o.getImageData(0,0,PW,PH),0,0);
   ov.classList.remove("light","gold");ov.hidden=false;ov.style.setProperty("--heat",0);wrap.style.transform="";$("burnLight").hidden=true;$("worry").hidden=true;$("burnEnd").hidden=true;
-  const GOLD=!!goldIn,bud=buddyPet(),bb=$("burnBuddy");let walked=false;bb.hidden=true;bb.className="burn-buddy";
+  const bud=buddyPet(),bb=$("burnBuddy");let walked=false;bb.hidden=true;bb.className="burn-buddy";
   if(GOLD){ov.classList.add("gold");$("burnCap").textContent=M&&M.n>1?`✦ ไฟทอง! เผา ${M.n} ใบ มีของพิเศษ ✦`:"✦ ไฟทอง! ใบนี้มีของพิเศษ ✦";wrap.classList.add("gold-glow")}else{$("burnCap").textContent=M&&M.n>1?`ปล่อยวางพร้อมกัน ${M.n} ใบ…`:"ปล่อยวางสิ่งที่ไม่ต้องการ…";wrap.classList.remove("gold-glow")}
   let skip=false,finished=false;const sk=$("burnSkip");sk.hidden=false;sk.onclick=()=>{if(skip)return;skip=true;stopBurnSound();if(!started){started=true;requestAnimationFrame(frame)}};
   setTimeout(ignite,GOLD?900:350);if(GOLD){goldChime();vib([30,40,30])}
   const fc=$("burnFxTop"),dpr=Math.min(2,devicePixelRatio||1),fx2=fc.getContext("2d");fc.width=innerWidth*dpr;fc.height=innerHeight*dpr;fx2.setTransform(dpr,0,0,dpr,0,0);
   const flames=[],embers=[],smoke=[],ash=[];let t0=0,started=false;const dur=4600;
   function ignite(){if(started)return;started=true;burnSound(dur+600);requestAnimationFrame(frame)}
-  function fin(){if(finished)return;finished=true;sk.hidden=true;sk.onclick=null;fx2.clearRect(0,0,innerWidth,innerHeight);if(skip)c.clearRect(0,0,PW,PH);flames.length=embers.length=smoke.length=ash.length=0;wrap.style.transform="";wrap.classList.remove("gold-glow");ov.style.setProperty("--heat",0);burnChime(GOLD?5:3);
+  function fin(){if(finished)return;finished=true;sk.hidden=true;sk.onclick=null;fx2.clearRect(0,0,innerWidth,innerHeight);if(skip)c.clearRect(0,0,PW,PH);flames.length=embers.length=smoke.length=ash.length=0;wrap.style.transform="";wrap.style.removeProperty("--fy");wrap.classList.remove("gold-glow");ov.style.setProperty("--heat",0);burnChime(GOLD?5:3);
       burnEnd(GOLD,bb,bud,()=>{ov.hidden=true;ov.classList.remove("gold");bb.hidden=true;$("burnEnd").hidden=true;burst(GOLD?4:2,"#f0d28a");done({gold:GOLD})},M)}
   function frame(ts){if(skip){fin();return}if(!t0)t0=ts;const k=Math.min(1.2,(ts-t0)/dur),front=Math.pow(k,1.15)*1.1-.03,rect=cv2.getBoundingClientRect(),sc=rect.width/PW;
     const flick=.85+Math.sin(ts/53)*.08+Math.sin(ts/31)*.07,gz=GOLD;let edges=0;
@@ -2013,6 +2047,7 @@ function burnAnim(f,done,goldIn,M){
       dst[j]=src[j];dst[j+1]=src[j+1];dst[j+2]=src[j+2];dst[j+3]=al}
     c.putImageData(img,0,0);
     const lift=Math.min(1,k);wrap.style.transform=`translateY(${-lift*18}px) rotate(${Math.sin(ts/420)*1.6*lift}deg) scale(${1-lift*.05})`;
+    wrap.style.setProperty("--fy",Math.max(.1,Math.min(1,1.02-front*1.05)).toFixed(3));
     ov.style.setProperty("--heat",(k<1?Math.min(1,k*3):Math.max(0,1-(k-1)*5))*flick);
     fx2.clearRect(0,0,innerWidth,innerHeight);
     fx2.globalCompositeOperation="source-over";
@@ -2097,7 +2132,7 @@ $("chips").addEventListener("click",e=>{const b=e.target.closest("button[data-go
 function renderInv(){const b=activeBuff(),ready=canUseToday();let h="";
   if(b)h=`<div class="active-buff" style="--tier-c:${LV[F[b.f][0]].c}"><span class="tier" style="background:${LV[F[b.f][0]].c}">ดวงวันนี้ · ใบที่ ${th(b.f+1)}</span><b>${BUFF[b.type].n}</b><span>${BUFF[b.type].d(b.s)}</span><small>เหลือเวลา ${fmt(S.active.until-now())}</small></div>`;
   else h=`<div class="active-buff"><b>${ready?"วันนี้ยังไม่ได้ใช้โชค":"รอใช้ใบถัดไป"}</b><span>${ready?"เลือกใบแล้วกด \"ใช้วันนี้\" โชคจะมีผล 24 ชั่วโมง":"ใช้ใบถัดไปได้ใน "+fmt(S.useReadyAt-now())}</span></div>`;
-  h+=`<div class="jar"><div class="row"><b>โหลขี้เถ้า</b><span>${S.bp||0}/${JAR} แต้ม</span></div><div class="jbar"><i style="width:${(S.bp||0)/JAR*100}%"></i></div><small>เผา 1 ใบ = ${BURN_PTS} แต้ม · ไฟทอง x${GOLD_X} · ครบ ${JAR} สุ่มเพื่อนแรร์ขึ้นไป (แรร์ 80% เอพิก 15% ตำนาน 5%)</small>${S.jarT?`<button class="ticket jar-open" id="jarBtn" type="button">เปิดโหลขี้เถ้า · มี ${S.jarT} โหล</button>`:""}</div>`;
+  h+=`<div class="jar">${SS_ART.jar0?`<img class="jar-img" src="${S.jarT||(S.bp||0)>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="">`:""}<div class="row"><b>โหลขี้เถ้า</b><span>${S.bp||0}/${JAR} แต้ม</span></div><div class="jbar"><i style="width:${(S.bp||0)/JAR*100}%"></i></div><small>เผา 1 ใบ = ${BURN_PTS} แต้ม · ไฟทอง x${GOLD_X} · ครบ ${JAR} สุ่มเพื่อนแรร์ขึ้นไป (แรร์ 80% เอพิก 15% ตำนาน 5%)</small>${S.jarT?`<button class="ticket jar-open" id="jarBtn" type="button">เปิดโหลขี้เถ้า · มี ${S.jarT} โหล</button>`:""}</div>`;
   if(S.rtickets)h+=`<button class="ticket rare" id="rticketBtn" type="button">✨ ใช้ตั๋วแรร์+ · มี ${S.rtickets} ใบ<small>สุ่มเฉพาะ แรร์ ${RATE_R[2]}% · เอพิก ${RATE_R[3]}% · ตำนาน ${RATE_R[4]}%</small></button>`;
   if(S.tickets)h+=`<button class="ticket" id="ticketBtn" type="button">ใช้ตั๋วสุ่มเพื่อน · มี ${S.tickets} ใบ</button>`;
   if(S.inv.length>=INV_WARN)h+=`<div class="inv-warn${S.inv.length>=INV_MAX?" full":""}"><b>${S.inv.length>=INV_MAX?"คลังเต็มแล้ว":"คลังใกล้เต็ม"} ${S.inv.length}/${INV_MAX} ใบ</b><span>${S.inv.length>=INV_MAX?"เขย่าใบใหม่ไม่ได้จนกว่าจะเคลียร์คลัง เผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ":"ครบ "+INV_MAX+" ใบแล้วจะเขย่าใบใหม่ไม่ได้ ลองเผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ"}</span>${burnSel?"":`<button class="burn" type="button" data-sel="on">🔥 เลือกเผาหลายใบ</button>`}</div>`;
