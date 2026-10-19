@@ -115,12 +115,15 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
-const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}];
+const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}],REW_NEW=[{l:100},{l:100},{l:150},{l:150},{l:200},{l:200},{pet:"น้องหมีเด้ง"}];
+const rewTable=()=>(S.dailyTot||0)<7?REW_NEW:REW; /* the first 7 check-ins of every player give the big welcome rewards */
 const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
 const DEFAULT_PACKS=[{baht:49,stars:50},{baht:99,stars:110,tag:"คุ้มกว่า 10%"},{baht:199,stars:240,tag:"แถม 40 ดาว"},{baht:399,stars:520,tag:"แถม 120 ดาว"}];
-const NEED_T=[[1,2,8],[1,2,6],[1,2,5],[1,2,4],[1,2,3]];
+const NEED_T=[[1,6,12],[1,5,10],[1,4,8],[1,3,6],[1,3,5]],NEED_OLD=[[1,2,8],[1,2,6],[1,2,5],[1,2,4],[1,2,3]];
 const NEED=p=>NEED_T[p?p.t:2]||[1,2,3];
-const lvOf=(k,p)=>{const n=NEED(p);let l=1;for(let i=1;i<n.length;i++)if((k||1)>=n[i])l=i+1;return l};
+const lvOf=(k,p)=>{const n=NEED(p);let l=1;for(let i=1;i<n.length;i++)if((k||1)>=n[i])l=i+1;const m=p&&S&&S.lvMin&&S.lvMin[p.n];return m>l&&(k||0)>0?m:l};
+/* v86 level table change: keep every level a player already reached under the old table */
+function keepLevels(){if(S.lvV===2)return;S.lvMin=S.lvMin||{};for(const p of PETS){const k=S.owned&&S.owned[p.n]||0;if(!k)continue;const n=NEED_OLD[p.t]||[1,2,3];let l=1;for(let i=1;i<n.length;i++)if(k>=n[i])l=i+1;if(l>1)S.lvMin[p.n]=Math.max(S.lvMin[p.n]||1,l)}S.lvV=2}
 const maxCopies=p=>NEED(p)[MAXLV-1];
 const toNext=(k,p)=>{const L=lvOf(k,p);return L<MAXLV?NEED(p)[L]-(k||0):0};
 /* day key in Thailand time, so check-in resets at local midnight on server and client alike */
@@ -129,7 +132,7 @@ const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth
 function fresh(){return{v:6,stars:30,leaves:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,rtickets:0,pity:0,
   streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,avatarL:0,frame:"none"}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];keepLevels();if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
@@ -209,7 +212,7 @@ function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มี
 function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p.t!==t||p.sp)throw "เลือกเพื่อนไม่ถูกระดับ";
   if((S.shards[t]||0)<SHARD_COST[t])throw "เศษไม่พอ";if((S.owned[p.n]||0)>=maxCopies(p))throw "ตัวนี้เก็บครบแล้ว";S.shards[t]-=SHARD_COST[t];return giveCopy(pi)}
 function actBuddy(pi){pi=+pi;const p=PETS[pi];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้";S.buddy=pi;return{pi}}
-function actDaily(){const st=streakState();if(st.claimed)throw "รับของวันนี้ไปแล้ว";S.streakN=st.next;S.streakDay=dk(now());const r=REW[S.streakN-1];
+function actDaily(){const st=streakState();if(st.claimed)throw "รับของวันนี้ไปแล้ว";S.streakN=st.next;S.streakDay=dk(now());const r=rewTable()[S.streakN-1];S.dailyTot=(S.dailyTot||0)+1;
   const dp=powers().daily||0;S.leaves=(S.leaves||0)+dp+(r.l||0);if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,l:(r.l||0)+dp,bonus:dp,pet:r.pet||null}}
 function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
 function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
