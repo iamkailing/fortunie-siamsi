@@ -823,6 +823,16 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .pay-simple input{border:1px solid var(--line);background:#ffffff10;color:var(--text);border-radius:12px;padding:10px 12px;font:inherit;font-size:16px}
 .ps-sliphead{justify-content:space-between;margin-top:2px}.ps-sliphead span{color:var(--butter)}
 .ps-no>div{align-items:flex-start}
+/* ---- top-up success ---- */
+#paidModal{z-index:70}
+.paid-pop{align-items:center;text-align:center;gap:4px;padding:26px 20px 20px;border-color:#f0d28a66;background:radial-gradient(90% 60% at 50% 0%,#f0d28a2e,transparent 70%),var(--night-2)}
+.paid-ic svg{width:78px;height:78px;filter:drop-shadow(0 0 18px #f0d28acc);animation:paidpop .7s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes paidpop{from{transform:scale(.2) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+.paid-pop h2{font-family:var(--f-display);font-size:26px;margin:6px 0 0;color:var(--butter)}
+.paid-sub{margin:4px 0 0;color:var(--lav-soft)}
+.paid-stars{font-family:var(--f-display);font-size:44px;line-height:1.1;color:var(--butter);text-shadow:0 0 20px #f0d28a66;font-variant-numeric:tabular-nums}
+.paid-pop .primary{margin-top:12px;width:100%}
+@media (prefers-reduced-motion:reduce){.paid-ic svg{animation:none}}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -1180,6 +1190,15 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
     <button class="primary" id="dailyClaim" type="button">รับรางวัลวันนี้</button>
   </div>
 </div>
+<div class="scrim center" id="paidModal" hidden><div class="pop paid-pop" role="dialog" aria-modal="true" aria-labelledby="paidTitle">
+  <div class="paid-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg></div>
+  <h2 id="paidTitle">เติมเงินสำเร็จ!</h2>
+  <p class="paid-sub">คุณได้รับ</p>
+  <b class="paid-stars"><span id="paidStars">0</span> ดาว</b>
+  <span class="small" id="paidInfo"></span>
+  <span class="small" id="paidTotal"></span>
+  <button class="primary" id="paidOk" type="button">เยี่ยมเลย ไปเขย่ากัน</button>
+</div></div>
 <div class="scrim center" id="todayModal" hidden><div class="pop today-pop" role="dialog" aria-modal="true" aria-label="ดวงของคุณวันนี้" id="todayPop"></div></div>
 <div class="scrim center" id="petModal" hidden><div class="pop pet-pop" role="dialog" aria-modal="true" aria-labelledby="petTitle" id="petPop"></div></div>
 <div class="scrim center" id="shareModal" hidden>
@@ -2250,6 +2269,11 @@ function renderPaySimple(){chosen={simple:true};const ps=PACKS.filter(p=>p.baht>
   $("confirm").hidden=false;$("confirmText").hidden=true;$("payInfo").textContent=CFG.pay||"";$("slipLabel").hidden=false;$("confirmBtn").disabled=false;
   $("confirmBtn").textContent=CFG.autoSlip?"ตรวจสลิปและเติมดาว":"ส่งสลิปให้แอดมิน";
   $("shopNote").textContent=CFG.autoSlip?"โอนแล้วแนบสลิป ระบบตรวจให้อัตโนมัติ ดาวเข้าทันที":"โอนแล้วแนบสลิป แอดมินจะตรวจและเติมดาวให้"}
+/* full success screen after an automatic top-up */
+function showPaid(baht,stars){$("paidStars").textContent="0";$("paidInfo").textContent=`โอน ${(+baht).toLocaleString()} บาท · ตรวจสลิปอัตโนมัติแล้ว`;$("paidTotal").textContent=`ดาวทั้งหมดตอนนี้ ${(+S.stars||0).toLocaleString()} ดาว`;
+  $("paidModal").hidden=false;$("paidOk").focus();burst(3,"#f0d28a");try{chime(CH.slip["ดีมาก"])}catch(_){}
+  const t0=performance.now(),dur=reduce?1:900;(function tick(t){const k=Math.min(1,(t-t0)/dur);$("paidStars").textContent=Math.round(stars*(1-Math.pow(1-k,3))).toLocaleString();if(k<1)requestAnimationFrame(tick)})(t0)}
+$("paidOk").addEventListener("click",()=>{$("paidModal").hidden=true;if(typeof closeSheet==="function")closeSheet();else{const sh=$("sheet");if(sh)sh.hidden=true}showTab("home")});
 function renderShop(){if(ONLINE&&CFG&&CFG.payNo){renderPaySimple();renderMyReqs();return}$("confirmText").hidden=false;
   $("shopNote").textContent=ONLINE?(CFG.autoSlip?"เลือกแพ็กหรือใส่ยอดเอง โอนเงิน แล้วแนบสลิป ระบบตรวจให้อัตโนมัติ ดาวเข้าทันที":"เลือกแพ็ก โอนเงิน แล้วอัปโหลดสลิป แอดมินจะตรวจและเติมดาวให้"):GUEST?"โหมดผู้เยี่ยมชม: เล่นและใช้โค้ดได้ เกมเซฟไว้ในเครื่องนี้ ส่วนการเติมดาวทักแอดมินที่ LINE @fortuniehoro":"ยังไม่ได้เชื่อมบัญชี ตอนนี้เติมดาวไม่ได้ ลองปิดแล้วเปิดเกมใหม่";
   $("packs").innerHTML=PACKS.map((p,i)=>`<button class="pack" type="button" data-i="${i}" aria-pressed="${chosenI===i}"><b><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${p.stars}</b><span>${p.baht} บาท · เขย่าเพิ่มได้ ${Math.floor(p.stars/COST)} ใบ</span>${p.tag?`<em>${p.tag}</em>`:""}</button>`).join("")+`<div class="pack pack-any${chosen&&chosen.custom?" on":""}"><b>💸 โอนยอดอื่น</b><span>ขั้นต่ำ ${TOPUP_MIN} บาท · ได้ดาวตามยอดที่โอน</span><div class="row" style="flex-wrap:nowrap"><input id="anyBaht" type="number" inputmode="numeric" min="${TOPUP_MIN}" step="1" placeholder="ใส่ยอดเงิน (บาท)" value="${chosen&&chosen.custom?chosen.baht:""}" aria-label="ยอดเงินที่จะโอน"><button class="mini" id="anyGo" type="button">เลือก</button></div><span class="small" id="anyStars"></span></div>`;
@@ -2272,7 +2296,8 @@ $("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$
   if(!slipFile){msg.textContent="แนบรูปสลิปก่อนนะคะ";return}
   const btn=$("confirmBtn");btn.disabled=true;msg.textContent="กำลังส่งสลิป…";
   try{const img=await shrink(slipFile);msg.textContent="กำลังตรวจสลิป…";const r=await api("topup",chosen.simple?{any:1,baht:Math.floor(+(($("psBaht")||{}).value)||0),img}:chosen.custom?{baht:chosen.baht,img}:{pack:chosenI,img});
-    if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว ✨`;toast(`เติม ${r.baht} บาทสำเร็จ +${r.stars} ดาว`);chime(CH.slip["ดีมาก"]);try{await api("me")}catch(_){}}
+    if(r&&r.auto){msg.textContent=`เติมสำเร็จ +${r.stars} ดาว ✨`;try{await api("me")}catch(_){}showPaid(r.baht,r.stars)}
+    else if(r&&r.rejected){msg.textContent="สลิปไม่ผ่าน: "+r.reason;toast("สลิปไม่ผ่าน");btn.disabled=false;try{await api("me")}catch(_){}return}
     else msg.textContent="ส่งแล้ว รอแอดมินตรวจ ดาวจะเข้าเองเมื่ออนุมัติ";slipFile=null;$("slipIn").value="";$("slipName").textContent="แตะเพื่อเลือกรูปสลิป";$("slipPreview").hidden=true;chosen=null;chosenI=-1;setTimeout(()=>{$("confirm").hidden=true;renderShop()},1500)}
   catch(e){msg.textContent=e==="locked"?"":(typeof e==="string"?e:"ส่งไม่สำเร็จ ลองใหม่อีกครั้ง")}
   btn.disabled=false});
@@ -2371,7 +2396,7 @@ function renderAdmin(){if(!AROLE())return;const pend=ADM.pending,hist=ADM.histor
   $("signupCount").textContent=waiting.length?waiting.length+" คน":"";
   $("signupList").innerHTML=waiting.length?waiting.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b><span class="small" style="text-align:left;display:block">${esc(p.email||"")} · ${esc(p.phone||"")}${p.created_at?" · สมัคร "+ago(tsOf(p.created_at)):""}</span></div><div class="row" style="flex-wrap:nowrap"><button class="mini" type="button" data-adm="su_ok">อนุมัติ</button><button class="mini" type="button" data-adm="su_no">ไม่อนุมัติ</button></div></div>`).join(""):`<div class="placeholder">ไม่มีคนรออนุมัติ</div>`;
   renderPlayers();renderCodes();
-  $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?(r.auto?"🤖 อนุมัติอัตโนมัติ":"อนุมัติ"):"ไม่อนุมัติ"} ${ago(tsOf(r.done_at||r.created_at))}</span></div>${r.slip_path&&isOwn()?`<button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
+  $("histList").innerHTML=hist.length?hist.map(r=>`<div class="adm-card row-card" data-rid="${esc(r.id)}"><div><b>${nmOf(r.user_id)}</b><span class="small" style="text-align:left;display:block">${+r.baht} บาท · ${+r.stars} ดาว · ${r.status==="approved"?(r.auto?"🤖 อนุมัติอัตโนมัติ":"อนุมัติ"):(r.auto?"🤖 ปัดตกอัตโนมัติ":"ไม่อนุมัติ")}${r.status!=="approved"&&r.reason?" · "+esc(r.reason):""} ${ago(tsOf(r.done_at||r.created_at))}</span></div>${r.slip_path&&isOwn()?`<button class="mini" type="button" data-adm="delslip">ลบรูปสลิป</button>`:""}</div>`).join(""):`<div class="placeholder">ยังไม่มีประวัติ</div>`;
   renderStaff();if(isOwn())fillCfg();mgPreview()}
 document.addEventListener("click",async e=>{const b=e.target.closest("button[data-adm]");if(!b||!AROLE())return;const a=b.dataset.adm,card=b.closest(".adm-card");
   if(!isOwn()&&!["ok","no","su_ok","su_no","pl"].includes(a)){toast("สิทธิ์สตาฟทำรายการนี้ไม่ได้");return}
@@ -2387,7 +2412,7 @@ $("codeList").addEventListener("click",async e=>{const b=e.target.closest("[data
   if(b.dataset.bc==="show"){const t=card.querySelector(".bview");t.hidden=!t.hidden;b.textContent=t.hidden?"ดูโค้ด":"ซ่อน";return}
   if(b.dataset.bc==="off"&&isOwn()){b.disabled=true;try{await api("adm_batch_off",{batch:card.dataset.batch});toast("ปิดทั้งชุดแล้ว");await loadAdmin()}catch(err){if(err!=="locked")toast(err);b.disabled=false}}});
 /* log (owner) */
-const LOG_TXT={topup_ok:["topup","อนุมัติเติมดาว",d=>`${d.baht} บาท → ${d.stars} ดาว${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมดาว",d=>`${d.baht} บาท`],give:["player","ส่ง/หักของ",d=>[d.s?"ดาว "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
+const LOG_TXT={topup_ok:["topup","อนุมัติเติมดาว",d=>`${d.baht} บาท → ${d.stars} ดาว${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมดาว",d=>`${d.baht} บาท${d.auto?" · 🤖 อัตโนมัติ":""}${d.reason?" · "+d.reason:""}`],give:["player","ส่ง/หักของ",d=>[d.s?"ดาว "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
   approve:["player","อนุมัติสมัคร",()=>""],deny:["player","ไม่อนุมัติสมัคร",()=>""],ban:["player","ระงับบัญชี",d=>d.reason?"เหตุผล: "+d.reason:""],unban:["player","ปลดระงับ",()=>""],reset:["player","ล้างข้อมูลเกม",()=>""],setpass:["player","ตั้งรหัสผ่านใหม่",()=>""],
   admin:["player","เปลี่ยนสิทธิ์แอดมิน",d=>d.on?"ให้สิทธิ์":"ปลดสิทธิ์"],staff_on:["player","ตั้งเป็นสตาฟ",()=>""],staff_off:["player","ปลดสิทธิ์สตาฟ",()=>""],rename:["player","เปลี่ยนชื่อ",d=>`จาก ${d.from||"-"} เป็น ${d.to||"-"}`],
   mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" ดาว":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],

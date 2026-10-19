@@ -485,7 +485,7 @@ async function verifySlip(b64) {
   if (!SLIP_KEY) return { err: "ยังไม่ได้ใส่คีย์ตรวจสลิป" };
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 9000);
   try {
-    const r = await fetch(SLIP_URL, { method: "POST", headers: { Authorization: `Bearer ${SLIP_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ base64: b64, checkDuplicate: true }), signal: ctl.signal });
+    const r = await fetch(SLIP_URL, { method: "POST", headers: { Authorization: `Bearer ${SLIP_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ base64: b64 }), signal: ctl.signal });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j || j.success === false || !j.data) { const e = (j && j.error) || {}; const code = String(e.code || j.message || ("HTTP " + r.status));
       return { err: code === "SLIP_PENDING" ? "สลิปกรุงเทพยังไม่พร้อมตรวจ (โอนไม่ถึง 5 นาที)" : "ระบบตรวจตอบว่า " + String(e.message || code).slice(0, 60) }; }
@@ -498,7 +498,6 @@ async function verifySlip(b64) {
 const normName = s => String(s || "").toLowerCase().replace(/(นางสาว|นาง|นาย|น\.ส\.|บจก\.?|บริษัท|จำกัด|mr\.?|mrs\.?|ms\.?|miss|co\.?,?\s*ltd\.?|company|limited)/g, "").replace(/[^a-z0-9ก-๙]/g, "");
 function slipProblem(v, cfg, now) {
   if (v.err) return v.err;
-  if (v.dup) return "สลิปนี้เคยถูกใช้แล้ว (ระบบตรวจแจ้งว่าซ้ำ)";
   if (!v.ref) return "ไม่พบเลขอ้างอิงในสลิป";
   if (!isFinite(v.amount) || v.amount < TOPUP_MIN) return `ยอดในสลิป ${isFinite(v.amount) ? v.amount : "?"} บาท ต่ำกว่าขั้นต่ำ ${TOPUP_MIN} บาท`;
   const want = normName(cfg.slip_name), tail = String(cfg.slip_tail || "").replace(/\D/g, "");
@@ -530,7 +529,7 @@ async function submitTopup(uid, prof, p, cfg) {
   const { error } = await sb.storage.from("slips").upload(path, bytes, { contentType: m[1] }); if (error) throw "อัปโหลดสลิปไม่สำเร็จ";
   await sb.from("topups").insert({ id, user_id: uid, baht: pk.baht, stars: pk.stars, slip_path: path });
   await log(uid, "topup_req", { id, baht: pk.baht });
-  if (!cfg.slip_auto) return { ok: true, auto: false };
+  if (!(cfg.slip_auto && SLIP_KEY)) return { ok: true, auto: false };
   const v = await verifySlip(m[3]); let why = slipProblem(v, cfg, Date.now());
   if (!why) {
     const baht = Math.floor(v.amount), stars = starsFor(packs, baht), note = !pk.baht || baht === pk.baht ? "ตรวจอัตโนมัติผ่าน" : `ตรวจอัตโนมัติผ่าน · ยอดจริง ${baht} บาท (เลือกไว้ ${pk.baht})`;
@@ -544,11 +543,12 @@ async function submitTopup(uid, prof, p, cfg) {
       return { ok: true, auto: true, stars: pk.stars, baht: pk.baht };
     }
   }
-  /* if the slip could be read, show the admin the real amount (and fair stars) instead of the pack that was picked */
-  const fix = {}; if (!v.err && isFinite(v.amount) && v.amount > 0) { const b = Math.floor(v.amount), ps = packs.filter(x => x.baht > 0 && x.stars > 0).sort((a, c) => a.baht - c.baht);
-    fix.baht = b; fix.stars = b >= TOPUP_MIN ? starsFor(packs, b) : (ps.length ? Math.floor(b * ps[0].stars / ps[0].baht) : 0); }
-  await sb.from("topups").update({ auto_note: why.slice(0, 120), ...fix }).eq("id", id);
-  return { ok: true, auto: false };
+  /* automatic mode: a slip that doesn't pass is turned down right away (no admin queue); service hiccups ask the player to send again */
+  const fix = {}; if (!v.err && isFinite(v.amount) && v.amount > 0) { fix.baht = Math.floor(v.amount); fix.stars = starsFor(packs, fix.baht); }
+  const reason = (v.err ? why + " ลองส่งสลิปใหม่อีกครั้งนะคะ" : why).slice(0, 120);
+  await sb.from("topups").update({ status: "rejected", reason, auto: true, auto_note: reason, done_at: new Date().toISOString(), ...fix }).eq("id", id).eq("status", "pending");
+  await log(uid, "topup_no", { id, baht: fix.baht || pk.baht, auto: true, reason });
+  return { ok: true, auto: false, rejected: true, reason };
 }
 
 async function redeem(G, uid, code) {
