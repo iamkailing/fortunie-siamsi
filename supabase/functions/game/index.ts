@@ -473,26 +473,29 @@ async function segmentIds(seg) {
   if (seg === "paid") { const { data: tops } = await sb.from("topups").select("user_id").eq("status", "approved").limit(20000); const paid = new Set((tops || []).map(x => x.user_id)); list = list.filter(p => paid.has(p.id)); }
   return list.map(p => p.id);
 }
-/* ---------- automatic slip check (EasySlip by default) ----------
+/* ---------- automatic slip check (EasySlip API v2 by default) ----------
    The key lives only in the function's secrets (SLIP_KEY); SLIP_URL can point to another provider with the same shape.
    Anything unclear or failing goes to the normal admin queue instead of being rejected. */
-const SLIP_KEY = Deno.env.get("SLIP_KEY") || "", SLIP_URL = Deno.env.get("SLIP_URL") || "https://developer.easyslip.com/api/v1/verify";
-async function verifySlip(b64) {
+const SLIP_KEY = Deno.env.get("SLIP_KEY") || "", SLIP_URL = Deno.env.get("SLIP_URL") || "https://api.easyslip.com/v2/verify/bank";
+/* EasySlip API v2 (document.easyslip.com/en/v2/verify/bank/base64): { base64, checkDuplicate, matchAmount } → data.rawSlip */
+async function verifySlip(b64, baht) {
   if (!SLIP_KEY) return { err: "ยังไม่ได้ใส่คีย์ตรวจสลิป" };
-  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 8000);
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 9000);
   try {
-    const r = await fetch(SLIP_URL, { method: "POST", headers: { Authorization: `Bearer ${SLIP_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ image: b64 }), signal: ctl.signal });
+    const r = await fetch(SLIP_URL, { method: "POST", headers: { Authorization: `Bearer ${SLIP_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ base64: b64, checkDuplicate: true, matchAmount: baht }), signal: ctl.signal });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j || !j.data) return { err: "ระบบตรวจตอบว่า " + String((j && (j.message || j.error)) || ("HTTP " + r.status)).slice(0, 60) };
-    const d = j.data, rc = d.receiver || {}, acc = rc.account || {}, amt = d.amount && typeof d.amount === "object" ? d.amount.amount : d.amount;
-    const names = [acc.name && acc.name.th, acc.name && acc.name.en, rc.name && rc.name.th, rc.name && rc.name.en, rc.displayName].filter(Boolean);
-    const accts = [acc.bank && acc.bank.account, acc.proxy && acc.proxy.account, rc.account && rc.account.value].filter(x => typeof x === "string");
-    return { ref: String(d.transRef || d.reference || d.ref || ""), amount: Number(amt), date: String(d.date || d.transDate || d.transactionDate || ""), name: names.join(" | "), acct: accts.join(" | ") };
+    if (!r.ok || !j || j.success === false || !j.data) { const e = (j && j.error) || {}; const code = String(e.code || j.message || ("HTTP " + r.status));
+      return { err: code === "SLIP_PENDING" ? "สลิปกรุงเทพยังไม่พร้อมตรวจ (โอนไม่ถึง 5 นาที)" : "ระบบตรวจตอบว่า " + String(e.message || code).slice(0, 60) }; }
+    const d = j.data, raw = d.rawSlip || d, rc = raw.receiver || {}, acc = rc.account || {}, amt = raw.amount && typeof raw.amount === "object" ? raw.amount.amount : (raw.amount ?? d.amountInSlip);
+    const names = [acc.name && acc.name.th, acc.name && acc.name.en, d.matchedAccount && d.matchedAccount.nameTh, d.matchedAccount && d.matchedAccount.nameEn].filter(Boolean);
+    const accts = [acc.bank && acc.bank.account, acc.proxy && acc.proxy.account, d.matchedAccount && d.matchedAccount.bankNumber].filter(x => typeof x === "string");
+    return { dup: !!d.isDuplicate, ref: String(raw.transRef || raw.reference || ""), amount: Number(amt), date: String(raw.date || ""), name: names.join(" | "), acct: accts.join(" | ") };
   } catch (_e) { return { err: "ระบบตรวจสลิปไม่ตอบ" }; } finally { clearTimeout(timer); }
 }
 const normName = s => String(s || "").toLowerCase().replace(/(นางสาว|นาง|นาย|น\.ส\.|บจก\.?|บริษัท|จำกัด|mr\.?|mrs\.?|ms\.?|miss|co\.?,?\s*ltd\.?|company|limited)/g, "").replace(/[^a-z0-9ก-๙]/g, "");
 function slipProblem(v, pk, cfg, now) {
   if (v.err) return v.err;
+  if (v.dup) return "สลิปนี้เคยถูกใช้แล้ว (ระบบตรวจแจ้งว่าซ้ำ)";
   if (!v.ref) return "ไม่พบเลขอ้างอิงในสลิป";
   if (!(Math.abs(v.amount - pk.baht) < 0.005)) return `ยอดในสลิป ${isFinite(v.amount) ? v.amount : "?"} บาท ไม่ตรงกับแพ็ก ${pk.baht} บาท`;
   const want = normName(cfg.slip_name), tail = String(cfg.slip_tail || "").replace(/\D/g, "");
@@ -518,7 +521,7 @@ async function submitTopup(uid, prof, p, cfg) {
   await sb.from("topups").insert({ id, user_id: uid, baht: pk.baht, stars: pk.stars, slip_path: path });
   await log(uid, "topup_req", { id, baht: pk.baht });
   if (!cfg.slip_auto) return { ok: true, auto: false };
-  const v = await verifySlip(m[3]); let why = slipProblem(v, pk, cfg, Date.now());
+  const v = await verifySlip(m[3], pk.baht); let why = slipProblem(v, pk, cfg, Date.now());
   if (!why) {
     const { data: upd, error: ue } = await sb.from("topups").update({ status: "approved", done_at: new Date().toISOString(), slip_ref: v.ref, auto: true, auto_note: "ตรวจอัตโนมัติผ่าน" }).eq("id", id).eq("status", "pending").select("id");
     if (ue && String(ue.code) === "23505") why = "สลิปนี้เคยใช้เติมไปแล้ว";
