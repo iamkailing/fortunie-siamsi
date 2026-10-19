@@ -276,7 +276,9 @@ const fail = (msg, status = 400) => out({ error: String(msg) }, status);
 const cleanName = v => String(v || "").replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 16);
 const int = (v, lo, hi) => { const n = Math.trunc(Number(v) || 0); return Math.max(lo, Math.min(hi, n)); };
 
-async function getConfig() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
+let CFG_C = null, CFG_AT = 0;
+async function getConfig() { if (CFG_C && Date.now() - CFG_AT < 10000) return CFG_C; CFG_C = await getConfigRaw(); CFG_AT = Date.now(); return CFG_C; }
+async function getConfigRaw() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
 async function loadState(uid) {
   const { data } = await sb.from("player_state").select("state,ver").eq("id", uid).maybeSingle();
   return data ? { st: Object.assign(fresh(), data.state), ver: data.ver } : { st: fresh(), ver: -1 };
@@ -329,10 +331,22 @@ async function leaderboard(uid, me) {
   const { count } = await sb.from("profiles").select("id", { count: "exact", head: true }).eq("banned", false).neq("approved", false).gt("score", me.score || 0);
   return { top: (top || []).map(r => ({ name: r.name, code: r.code, score: r.score || 0, showcase: r.showcase || [], avatar: r.avatar ?? -1, avL: r.avatar_l ?? 1, frame: r.frame || "none", me: r.id === uid })), myRank: (count || 0) + 1, myScore: me.score || 0 };
 }
+/* ป๊อปเพื่อน: the client sends taps every ~6 s; the server allows 20 taps a second since the last batch (counting at most 8 s), so a big burst can't be sent in one go */
+async function addPops(uid, prof, n) {
+  n = int(n, 0, 600); const now = Date.now(), last = prof.pop_at ? new Date(prof.pop_at).getTime() : 0;
+  const el = last ? Math.min(8, Math.max(0, (now - last) / 1000)) : 8, take = Math.min(n, Math.ceil(el * 20) + 10), pops = (+prof.pops || 0) + take;
+  if (take > 0) await sb.from("profiles").update({ pops, pop_at: new Date(now).toISOString() }).eq("id", uid);
+  return { pops, taken: take };
+}
+async function popBoard(uid, me) {
+  const { data: top } = await sb.from("profiles").select("id,name,code,pops,showcase,avatar,avatar_l,frame,pop_at").eq("banned", false).neq("approved", false).gt("pops", 0).order("pops", { ascending: false }).order("pop_at", { ascending: true }).limit(50);
+  const { count } = await sb.from("profiles").select("id", { count: "exact", head: true }).eq("banned", false).neq("approved", false).gt("pops", +me.pops || 0);
+  return { top: (top || []).map(r => ({ name: r.name, code: r.code, score: +r.pops || 0, showcase: r.showcase || [], avatar: r.avatar ?? -1, avL: r.avatar_l ?? 1, frame: r.frame || "none", me: r.id === uid })), myRank: (count || 0) + 1, myScore: +me.pops || 0 };
+}
 async function profileOf(code) {
-  const { data } = await sb.from("profiles").select("name,code,score,showcase,created_at,avatar,avatar_l,frame").eq("code", code.toUpperCase()).eq("banned", false).maybeSingle();
+  const { data } = await sb.from("profiles").select("name,code,score,pops,showcase,created_at,avatar,avatar_l,frame").eq("code", code.toUpperCase()).eq("banned", false).maybeSingle();
   if (!data) throw "ไม่พบผู้เล่นนี้";
-  return { name: data.name, code: data.code, score: data.score || 0, showcase: data.showcase || [], since: data.created_at, avatar: data.avatar ?? -1, avL: data.avatar_l ?? 1, frame: data.frame || "none" };
+  return { name: data.name, code: data.code, score: data.score || 0, showcase: data.showcase || [], since: data.created_at, pops: +data.pops || 0, avatar: data.avatar ?? -1, avL: data.avatar_l ?? 1, frame: data.frame || "none" };
 }
 async function resolveId(p) {
   const raw = String(p.id || "").trim().toLowerCase(); if (!raw) return fail("ใส่อีเมลหรือเบอร์โทรก่อนนะคะ");
@@ -404,10 +418,11 @@ async function adminAction(a, p, me, role) {
     const okSum = a => Array.isArray(a) && a.length === 5 && Math.abs(a.reduce((x, y) => x + (+y || 0), 0) - 100) < 0.05;
     if (p.rates && (!okSum(p.rates.n) || !okSum(p.rates.r) || +p.rates.r[0] || +p.rates.r[1])) throw "เรทสุ่มต้องรวมได้ 100% ทั้งสองแบบ";
     const rates = p.rates ? Game(fresh(), Date.now(), false).applyRates(p.rates) : undefined;
-    { const old = await getConfig(); const diff = [];
+    CFG_C = null; { const old = await getConfig(); const diff = [];
       const j = x => JSON.stringify(x || null); if (rates && j(rates) !== j(old.rates)) diff.push("rates"); if (j(packs) !== j(old.packs)) diff.push("packs"); if (String(p.ann || "") !== (old.ann || "")) diff.push("ann"); if (!!p.maint !== !!old.maint) diff.push("maint");
       if (diff.length) await log(me, "cfg", { diff, rates: rates || old.rates || null, old_rates: old.rates || null, packs, ann: String(p.ann || "").slice(0, 120), maint: !!p.maint }, me); }
     await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, packs, ...(rates ? { rates } : {}), updated_at: new Date().toISOString() }).eq("id", 1);
+    CFG_C = null;
     return { ok: true };
   }
   if (a === "adm_code") {
@@ -508,6 +523,8 @@ Deno.serve(async (req) => {
     if (cfg.maint && !ADMIN && !STAFF) return out({ locked: "maint", profile: { name: prof.name, code: prof.code } });
     if (prof.approved === false && !ADMIN) return out({ locked: "pending", profile: { name: prof.name, code: prof.code } });
     if (a === "leaderboard") return out({ res: await leaderboard(uid, prof) });
+    if (a === "pop") return out({ res: await addPops(uid, prof, p.n) });
+    if (a === "pop_lb") return out({ res: await popBoard(uid, prof) });
     if (a === "profile_of") return out({ res: await profileOf(String(p.code || "")) });
     if (a.startsWith("adm_")) { if (!ADMIN && !(STAFF && STAFF_OK.has(a))) return fail(ADMIN || STAFF ? "สิทธิ์สตาฟทำรายการนี้ไม่ได้" : "ต้องเป็นแอดมิน", 403); return out({ res: await adminAction(a, p, uid, ADMIN ? "owner" : "staff") }); }
 

@@ -778,6 +778,35 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .pick-pet{position:relative}.pick-pet .pe-lv{position:absolute;top:3px;right:4px;font-style:normal;font-size:9.5px;color:var(--lav-soft);background:#0006;border-radius:6px;padding:0 4px}
 .rk-pfig .rk-img,.rk-stage .rk-img{translate:0 calc(max(0,var(--gap,0) - .015)*100%)}
 .rk-pfig::after{bottom:-2px;height:12px;width:58%}
+/* ---- shake the phone ---- */
+.motion-box{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;border-radius:18px;border:1.5px solid #f0d28a66;background:radial-gradient(80% 100% at 50% 0%,#f0d28a22,transparent 70%),#ffffff08;text-align:center}
+.motion-box b{font-family:var(--f-display);font-size:20px;color:var(--butter)}
+.mo-ic{font-size:34px;animation:mowig .5s ease-in-out infinite}
+@keyframes mowig{0%,100%{rotate:-14deg}50%{rotate:14deg}}
+.motion-box .primary{min-width:120px}
+@media (prefers-reduced-motion:reduce){.mo-ic{animation:none}}
+/* ---- ป๊อปเพื่อน ---- */
+.rk-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:999px;background:#ffffff0d;border:1px solid var(--line);margin:0 0 12px}
+.rk-seg button{border:0;border-radius:999px;padding:9px 10px;background:none;color:var(--lav-soft);font:inherit;font-size:14px;cursor:pointer}
+.rk-seg button.on{background:linear-gradient(180deg,#b98ae6,#8f62c9);color:#fff;box-shadow:0 4px 12px #8f62c966}
+.pop-card{align-items:center;text-align:center;gap:6px;padding:16px 12px 12px}
+.pop-count{display:flex;flex-direction:column;align-items:center}.pop-count .rk-lbl{text-align:center}
+.pop-count b{font-family:var(--f-display);font-size:40px;line-height:1.1;color:var(--butter);font-variant-numeric:tabular-nums}
+.pop-btn{position:relative;width:min(240px,70vw);aspect-ratio:1;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;display:grid;place-items:center}
+.pop-btn .rk-img{width:100%;height:100%;filter:drop-shadow(0 10px 14px #0008);transform-origin:50% 90%}
+.pop-btn .rk-emo{font-size:120px}
+.pop-glow{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--tg) 45%,transparent),transparent 68%);z-index:-1}
+.pop-btn.pp .rk-img,.pop-btn.pp .rk-emo{animation:popsq .16s ease-out}
+@keyframes popsq{0%{transform:scale(1,1)}35%{transform:scale(1.12,.86)}70%{transform:scale(.95,1.06)}100%{transform:scale(1,1)}}
+.pop-plus{position:absolute;pointer-events:none;font-family:var(--f-display);font-size:22px;color:var(--butter);text-shadow:0 2px 6px #0009;translate:-50% -50%;animation:popup .7s ease-out forwards;z-index:3}
+@keyframes popup{to{translate:-50% -150%;opacity:0}}
+.pop-hint{max-width:280px}
+@media (prefers-reduced-motion:reduce){.pop-btn.pp .rk-img{animation:none}}
+.pop-meter{width:min(240px,70vw);margin:4px auto 0}
+.pop-spark{position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle,#fff,var(--butter) 50%,transparent 70%);pointer-events:none;translate:-50% -50%;animation:popspark .5s ease-out forwards;z-index:3}
+@keyframes popspark{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+.pop-btn.pop-hot .pop-glow{animation:pophot .6s ease-out}
+@keyframes pophot{0%{transform:scale(1);opacity:1}40%{transform:scale(1.25);opacity:1;filter:brightness(1.6)}100%{transform:scale(1)}}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -840,6 +869,8 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
     <div class="controls">
       <div class="meter" aria-hidden="true"><i id="meter"></i></div>
       <button class="hold" id="holdBtn" type="button">กดค้างเพื่อเขย่า</button>
+      <div class="motion-box" id="motionBox" hidden><div class="mo-ic" aria-hidden="true">📳</div><b>เขย่ามือถือได้เลย!</b><span class="small" id="motionHint"></span>
+        <div class="row" style="justify-content:center;gap:8px"><button class="primary" id="motionSkip" type="button">ข้าม ⏭</button><button class="ghost" id="motionCancel" type="button">ยกเลิก</button></div></div>
       <p class="small" id="holdHint">หรือแตะปุ่มรัว ๆ ก็ได้</p>
       <p class="small" id="chargeInfo"></p>
       <div class="full-box" id="fullBox" hidden><b>คลังเต็มแล้ว</b><span>เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้</span><button class="burn" type="button" id="fullGo">🔥 ไปเคลียร์คลัง</button></div>
@@ -864,12 +895,22 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 
   <!-- RANK -->
   <div class="screen" id="scr-rank" hidden>
-    <h2 class="screen-title rk-title"><span aria-hidden="true">👑</span> อันดับนักสะสม</h2>
+    <h2 class="screen-title rk-title"><span aria-hidden="true">👑</span> อันดับ</h2>
+    <div class="rk-seg" id="rkSeg" role="group" aria-label="เลือกอันดับ"><button type="button" data-rk="pop" class="on" aria-pressed="true">👆 ป๊อปเพื่อน</button><button type="button" data-rk="collect" aria-pressed="false">🏆 นักสะสม</button></div>
+    <div id="rkCollect" hidden>
     <section class="profile-card" id="myProfile"></section>
     <section>
       <div class="row rk-head"><h2><span aria-hidden="true">🏆</span> ท็อปนักสะสม</h2><span class="small" id="lbMe"></span></div>
       <div class="lb-list" id="lbList"></div>
     </section>
+    </div>
+    <div id="rkPop">
+      <section class="profile-card pop-card" id="popStage"></section>
+      <section>
+        <div class="row rk-head"><h2><span aria-hidden="true">👆</span> ท็อปนักป๊อป</h2><span class="small" id="popMe"></span></div>
+        <div class="lb-list" id="popList"></div>
+      </section>
+    </div>
   </div>
   <!-- PETS -->
   <div class="screen" id="scr-pets" hidden>
@@ -1590,17 +1631,36 @@ const tube=$("tube"),hb=$("holdBtn");
 const invFull=()=>S.inv.length>=INV_MAX;
 function canDraw(){regen();return ONLINE&&(paidPending||S.charges>0||S.bonusFree>0)}
 function loop(ts){const dt=Math.min(50,ts-(last||ts));last=ts;
-  energy=holding?Math.min(1,energy+dt/1700):Math.max(0,energy-dt/2500);$("meter").style.width=(energy*100)+"%";
+  if(MO.on)holding=MO.skip||performance.now()-MO.t<260;
+  energy=holding?Math.min(1,energy+dt/(MO.skip?420:1700)):Math.max(0,energy-dt/(MO.on?4000:2500));$("meter").style.width=(energy*100)+"%";
   const amp=reduce?0:(holding?4+energy*9:energy*4);tube.style.transform=amp?`rotate(${Math.sin(ts/(70-energy*30))*amp}deg) translateX(${Math.sin(ts/50)*amp*.4}px)`:"";
   if((holding||energy>.05)&&ts-lastClack>(140-energy*80)){clack();lastClack=ts}
   if(energy>=1){finishShake();return}
-  if(holding||energy>0)raf=requestAnimationFrame(loop);else{raf=0;tube.style.transform=""}}
+  if(holding||energy>0||MO.on)raf=requestAnimationFrame(loop);else{raf=0;tube.style.transform=""}}
 function kick(){if(!raf){last=0;raf=requestAnimationFrame(loop)}}
 function startHold(){if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");return}if(busy||!canDraw())return;holding=true;ac();kick()}
 function stopHold(){holding=false}
-hb.addEventListener("pointerdown",e=>{e.preventDefault();startHold()});
+
+/* ---------- shake the phone (with skip) ---------- */
+const MO={on:false,t:0,skip:false,got:false,ok:null,prev:null,timer:0};
+const phoneLike=()=>"DeviceMotionEvent" in window&&matchMedia("(pointer:coarse)").matches;
+function onMotion(e){const a=e.accelerationIncludingGravity||e.acceleration;if(!a||a.x==null)return;MO.got=true;
+  const v=[a.x||0,a.y||0,a.z||0];if(MO.prev){const j=Math.hypot(v[0]-MO.prev[0],v[1]-MO.prev[1],v[2]-MO.prev[2]);if(j>9){MO.t=performance.now();if(navigator.vibrate&&j>18)try{navigator.vibrate(8)}catch(_){}}}MO.prev=v}
+function motionOff(){if(!MO.on)return;MO.on=false;MO.skip=false;MO.prev=null;clearTimeout(MO.timer);window.removeEventListener("devicemotion",onMotion);$("motionBox").hidden=true;hb.hidden=false;holding=false;syncHoldLabel()}
+async function motionStart(){if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");return false}if(busy||!canDraw())return false;
+  if(MO.ok===false||!phoneLike()||S.noMotion)return false;
+  try{if(typeof DeviceMotionEvent.requestPermission==="function"){const r=await DeviceMotionEvent.requestPermission();if(r!=="granted"){MO.ok=false;toast("ไม่ได้อนุญาตเซนเซอร์ กดค้างปุ่มเพื่อเขย่าแทนได้นะคะ");return false}}}catch(_){MO.ok=false;return false}
+  ac();MO.on=true;MO.skip=false;MO.got=false;MO.t=0;MO.prev=null;window.addEventListener("devicemotion",onMotion);
+  $("motionBox").hidden=false;hb.hidden=true;$("motionHint").textContent="เขย่ามือถือเบา ๆ จนหลอดเต็ม";kick();
+  MO.timer=setTimeout(()=>{if(MO.on&&!MO.got){MO.ok=false;motionOff();toast("เครื่องนี้ไม่มีเซนเซอร์เขย่า กดค้างปุ่มแทนได้เลย")}},1800);return true}
+$("motionSkip").addEventListener("click",()=>{if(!MO.on)return;MO.skip=true;kick()});
+$("motionCancel").addEventListener("click",()=>{motionOff()});
+function syncHoldLabel(){const m=phoneLike()&&MO.ok!==false&&!S.noMotion;hb.textContent=m?"แตะแล้วเขย่ามือถือ":"กดค้างเพื่อเขย่า";$("holdHint").textContent=m?"หรือกดค้างปุ่มไว้ก็ได้":"หรือแตะปุ่มรัว ๆ ก็ได้"}
+let tapT=0;
+hb.addEventListener("pointerdown",e=>{e.preventDefault();tapT=performance.now();if(phoneLike()&&MO.ok!==false&&!S.noMotion){holdTimer=setTimeout(startHold,260);return}startHold()});
+let holdTimer=0;hb.addEventListener("pointerup",e=>{clearTimeout(holdTimer);if(!holding&&phoneLike()&&MO.ok!==false&&!S.noMotion&&performance.now()-tapT<260)motionStart()});
 hb.addEventListener("contextmenu",e=>e.preventDefault());
-["pointerup","pointerleave","pointercancel"].forEach(ev=>hb.addEventListener(ev,stopHold));
+["pointerup","pointerleave","pointercancel"].forEach(ev=>hb.addEventListener(ev,()=>{clearTimeout(holdTimer);stopHold()}));
 hb.addEventListener("click",e=>{if(invFull()){toast("คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ");return}if(busy||!canDraw())return;if(e.detail===0||e.pointerType===""){energy=Math.min(1,energy+.34);kick()}});
 hb.addEventListener("keydown",e=>{if((e.key===" "||e.key==="Enter")&&!e.repeat){e.preventDefault();startHold()}});
 hb.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")stopHold()});
@@ -2009,21 +2069,21 @@ function openProfileEdit(){let av=myAvatar(),al=av>=0?myAvL():1,fr=myFrame();con
     $("petPop").querySelectorAll("[data-fr]").forEach(b=>b.addEventListener("click",()=>{fr=b.dataset.fr;draw()}));
     $("peSave").addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(av,fr,av>=0?al:0)})};
   draw();$("petModal").hidden=false}
-function lbRowHTML(r,i){const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
+function lbRowHTML(r,i,unit){const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
   return `<div class="lb-row rk-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank">${i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div>
     ${p?`<span class="rk-rpet">${bigPet(p,sp.L)}</span><div class="rk-rinfo"><b>${esc(formName(p,sp.L))}</b>${tierChip(p,sp.L)}</div>`:`<span class="rk-rpet"></span><div class="rk-rinfo"><small>ยังไม่เลือกเพื่อนโชว์</small></div>`}
-    <span class="lb-score"><b>${r.score}</b><small>คะแนน</small></span></div>`}
+    <span class="lb-score"><b>${r.score.toLocaleString()}</b><small>${unit||"คะแนน"}</small></span></div>`}
 /* top 3 on a podium: 2nd · 1st · 3rd, each showcase pet standing on its pedestal */
 const pedHTML=i=>PED_IMG[i]?`<div class="rk-ped img"><img src="${PED_IMG[i]}" alt="อันดับ ${i+1}"></div>`:`<div class="rk-ped"><span>${i+1}</span></div>`;
-function podiumHTML(top){const order=[1,0,2];
+function podiumHTML(top,unit){const order=[1,0,2];
   return `<div class="podium2">${order.map(i=>{const r=top[i];
     if(!r)return `<div class="pd p${i+1} empty"><div class="rk-pfig"><span class="rk-ghost">?</span></div>${pedHTML(i)}<div class="rk-pwho"><b>ยังว่าง</b></div></div>`;
     const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
     return `<div class="pd p${i+1}${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}${p?` style="--tg:${RAR[p.t].glow}"`:""}>
       <div class="rk-pfig">${i===0?'<span class="rk-crown" aria-hidden="true">👑</span>':""}${p?bigPet(p,sp.L):avatarHTML(r.avatar,r.avL,r.frame,i===0?96:76)}</div>
       ${pedHTML(i)}
-      <div class="rk-pwho">${avatarHTML(r.avatar,r.avL,r.frame,40)}<div><b>${esc(r.name)}</b><span class="pd-score"><b>${r.score}</b> คะแนน</span></div></div></div>`}).join("")}</div>`}
-function rowsHTML(top){return podiumHTML(top)+(top.length>3?`<div class="lb-rest rk-rest">${top.slice(3).map((r,i)=>lbRowHTML(r,i+3)).join("")}</div>`:"")}
+      <div class="rk-pwho">${avatarHTML(r.avatar,r.avL,r.frame,40)}<div><b>${esc(r.name)}</b><span class="pd-score"><b>${r.score.toLocaleString()}</b> ${unit||"คะแนน"}</span></div></div></div>`}).join("")}</div>`}
+function rowsHTML(top,unit){return podiumHTML(top,unit)+(top.length>3?`<div class="lb-rest rk-rest">${top.slice(3).map((r,i)=>lbRowHTML(r,i+3,unit)).join("")}</div>`:"")}
 let LB=null;
 async function loadLeaderboard(){$("lbList").innerHTML=`<div class="placeholder">กำลังโหลดอันดับ…</div>`;
   try{LB=await api("leaderboard")}catch(e){if(e!=="locked")$("lbList").innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ")}</div>`;return}
@@ -2033,11 +2093,44 @@ async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}ca
   const pets=(r.showcase||[]).filter(x=>PETS[x.pi]);
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" data-close type="button">ปิด</button></div>
    <div class="pe-preview">${avatarHTML(r.avatar,r.avL,r.frame,104)}</div>
-   <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b></p>
+   <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b> · ป๊อป <b>${(r.pops||0).toLocaleString()}</b></p>
    <div class="prof-pets">${pets.length?pets.slice(0,1).map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,120)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
   $("petModal").hidden=false}
 
-function renderRank(){renderMyProfile();loadLeaderboard()}
+
+/* ---------- ป๊อปเพื่อน: tap your pet for points, separate ranking ---------- */
+let rkMode="pop";try{rkMode=localStorage.getItem("ftnRk")==="collect"?"collect":"pop"}catch(e){}
+let POP_PEND=0,popTimer=0,popTs=[],popBoardAt=0; /* taps go to the server every 6 s, the board refreshes at most every 30 s (keeps server calls low) */
+function popPetIdx(){const sc=myShowcase()[0];if(sc!=null)return sc;return S.buddy!=null&&PETS[S.buddy]&&S.owned[PETS[S.buddy].n]?S.buddy:null}
+function setRkMode(m){rkMode=m==="pop"?"pop":"collect";try{localStorage.setItem("ftnRk",rkMode)}catch(e){}
+  document.querySelectorAll("#rkSeg [data-rk]").forEach(b=>{const on=b.dataset.rk===rkMode;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+  $("rkCollect").hidden=rkMode!=="collect";$("rkPop").hidden=rkMode!=="pop";if(rkMode==="pop"){renderPop();loadPopBoard()}else{flushPops();if(tab==="rank")loadLeaderboard()}}
+$("rkSeg").addEventListener("click",e=>{const b=e.target.closest("[data-rk]");if(b)setRkMode(b.dataset.rk)});
+function popCountNow(){return popMine()+POP_PEND}
+function renderPop(){const pi=popPetIdx(),st=$("popStage");
+  if(pi==null){st.innerHTML=`<div class="placeholder">ยังไม่มีเพื่อนให้ป๊อป ลองเขย่าเซียมซีหาเพื่อนก่อนนะคะ</div>`;return}
+  const p=PETS[pi],L=lvOf(S.owned[p.n],p);
+  st.innerHTML=`<div class="pop-count"><span class="rk-lbl">ป๊อปของฉัน</span><b id="popNum">${popCountNow().toLocaleString()}</b></div>
+    <button class="pop-btn" id="popBtn" type="button" style="--tg:${RAR[p.t].glow}" aria-label="แตะ ${esc(formName(p,L))} เพื่อป๊อป"><span class="pop-glow"></span>${bigPet(p,L)}</button>
+    <p class="small pop-hint">แตะ ${esc(formName(p,L))} รัว ๆ เพื่อเก็บแต้มป๊อป · เปลี่ยนตัวได้ที่ "เพื่อนที่โชว์"</p>`;
+  $("popBtn").addEventListener("pointerdown",popTap)}
+function popSound(){const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(880+Math.random()*120,t);o.frequency.exponentialRampToValueAtTime(320,t+.07);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+.09);o.connect(g).connect(a.destination);o.start(t);o.stop(t+.1)}
+function popTap(e){e.preventDefault();const now=performance.now();popTs=popTs.filter(t=>now-t<1000);if(popTs.length>=20)return;popTs.push(now);
+  POP_PEND++;const n=$("popNum");if(n)n.textContent=popCountNow().toLocaleString();
+  const b=$("popBtn");b.classList.remove("pp");void b.offsetWidth;b.classList.add("pp");popSound();
+  if(!reduce){const r=b.getBoundingClientRect(),f=document.createElement("span");f.className="pop-plus";f.textContent="+1";f.style.left=((e.clientX||r.left+r.width/2)-r.left)+"px";f.style.top=((e.clientY||r.top+r.height/2)-r.top)+"px";b.appendChild(f);setTimeout(()=>f.remove(),700)}
+  if(!popTimer)popTimer=setTimeout(()=>{popTimer=0;flushPops().then(()=>{if(rkMode==="pop"&&tab==="rank"&&Date.now()-popBoardAt>30000)loadPopBoard(true)})},6000)}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)flushPops()});
+let POP_BASE=0,popBusy=false;
+function popMine(){return POP_BASE}
+async function flushPops(){if(!POP_PEND||popBusy)return;const n=POP_PEND;POP_PEND=0;popBusy=true;try{const r=await api("pop",{n});POP_BASE=r.pops}catch(e){}popBusy=false}
+async function loadPopBoard(quiet){popBoardAt=Date.now();if(!quiet)$("popList").innerHTML=`<div class="placeholder">กำลังโหลดอันดับ…</div>`;let r;
+  try{r=await api("pop_lb")}catch(e){if(e!=="locked"&&!quiet)$("popList").innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดอันดับไม่สำเร็จ")}</div>`;return}
+  POP_BASE=Math.max(POP_BASE,r.myScore);const n=$("popNum");if(n)n.textContent=popCountNow().toLocaleString();
+  $("popMe").innerHTML=r.myScore>0?`คุณอยู่อันดับ <b>${r.myRank}</b>`:"";
+  $("popList").innerHTML=(r.top.length?rowsHTML(r.top,"ป๊อป"):`<div class="placeholder">ยังไม่มีใครป๊อป เป็นคนแรกเลย!</div>`)+(r.top.some(x=>x.me)||!r.myScore?"":`<p class="note">ติดท็อป 50 เมื่อไหร่ ชื่อจะขึ้นในรายการนี้</p>`)}
+
+function renderRank(){renderMyProfile();setRkMode(rkMode)}
 document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-slot,#mpSwap");if(sl){openShowPick(+sl.dataset.slot);return}if(e.target.closest("#mpEdit")){openProfileEdit();return}
   const row=e.target.closest(".lb-row[data-code],.pd[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
 function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
@@ -2362,7 +2455,7 @@ function render(){prune();regen();const P=powers();if(typeof tab!=="undefined"&&
   $("stars").textContent=S.stars;
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
   const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
-  $("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;
+  syncHoldLabel();$("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;
   $("chargeInfo").innerHTML=`สิทธิ์เขย่าฟรี <b>${S.charges}/${P.max}</b>${S.bonusFree?` + โบนัส <b>${S.bonusFree}</b>`:""}${S.charges<P.max&&S.regenAt?` · ได้สิทธิ์ถัดไปใน ${fmt(S.regenAt-now())}`:""}`;
   $("lastBox").innerHTML=S.last?lastHTML(S.last):`<div class="placeholder">ยังไม่ได้เขย่า ใบเซียมซีของคุณจะมาอยู่ตรงนี้</div>`;const sb=$("shareBtn");if(sb)sb.addEventListener("click",makeShare);
   const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),nearFull=S.inv.length>=INV_WARN,n=nearFull?"!":((S.tickets+(S.rtickets||0)+(S.jarT||0))||(canUse?"!":""));bi.hidden=!n;bi.textContent=n;bi.classList.toggle("warn",nearFull);
