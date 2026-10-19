@@ -938,7 +938,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
       <button class="chip" id="soundBtn" type="button" aria-pressed="true">เสียง: เปิด</button>
       <button class="icon-btn" id="giftBtn" type="button" aria-label="เช็กอินรายวัน"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16v9H4z M3 7h18v4H3z M12 7v13 M12 7c-2-4-6-3-5-1s5 1 5 1zm0 0c2-4 6-3 5-1s-5 1-5 1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><i class="dot-alert" id="giftDot" hidden></i></button>
     </div>
-    <div class="wallet" aria-label="ดาวที่มี">
+    <div class="wallet"><button class="leafw" id="leafBtn" type="button" aria-label="ใบไม้ เปิดร้านใบไม้"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span class="n" id="leaves">0</span></button><span class="wsep" aria-hidden="true"></span><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">ดาว</span>
       <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>
       <span class="n" id="stars">0</span><button id="topupBtn" type="button">เติมดาว</button>
     </div>
@@ -1087,7 +1087,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
         <h2>สร้างโค้ดรับของ</h2>
       <div class="adm-form">
         <input id="ncCode" type="text" maxlength="24" placeholder="โค้ด เช่น LOVE349" autocomplete="off">
-        <div class="row" style="flex-wrap:nowrap"><input id="ncStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="ncTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="ncRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+        <div class="row" style="flex-wrap:nowrap"><input id="ncStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="ncLeaves" type="number" min="0" max="9999" placeholder="ใบไม้"><input id="ncTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="ncRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
         <input id="ncNote" type="text" maxlength="60" placeholder="หมายเหตุ เช่น ซื้อ PB01">
         <label class="lbl-s" for="ncKind">แบบโค้ด</label>
         <select id="ncKind"><option value="each">คนละครั้ง · ใครก็ใช้ได้ คนละ 1 ครั้ง</option><option value="once">ครั้งเดียวหมด · คนแรกที่ใช้ได้ไป แล้วโค้ดหมด</option></select>
@@ -1101,7 +1101,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
         <p class="note">ได้โค้ดคนละอัน ใช้ได้ครั้งเดียวแล้วหมด เหมาะกับแนบไปกับสินค้า เช่น ซื้อ PB01 ได้โค้ดหนึ่งอัน</p>
         <div class="adm-form">
           <div class="row" style="flex-wrap:nowrap"><input id="bcPrefix" type="text" maxlength="10" placeholder="ตัวหน้า เช่น PB01" autocomplete="off"><input id="bcCount" type="number" min="1" max="500" placeholder="จำนวน (สูงสุด 500)"></div>
-          <div class="row" style="flex-wrap:nowrap"><input id="bcStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="bcTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="bcRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+          <div class="row" style="flex-wrap:nowrap"><input id="bcStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="bcLeaves" type="number" min="0" max="9999" placeholder="ใบไม้"><input id="bcTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="bcRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
           <div class="row" style="flex-wrap:nowrap"><input id="bcNote" type="text" maxlength="60" placeholder="หมายเหตุ เช่น ล็อตเดือน ต.ค."><input id="bcDays" type="number" min="0" max="365" placeholder="ใช้ได้กี่วัน (ว่าง = ตลอด)"></div>
           <button class="primary" id="bcBtn" type="button">สร้างชุดโค้ด</button>
           <span class="small" id="bcMsg" style="text-align:left"></span>
@@ -1117,7 +1117,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
         <div class="adm-form">
           <label class="lbl-s" for="mgSeg">แจกให้ใคร</label>
           <select id="mgSeg"><option value="all">ผู้เล่นทุกคน</option><option value="d7">คนที่เล่นใน 7 วันที่ผ่านมา</option><option value="today">คนที่เล่นวันนี้</option><option value="paid">คนที่เคยเติมเงิน</option></select>
-          <div class="row" style="flex-wrap:nowrap"><input id="mgStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="mgTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="mgRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+          <div class="row" style="flex-wrap:nowrap"><input id="mgStars" type="number" min="0" max="9999" placeholder="ดาว"><input id="mgLeaves" type="number" min="0" max="9999" placeholder="ใบไม้"><input id="mgTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="mgRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
           <input id="mgNote" type="text" maxlength="60" placeholder="ข้อความถึงผู้เล่น เช่น ของขวัญวันเกิดเพจ">
           <span class="small" id="mgCount" style="text-align:left"></span>
           <div class="row" style="justify-content:flex-start"><button class="primary" id="mgBtn" type="button">แจกของ</button><button class="burn" id="mgYes" type="button" hidden>ยืนยัน แจกเลย</button></div>
@@ -1248,7 +1248,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
       <span class="small" id="payMsg" style="text-align:left"></span>
     </div>
     <div id="myReqs" class="adm-list"></div>
-    <div class="redeem"><b>มีโค้ดรับของ?</b><span class="small" style="text-align:left">ซื้อดูดวงใน LINE แล้วแอดมินจะส่งโค้ดรับตั๋วหรือดาวให้</span>
+    <div class="redeem"><b>มีโค้ดรับของ?</b><span class="small" style="text-align:left">ซื้อดูดวงใน LINE แล้วแอดมินจะส่งโค้ดรับตั๋ว ใบไม้ หรือดาวให้</span>
       <div class="row" style="flex-wrap:nowrap"><input id="codeIn" type="text" maxlength="24" placeholder="ใส่โค้ด" autocomplete="off"><button class="primary" id="codeBtn" type="button">รับของ</button></div><span class="small" id="codeMsg" style="text-align:left"></span></div>
   </div>
 </div>
@@ -1270,6 +1270,12 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
   <span class="small" id="paidTotal"></span>
   <button class="primary" id="paidOk" type="button">เยี่ยมเลย ไปเขย่ากัน</button>
 </div></div>
+<div class="scrim center" id="leafModal" hidden><div class="pop leaf-pop" role="dialog" aria-modal="true" aria-labelledby="leafTitle">
+  <div class="leaf-head"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><div><h2 id="leafTitle">ร้านใบไม้</h2><p class="small">คุณมี <b id="leafHave">0</b> ใบไม้</p></div></div>
+  <div id="leafItems" class="leaf-items"></div>
+  <p class="small" id="leafMsg" role="status" aria-live="polite"></p>
+  <div class="leaf-how"><b>หาใบไม้ได้จาก</b><span>เช็กอินรายวัน · ใบเซียมซีที่หมดอายุหรือคลังล้น · คู่หูสายใบไม้ · โค้ดของรางวัล</span><span>ดาวได้จากการเติมเงินเท่านั้น ใช้เขย่าเพิ่มได้ทันที</span></div>
+  <button class="ghost" id="leafClose" type="button">ปิด</button></div></div>
 <div class="scrim center" id="todayModal" hidden><div class="pop today-pop" role="dialog" aria-modal="true" aria-label="ดวงของคุณวันนี้" id="todayPop"></div></div>
 <div class="scrim center" id="petModal" hidden><div class="pop pet-pop" role="dialog" aria-modal="true" aria-labelledby="petTitle" id="petPop"></div></div>
 <div class="scrim center" id="shareModal" hidden>
@@ -1286,7 +1292,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
     <div class="own-only pl-own">
     <b class="sub-h">เพิ่ม / หักของ</b>
     <span class="small" style="text-align:left">ใส่เลขติดลบเพื่อหัก เช่น -50</span>
-    <div class="row" style="flex-wrap:nowrap"><input id="plStars" type="number" min="-9999" max="9999" placeholder="ดาว"><input id="plTickets" type="number" min="-20" max="20" placeholder="ตั๋ว"><input id="plRTickets" type="number" min="-20" max="20" placeholder="ตั๋วแรร์+"></div>
+    <div class="row" style="flex-wrap:nowrap"><input id="plStars" type="number" min="-9999" max="9999" placeholder="ดาว"><input id="plLeaves" type="number" min="-9999" max="9999" placeholder="ใบไม้"><input id="plTickets" type="number" min="-20" max="20" placeholder="ตั๋ว"><input id="plRTickets" type="number" min="-20" max="20" placeholder="ตั๋วแรร์+"></div>
     <input id="plNote" type="text" maxlength="60" placeholder="ข้อความถึงผู้เล่น (ไม่บังคับ)">
     <button class="primary" id="plGive" type="button">ส่งให้ผู้เล่น</button>
     <b class="sub-h">ชื่อในเกม</b>
@@ -1418,20 +1424,20 @@ const RAR=[
 const PETS=[
  {n:"หอยทากใจเย็น",e:"🐌",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"เต่าน้อยมั่นคง",e:"🐢",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"ลูกเจี๊ยบตัวจิ๋ว",e:"🐥",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
- {n:"แฮมสเตอร์แก้มป่อง",e:"🐹",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
+ {n:"ลูกเจี๊ยบตัวจิ๋ว",e:"🐥",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
+ {n:"แฮมสเตอร์แก้มป่อง",e:"🐹",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"กบน้อยนำโชค",e:"🐸",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"ผึ้งขยัน",e:"🐝",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"เต่าทองจุดดาว",e:"🐞",t:0,ab:{drop:.25},d:"โอกาสเจอเพื่อนตัวน้อย +0.25%"},
  {n:"เม่นขนนุ่ม",e:"🦔",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"กระรอกเก็บโชค",e:"🐿️",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
+ {n:"กระรอกเก็บโชค",e:"🐿️",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"เพนกวินเดินเตาะแตะ",e:"🐧",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หนอนน้อยรอบิน",e:"🐛",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"กระต่ายจันทร์",e:"🐰",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
  {n:"แพนด้าฟูฟู",e:"🐼",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
  {n:"แมวนำโชค",e:"🐱",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หมาน้อยซื่อสัตย์",e:"🐶",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
- {n:"โคอาล่าขี้เซา",e:"🐨",t:1,ab:{star:2},d:"ได้ 2 ดาวทุกครั้งที่เขย่า"},
+ {n:"โคอาล่าขี้เซา",e:"🐨",t:1,ab:{star:2},d:"ได้ 2 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"หมูนำทรัพย์",e:"🐷",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หมีน้ำผึ้ง",e:"🐻",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
  {n:"เป็ดน้อยลอยน้ำ",e:"🦆",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
@@ -1478,7 +1484,8 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
-const REW=[{s:5},{s:5},{s:10},{s:10},{s:15},{s:20},{pet:"น้องหมีเด้ง"}];
+const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}];
+const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
 const DEFAULT_PACKS=[{baht:49,stars:50},{baht:99,stars:110,tag:"คุ้มกว่า 10%"},{baht:199,stars:240,tag:"แถม 40 ดาว"},{baht:399,stars:520,tag:"แถม 120 ดาว"}];
 const NEED_T=[[1,2,8],[1,2,6],[1,2,5],[1,2,4],[1,2,3]];
 const NEED=p=>NEED_T[p?p.t:2]||[1,2,3];
@@ -1488,10 +1495,10 @@ const toNext=(k,p)=>{const L=lvOf(k,p);return L<MAXLV?NEED(p)[L]-(k||0):0};
 /* day key in Thailand time, so check-in resets at local midnight on server and client alike */
 const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth()+1)+"-"+d.getUTCDate()};
 
-function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
+function fresh(){return{v:6,stars:30,leaves:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,rtickets:0,pity:0,
   streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,avatarL:0,frame:"none"}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
@@ -1517,7 +1524,7 @@ function powers(){const P={cdr:0,drop:0,dropX:0,again:0,cap:0,star:0,burnFree:0,
 function regen(){const P=powers();if(S.charges>=P.max){S.regenAt=0;return}
   if(!S.regenAt)S.regenAt=now()+P.wait;
   while(S.charges<P.max&&now()>=S.regenAt){S.charges++;S.regenAt=S.charges<P.max?S.regenAt+P.wait:0}}
-function prune(){const before=S.inv.length;S.inv=S.inv.filter(it=>!it.at||now()-it.at<EXP);const gone=before-S.inv.length;if(gone)S.stars+=gone;return gone}
+function prune(){const before=S.inv.length;S.inv=S.inv.filter(it=>!it.at||now()-it.at<EXP);const gone=before-S.inv.length;if(gone)S.leaves=(S.leaves||0)+gone;return gone}
 const freeLeft=()=>S.charges+S.bonusFree;
 function canUseToday(){return !(S.useReadyAt>now())&&!activeBuff()}
 const streakState=()=>{const today=dk(now()),yest=dk(now()-DAY),claimed=S.streakDay===today;return{claimed,next:claimed?S.streakN:(S.streakDay===yest?S.streakN%7+1:1)}};
@@ -1533,7 +1540,7 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
 function rollPet(rare){const r=pickRarity(rare?RATE_R:null),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;return giveCopy(pi)}
 /* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
-function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
+function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.leaves=(S.leaves||0)+1;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
@@ -1543,7 +1550,7 @@ function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
   else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
   else throw "ยังไม่มีสิทธิ์เขย่าฟรี";
-  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.stars+=ws;S.starFrac-=ws;
+  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
   let tg=false;if(F[f][0]==="ดีมาก"&&P.tg&&rnd()<P.tg){S.tickets++;tg=true}
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
@@ -1572,8 +1579,9 @@ function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p
   if((S.shards[t]||0)<SHARD_COST[t])throw "เศษไม่พอ";if((S.owned[p.n]||0)>=maxCopies(p))throw "ตัวนี้เก็บครบแล้ว";S.shards[t]-=SHARD_COST[t];return giveCopy(pi)}
 function actBuddy(pi){pi=+pi;const p=PETS[pi];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้";S.buddy=pi;return{pi}}
 function actDaily(){const st=streakState();if(st.claimed)throw "รับของวันนี้ไปแล้ว";S.streakN=st.next;S.streakDay=dk(now());const r=REW[S.streakN-1];
-  const dp=powers().daily||0;S.stars+=dp;if(r.s)S.stars+=r.s;if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,s:(r.s||0)+dp,bonus:dp,pet:r.pet||null}}
-function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
+  const dp=powers().daily||0;S.leaves=(S.leaves||0)+dp+(r.l||0);if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,l:(r.l||0)+dp,bonus:dp,pet:r.pet||null}}
+function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
+function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 
 S=fresh();
 let PACKS=DEFAULT_PACKS.slice(),PROFILE=null,CFG={},MYREQ=[],OWNER=false,ONLINE=false,LOCKED=null;
@@ -1631,12 +1639,12 @@ const petFace=(p,L)=>{L=L||lvOf(S.owned[p.n]||1,p);const e=formE(p,L),src=petImg
   if(src)return `<img class="pimg" src="${src}" alt="" draggable="false" onerror="this.outerHTML='${e}'">`;
   return p.img?`<img src="${LOGO}" alt="">`:(p.purple?`<span class="purple">${e}</span>`:e)};
 const formName=(p,L)=>p.fn?p.fn[(L||lvOf(S.owned[p.n]||1,p))-1]:p.n;
-const ROLE={time:["⏳","สายเวลา"],pity:["🛡️","สายการันตี"],gold:["🔥","สายไฟทอง"],star:["⭐","สายดาว"],again:["🍀","สายโชคซ้ำ"],bp:["🪔","สายแต้มเผา"],find:["🔭","สายตามหาเพื่อน"],ticket:["🎟️","สายตั๋วนำโชค"],daily:["🎁","สายของขวัญ"],dawn:["🌅","สายรับอรุณ"],burnfree:["🕯️","สายคืนชีพ"],extra:["✨","สายพรพิเศษ"]};
+const ROLE={time:["⏳","สายเวลา"],pity:["🛡️","สายการันตี"],gold:["🔥","สายไฟทอง"],star:["🍃","สายใบไม้"],again:["🍀","สายโชคซ้ำ"],bp:["🪔","สายแต้มเผา"],find:["🔭","สายตามหาเพื่อน"],ticket:["🎟️","สายตั๋วนำโชค"],daily:["🎁","สายของขวัญ"],dawn:["🌅","สายรับอรุณ"],burnfree:["🕯️","สายคืนชีพ"],extra:["✨","สายพรพิเศษ"]};
 const pct=x=>Math.round(x*100);
 function skillText(a){if(!a)return"";const o=[];
   if(a.baseMul)o.push(`โอกาสเจอเพื่อนพื้นฐาน x${a.baseMul}`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.cdr)o.push(`เวลารอ −${pct(a.cdr)}%`);if(a.cap)o.push(`เก็บสิทธิ์ฟรีได้ +${a.cap}`);if(a.again)o.push(`${pct(a.again)}% ได้เขย่าซ้ำ`);
-  if(a.fa)o.push(`เขย่าแรกของวัน ${pct(a.fa)}% แถมฟรี`);if(a.star)o.push(`+${a.star} ดาวต่อการเขย่า`);if(a.daily)o.push(`เช็กอิน +${a.daily} ดาว`);
+  if(a.fa)o.push(`เขย่าแรกของวัน ${pct(a.fa)}% แถมฟรี`);if(a.star)o.push(`+${a.star} ใบไม้ต่อการเขย่า`);if(a.daily)o.push(`เช็กอิน +${a.daily} ใบไม้`);
   if(a.dropX)o.push(`เจอเพื่อนง่ายขึ้น ${pct(a.dropX)}%`);if(a.pity)o.push(`การันตีทุก ${PITY-a.pity} ครั้ง`);if(a.tg)o.push(`ใบดีมาก ${pct(a.tg)}% ได้ตั๋ว`);
   if(a.gold)o.push(`ไฟทอง +${pct(a.gold)}%`);if(a.bp)o.push(`เผาได้แต้ม +${a.bp}`);if(a.burnFree)o.push(`เผาแล้ว ${pct(a.burnFree)}% ได้เขย่าฟรี`);
   if(a.againCap)o.push(`เพดานเขย่าซ้ำ ${pct(a.againCap)}%`);return o.join(" · ")}
@@ -1656,7 +1664,7 @@ function formHTML(p,L,size,locked){const r=RAR[p.t],role=ROLE[p.role]||["✦",""
   return h+`</div>`}
 function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);const a=p.ab,m=LVM[(lvl||lvOf(k,p))-1],o=[];
   if(a.cdr)o.push(`เวลารอลดลง ${n1(a.cdr*m*100)}%`);if(a.drop)o.push(`โอกาสเจอเพื่อน +${n1(a.drop*m)}%`);if(a.again)o.push(`${n1(a.again*m*100)}% ได้เขย่าฟรีซ้ำ`);
-  if(a.cap)o.push(`เก็บสิทธิ์ฟรีเพิ่ม ${a.cap}`);if(a.star)o.push(`+${Math.round(a.star*m)} ดาวต่อครั้ง`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
+  if(a.cap)o.push(`เก็บสิทธิ์ฟรีเพิ่ม ${a.cap}`);if(a.star)o.push(`+${Math.round(a.star*m)} ใบไม้ต่อครั้ง`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.baseMul)o.push(`โอกาสพื้นฐาน x${n1(a.baseMul+(m-1))}`);if(a.burnFree)o.push(`เผาแล้ว ${n1(Math.min(.6,a.burnFree*m)*100)}% ได้เขย่าฟรี`);return o.join(" · ")}
 /* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3), 3-slot showcase, avatar pet + frame */
 const MAX_SCORE=()=>PETS.length*3;
@@ -2304,12 +2312,12 @@ let GIFT=false;
 function giftReveal(pi,isNew){if(busy)return setTimeout(()=>giftReveal(pi,isNew),600);GIFT=true;$("dailyModal").hidden=true;cur={f:LUCKY,fate:"done",pet:pi,isNew};ticketMode=true;busy=true;$("reveal").hidden=false;showEgg();$("eggHint").textContent="ของขวัญครบ 7 วัน แตะไข่เพื่อเปิด"}
 async function claimStreak(){const st=streakState();if(st.claimed)return;$("dailyClaim").disabled=true;let r;try{r=await api("daily")}catch(e){if(e!=="locked")toast(e);render();return}
   chime([659,784,988,1319]);burst(2,"#f0d28a");sayLock=Date.now()+6000;
-  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.s+" ดาว"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
+  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.l+" ใบไม้"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
   if(r.pet){const bi=PETS.findIndex(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bi>=0)setTimeout(()=>giftReveal(bi,k<=1),450)}}
 function renderDaily(){const st=streakState(),doneN=st.claimed?S.streakN:st.next-1;
   $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"เข้าเกมต่อเนื่องครบ 7 วัน รับน้องหมีเด้ง เพื่อนพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
   $("days").innerHTML=REW.map((r,i)=>{const d=i+1,state=d<=doneN?"done":(!st.claimed&&d===st.next?"now":"");
-    return `<div class="day ${state}${r.pet?" big":""}"><span class="dn">วันที่ ${d}</span>${r.pet?`<span class="rw"><span class="purple">🐻</span></span><span class="rl">น้องหมีเด้ง</span>`:`<span class="rw"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg></span><span class="rl">${r.s} ดาว</span>`}${state==="done"?`<i class="ok">รับแล้ว</i>`:""}</div>`}).join("");
+    return `<div class="day ${state}${r.pet?" big":""}"><span class="dn">วันที่ ${d}</span>${r.pet?`<span class="rw"><span class="purple">🐻</span></span><span class="rl">น้องหมีเด้ง</span>`:`<span class="rw"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span><span class="rl">${r.l} ใบไม้</span>`}${state==="done"?`<i class="ok">รับแล้ว</i>`:""}</div>`}).join("");
   $("dailyClaim").disabled=st.claimed;$("dailyClaim").textContent=st.claimed?"รับแล้ว กลับมาพรุ่งนี้นะคะ":`รับรางวัลวันที่ ${st.next}`;$("giftDot").hidden=st.claimed}
 function openDaily(){renderDaily();$("dailyModal").hidden=false;($("dailyClaim").disabled?$("dailyClose"):$("dailyClaim")).focus()}
 function autoDaily(){if(!ONLINE)return;const st=streakState(),d=dk(now());if(!st.claimed&&PREF.popDay!==d&&$("reveal").hidden&&$("loginScreen").hidden){PREF.popDay=d;savePref();setTimeout(openDaily,600)}}
@@ -2412,7 +2420,7 @@ $("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$
 async function shrink(file){const url=URL.createObjectURL(file);try{const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะคะ");i.src=url});
   const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.85)}finally{URL.revokeObjectURL(url)}}
 async function redeem(){const v=$("codeIn").value.trim().toUpperCase(),msg=$("codeMsg");if(!v){msg.textContent="ใส่โค้ดก่อนนะคะ";return}
-  try{const c=await api("redeem",{code:v});render();msg.textContent=`รับ${c.s?" "+c.s+" ดาว":""}${c.t?" ตั๋ว "+c.t+" ใบ":""}${c.rt?" ตั๋วแรร์+ "+c.rt+" ใบ":""} แล้ว`;chime([659,784,1047]);$("codeIn").value=""}catch(e){msg.textContent=e==="locked"?"":e}}
+  try{const c=await api("redeem",{code:v});render();msg.textContent=`รับ${c.s?" "+c.s+" ดาว":""}${c.l?" "+c.l+" ใบไม้":""}${c.t?" ตั๋ว "+c.t+" ใบ":""}${c.rt?" ตั๋วแรร์+ "+c.rt+" ใบ":""} แล้ว`;chime([659,784,1047]);$("codeIn").value=""}catch(e){msg.textContent=e==="locked"?"":e}}
 $("codeBtn").addEventListener("click",redeem);$("codeIn").addEventListener("keydown",e=>{if(e.key==="Enter")redeem()});
 function openSheet(){$("scrim").hidden=false;$("confirm").hidden=!chosen;renderShop();$("closeSheet").focus()}
 function closeSheet(){$("scrim").hidden=true}
@@ -2488,10 +2496,10 @@ function renderPlayers(){const el=$("playerList");if(!el)return;const today=dk(D
   const key={seen:p=>tsOf(p.last_seen),paid:p=>+p.topBaht||0,stars:p=>+p.stars||0}[plSortBy];L.sort((a,b)=>key(b)-key(a));
   $("plCount").textContent=`แสดง ${L.length} จาก ${ADM.players.length} คน`;
   el.innerHTML=L.length?L.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b>${p.is_admin?` <span class="tier" style="background:var(--lav)">แอดมิน</span>`:""}${p.staff?` <span class="tier" style="background:#7fd3ff;color:#123">สตาฟ</span>`:""}${p.banned?` <span class="tier" style="background:#c0505a">ระงับ</span>`:""}${p.approved===false&&!p.banned?` <span class="tier" style="background:#e7b85a;color:#321">รออนุมัติ</span>`:""}<span class="small" style="text-align:left;display:block">ดาว ${+p.stars||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท · เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}</span></div><button class="mini" type="button" data-adm="pl">จัดการ</button></div>`).join(""):`<div class="placeholder">${ADM.players.length?"ไม่พบผู้เล่นที่ตรงกับที่ค้นหา":"ยังไม่มีผู้เล่น"}</div>`}
-function codeLine(c){return `<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" ดาว ":""}${c.t?+c.t+" ตั๋ว ":""}${c.rt?+c.rt+" ตั๋วแรร์+ ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div>${isOwn()?`<button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button>`:""}</div>`}
+function codeLine(c){return `<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" ดาว ":""}${c.l?+c.l+" ใบไม้ ":""}${c.t?+c.t+" ตั๋ว ":""}${c.rt?+c.rt+" ตั๋วแรร์+ ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div>${isOwn()?`<button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button>`:""}</div>`}
 function renderCodes(){const el=$("codeList");const single=ADM.codes.filter(c=>!c.batch),B={};ADM.codes.filter(c=>c.batch).forEach(c=>(B[c.batch]=B[c.batch]||[]).push(c));
   const bh=Object.entries(B).map(([id,cs])=>{const used=cs.filter(c=>+c.used>0).length,off=cs.every(c=>c.off),c0=cs[0];
-    return `<div class="adm-card batch" data-batch="${esc(id)}"><div><b>ชุด ${esc(c0.prefix||id)}</b> <span class="tier code-kind once">ไม่ซ้ำ ${cs.length} โค้ด</span><span class="small" style="text-align:left;display:block">${c0.s?+c0.s+" ดาว ":""}${c0.t?+c0.t+" ตั๋ว ":""}${c0.rt?+c0.rt+" ตั๋วแรร์+ ":""}${c0.note?"· "+esc(c0.note):""} · ใช้แล้ว ${used}/${cs.length}${off?" · ปิดทั้งชุดแล้ว":""} · ${codeExp(c0)}</span></div>
+    return `<div class="adm-card batch" data-batch="${esc(id)}"><div><b>ชุด ${esc(c0.prefix||id)}</b> <span class="tier code-kind once">ไม่ซ้ำ ${cs.length} โค้ด</span><span class="small" style="text-align:left;display:block">${c0.s?+c0.s+" ดาว ":""}${c0.l?+c0.l+" ใบไม้ ":""}${c0.t?+c0.t+" ตั๋ว ":""}${c0.rt?+c0.rt+" ตั๋วแรร์+ ":""}${c0.note?"· "+esc(c0.note):""} · ใช้แล้ว ${used}/${cs.length}${off?" · ปิดทั้งชุดแล้ว":""} · ${codeExp(c0)}</span></div>
       <div class="row" style="justify-content:flex-start"><button class="mini" type="button" data-bc="show">ดูโค้ด</button>${isOwn()&&!off?`<button class="mini" type="button" data-bc="off">ปิดทั้งชุด</button>`:""}</div><textarea class="bview" rows="5" readonly hidden>${cs.map(c=>c.code+(+c.used?" (ใช้แล้ว)":"")).join("\n")}</textarea></div>`}).join("");
   el.innerHTML=(bh+single.map(codeLine).join(""))||`<div class="placeholder">ยังไม่มีโค้ด</div>`}
 function renderAdmin(){if(!AROLE())return;const pend=ADM.pending,hist=ADM.history,waiting=ADM.players.filter(p=>p.approved===false&&!p.banned),n=pend.length+waiting.length;
@@ -2523,9 +2531,9 @@ $("codeList").addEventListener("click",async e=>{const b=e.target.closest("[data
 const LOG_TXT={topup_ok:["topup","อนุมัติเติมดาว",d=>`${d.baht} บาท → ${d.stars} ดาว${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมดาว",d=>`${d.baht} บาท${d.auto?" · 🤖 อัตโนมัติ":""}${d.reason?" · "+d.reason:""}`],give:["player","ส่ง/หักของ",d=>[d.s?"ดาว "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
   approve:["player","อนุมัติสมัคร",()=>""],deny:["player","ไม่อนุมัติสมัคร",()=>""],ban:["player","ระงับบัญชี",d=>d.reason?"เหตุผล: "+d.reason:""],unban:["player","ปลดระงับ",()=>""],reset:["player","ล้างข้อมูลเกม",()=>""],setpass:["player","ตั้งรหัสผ่านใหม่",()=>""],
   admin:["player","เปลี่ยนสิทธิ์แอดมิน",d=>d.on?"ให้สิทธิ์":"ปลดสิทธิ์"],staff_on:["player","ตั้งเป็นสตาฟ",()=>""],staff_off:["player","ปลดสิทธิ์สตาฟ",()=>""],rename:["player","เปลี่ยนชื่อ",d=>`จาก ${d.from||"-"} เป็น ${d.to||"-"}`],
-  mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" ดาว":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],
+  mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" ดาว":"",d.l?d.l+" ใบไม้":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],
   cfg:["cfg","แก้ตั้งค่า",d=>{const o=[];if((d.diff||[]).includes("rates")){const r=d.rates||{},q=d.old_rates||{};o.push(`เรทปกติ ${(q.n||RATE_N0).join("/")} → ${(r.n||[]).join("/")}`,`เรทแรร์+ ${(q.r||RATE_R0).slice(2).join("/")} → ${(r.r||[]).slice(2).join("/")}`)}if((d.diff||[]).includes("packs"))o.push("แพ็กดาว "+(d.packs||[]).map(p=>p.baht+"฿="+p.stars).join(", "));if((d.diff||[]).includes("ann"))o.push(d.ann?"ประกาศ: "+d.ann:"ลบประกาศ");if((d.diff||[]).includes("maint"))o.push(d.maint?"เปิดโหมดปิดปรับปรุง":"ปิดโหมดปิดปรับปรุง");return o.join(" · ")}],
-  code_new:["code","สร้างโค้ด",d=>`${d.code} · ${[d.s?d.s+" ดาว":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}`],code_on:["code","เปิดโค้ด",d=>d.code],code_off:["code","ปิดโค้ด",d=>d.code],code_batch:["code","สร้างชุดโค้ด",d=>`${d.prefix} · ${d.n} โค้ด`],batch_off:["code","ปิดโค้ดทั้งชุด",()=>""],sms_test:["cfg","ทดสอบ SMS",()=>""]};
+  code_new:["code","สร้างโค้ด",d=>`${d.code} · ${[d.s?d.s+" ดาว":"",d.l?d.l+" ใบไม้":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}`],code_on:["code","เปิดโค้ด",d=>d.code],code_off:["code","ปิดโค้ด",d=>d.code],code_batch:["code","สร้างชุดโค้ด",d=>`${d.prefix} · ${d.n} โค้ด`],batch_off:["code","ปิดโค้ดทั้งชุด",()=>""],sms_test:["cfg","ทดสอบ SMS",()=>""]};
 const LOG_IC={topup:"💳",player:"👤",cfg:"⚙️",code:"🎁"};
 async function loadLogs(){if(!isOwn())return;try{const r=await api("adm_logs");LOGS=r.events||[];renderLogs();renderCfgHist()}catch(e){}}
 function renderLogs(){const el=$("logList");const L=LOGS.map(x=>{const m=LOG_TXT[x.kind]||["cfg",x.kind,()=>""];return{cat:m[0],act:m[1],detail:m[2](x.data||{}),who:x.user_id&&x.user_id!==x.actor?plLabel(x.user_id):"",by:plLabel(x.actor),at:tsOf(x.at)}}).filter(x=>logF==="all"||x.cat===logF);
@@ -2544,14 +2552,14 @@ $("viewStaff").addEventListener("change",e=>{if(!OWNER){e.target.checked=false;r
 $("exitStaff").addEventListener("click",()=>{VIEW_AS=null;applyRole();renderAdmin();toast("กลับมาเป็นแอดมินเจ้าของ")});
 /* bulk codes + mass gift */
 $("bcBtn").addEventListener("click",async()=>{if(!isOwn())return;const msg=$("bcMsg"),btn=$("bcBtn");btn.disabled=true;msg.textContent="กำลังสร้าง…";
-  try{const r=await api("adm_code_batch",{prefix:$("bcPrefix").value.trim(),count:parseInt($("bcCount").value)||0,s:parseInt($("bcStars").value)||0,t:parseInt($("bcTickets").value)||0,rt:parseInt($("bcRTickets").value)||0,note:$("bcNote").value.trim(),days:parseInt($("bcDays").value)||0});
+  try{const r=await api("adm_code_batch",{prefix:$("bcPrefix").value.trim(),count:parseInt($("bcCount").value)||0,s:parseInt($("bcStars").value)||0,l:parseInt($("bcLeaves").value)||0,t:parseInt($("bcTickets").value)||0,rt:parseInt($("bcRTickets").value)||0,note:$("bcNote").value.trim(),days:parseInt($("bcDays").value)||0});
     msg.textContent=`สร้างแล้ว ${r.codes.length} โค้ด · แต่ละโค้ดใช้ได้ 1 ครั้ง`;$("bcText").value=r.codes.join("\n");$("bcOut").hidden=false;await loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}btn.disabled=false});
 $("bcCopy").addEventListener("click",async()=>{const t=$("bcText");try{await navigator.clipboard.writeText(t.value);toast("คัดลอกแล้ว")}catch(e){t.focus();t.select();try{document.execCommand("copy");toast("คัดลอกแล้ว")}catch(e2){toast("เลือกข้อความแล้ว กดคัดลอกเองได้เลย")}}});
-function mgVals(){return{seg:$("mgSeg").value,s:Math.max(0,parseInt($("mgStars").value)||0),t:Math.max(0,parseInt($("mgTickets").value)||0),rt:Math.max(0,parseInt($("mgRTickets").value)||0),note:$("mgNote").value.trim()}}
+function mgVals(){return{seg:$("mgSeg").value,s:Math.max(0,parseInt($("mgStars").value)||0),l:Math.max(0,parseInt($("mgLeaves").value)||0),t:Math.max(0,parseInt($("mgTickets").value)||0),rt:Math.max(0,parseInt($("mgRTickets").value)||0),note:$("mgNote").value.trim()}}
 function mgPreview(){const v=mgVals(),today=dk(Date.now()),d7=Date.now()-7*DAY;const n=ADM.players.filter(p=>!p.banned&&p.approved!==false&&(v.seg==="all"||(v.seg==="d7"&&tsOf(p.last_seen)>=d7)||(v.seg==="today"&&p.last_seen&&dk(tsOf(p.last_seen))===today)||(v.seg==="paid"&&+p.topBaht>0))).length;$("mgCount").textContent=`จะได้รับประมาณ ${n} คน (ไม่รวมบัญชีที่ถูกระงับหรือรออนุมัติ)`;$("mgYes").hidden=true}
-["mgStars","mgTickets","mgRTickets"].forEach(i=>$(i).addEventListener("input",mgPreview));$("mgSeg").addEventListener("change",mgPreview);
-$("mgBtn").addEventListener("click",async()=>{if(!isOwn())return;const v=mgVals();if(!v.s&&!v.t&&!v.rt){$("mgMsg").textContent="ใส่ดาวหรือตั๋วที่จะแจก (แจกได้อย่างเดียว หักไม่ได้)";return}
-  try{const r=await api("adm_mass",Object.assign({preview:1},v));if(!r.n){$("mgMsg").textContent="ไม่มีผู้เล่นในกลุ่มนี้";return}$("mgMsg").textContent=`แจก ${[v.s?v.s+" ดาว":"",v.t?v.t+" ตั๋ว":"",v.rt?v.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")} ให้ ${r.n} คน กดยืนยันอีกครั้ง`;$("mgYes").hidden=false}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
+["mgStars","mgLeaves","mgTickets","mgRTickets"].forEach(i=>$(i).addEventListener("input",mgPreview));$("mgSeg").addEventListener("change",mgPreview);
+$("mgBtn").addEventListener("click",async()=>{if(!isOwn())return;const v=mgVals();if(!v.s&&!v.l&&!v.t&&!v.rt){$("mgMsg").textContent="ใส่ดาว ใบไม้ หรือตั๋วที่จะแจก (แจกได้อย่างเดียว หักไม่ได้)";return}
+  try{const r=await api("adm_mass",Object.assign({preview:1},v));if(!r.n){$("mgMsg").textContent="ไม่มีผู้เล่นในกลุ่มนี้";return}$("mgMsg").textContent=`แจก ${[v.s?v.s+" ดาว":"",v.l?v.l+" ใบไม้":"",v.t?v.t+" ตั๋ว":"",v.rt?v.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")} ให้ ${r.n} คน กดยืนยันอีกครั้ง`;$("mgYes").hidden=false}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
 $("mgYes").addEventListener("click",async()=>{if(!isOwn())return;const b=$("mgYes");b.hidden=true;$("mgMsg").textContent="กำลังแจก…";try{const r=await api("adm_mass",mgVals());$("mgMsg").textContent=`แจกแล้ว ${r.n} คน ผู้เล่นจะเห็นเมื่อเปิดเกม`;toast("แจกของแล้ว");await loadAdmin()}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
 /* player control */
 let plUid=null;
@@ -2562,8 +2570,8 @@ async function renderTimeline(uid){const el=$("plTime");el.innerHTML=`<div class
   ev.sort((a,b)=>b.at-a.at);el.innerHTML=ev.length?ev.slice(0,50).map(x=>`<div class="tl-row"><span class="tl-ic">${x.ic}</span><span class="tl-t">${esc(x.t)}</span><span class="tl-at">${ago(x.at)}</span></div>`).join(""):`<div class="placeholder">ยังไม่มีความเคลื่อนไหว</div>`}catch(e){el.innerHTML=`<div class="placeholder">โหลดไม่สำเร็จ</div>`}}
 function openPl(uid){plUid=uid;const p=PLOF(uid);
   $("plTitle").textContent=p.name||"ผู้เล่น";
-  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b>${p.approved===false?" · <b>รออนุมัติ</b>":""}</span>${p.email||p.phone?`<span>${esc(p.email||"-")} · ${esc(p.phone||"-")}</span>`:""}<span>ดาว ${+p.stars||0} · ตั๋ว ${+p.tickets||0} · ตั๋วแรร์+ ${+p.rtickets||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
-  $("plName").value=p.name||"";$("plBanReason").value=p.ban_reason||"";["plStars","plTickets","plRTickets","plNote","plPass"].forEach(i=>$(i).value="");$("plMsg").textContent="";$("plResetYes").hidden=true;
+  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b>${p.approved===false?" · <b>รออนุมัติ</b>":""}</span>${p.email||p.phone?`<span>${esc(p.email||"-")} · ${esc(p.phone||"-")}</span>`:""}<span>ดาว ${+p.stars||0} · ใบไม้ ${+p.leaves||0} · ตั๋ว ${+p.tickets||0} · ตั๋วแรร์+ ${+p.rtickets||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
+  $("plName").value=p.name||"";$("plBanReason").value=p.ban_reason||"";["plStars","plLeaves","plTickets","plRTickets","plNote","plPass"].forEach(i=>$(i).value="");$("plMsg").textContent="";$("plResetYes").hidden=true;
   $("plAdmin").textContent=p.is_admin?"ปลดสิทธิ์แอดมิน":"ให้สิทธิ์แอดมิน";$("plStaff").textContent=p.staff?"ปลดออกจากสตาฟ":"ตั้งเป็นสตาฟ";$("plStaff").disabled=!!p.is_admin;
   const rs=ADM.pending.concat(ADM.history).filter(r=>r.user_id===uid).slice(0,8);
   $("plReqs").innerHTML=rs.length?`<b class="sub-h">คำขอเติมของคนนี้</b>`+rs.map(r=>`<div class="req"><span>${+r.baht} บาท · ${+r.stars} ดาว · ${ago(tsOf(r.created_at))}</span><span class="st ${esc(r.status)}">${{pending:"รอตรวจ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"}[r.status]||""}</span></div>`).join(""):"";
@@ -2571,8 +2579,8 @@ function openPl(uid){plUid=uid;const p=PLOF(uid);
 function plMsg(t){$("plMsg").textContent=t}
 async function plDo(action,params,ok){if(!isOwn())return;try{await api(action,Object.assign({uid:plUid},params));plMsg(ok);toast(ok);await loadAdmin();const keep=plUid;if(!$("plModal").hidden){openPl(keep);plMsg(ok)}}catch(e){plMsg(e==="locked"?"":e)}}
 $("plClose").addEventListener("click",()=>{$("plModal").hidden=true});
-$("plGive").addEventListener("click",()=>{const s=parseInt($("plStars").value)||0,t=parseInt($("plTickets").value)||0,rt=Math.max(-20,Math.min(20,parseInt($("plRTickets").value)||0));if(!s&&!t&&!rt){plMsg("ใส่จำนวนดาวหรือตั๋วก่อน");return}
-  plDo("adm_give",{s,t,rt,note:$("plNote").value.trim()},(s<0||t<0||rt<0?"หัก":"ส่ง")+"ของแล้ว")});
+$("plGive").addEventListener("click",()=>{const s=parseInt($("plStars").value)||0,l=parseInt($("plLeaves").value)||0,t=parseInt($("plTickets").value)||0,rt=Math.max(-20,Math.min(20,parseInt($("plRTickets").value)||0));if(!s&&!l&&!t&&!rt){plMsg("ใส่จำนวนดาว ใบไม้ หรือตั๋วก่อน");return}
+  plDo("adm_give",{s,l,t,rt,note:$("plNote").value.trim()},(s<0||l<0||t<0||rt<0?"หัก":"ส่ง")+"ของแล้ว")});
 $("plRename").addEventListener("click",()=>{const v=$("plName").value.trim();if(!v){plMsg("ใส่ชื่อก่อน");return}plDo("adm_rename",{name:v},"เปลี่ยนชื่อแล้ว")});
 $("plBan").addEventListener("click",()=>{const why=$("plBanReason").value.trim();if(!why){plMsg("ใส่เหตุผลก่อนระงับบัญชี");$("plBanReason").focus();return}plDo("adm_ban",{ban:true,reason:why},"ระงับบัญชีแล้ว")});
 $("plUnban").addEventListener("click",()=>plDo("adm_ban",{ban:false,reason:""},"ปลดระงับแล้ว"));
@@ -2603,10 +2611,10 @@ $("cfSave").addEventListener("click",async()=>{if(!isOwn())return;const packs=[.
   if(!packs.length){cfMsgAll("ต้องมีแพ็กอย่างน้อย 1 แพ็ก");return}
   const rates=readRates();if(!rates){cfMsgAll("เรทสุ่มต้องรวมได้ 100% ทั้งสองแบบ");return}
   try{await api("adm_cfg",{rates,pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,...($("cfSlipAuto")?{slipAuto:$("cfSlipAuto").checked,slipName:$("cfSlipName").value.trim(),slipTail:"",payBank:$("cfPayBank").value.trim(),payNo:$("cfPayNo").value.trim(),slipHours:parseInt($("cfSlipHours").value)||24}:{}),packs});await api("me");render();fillCfg(true);loadLogs();cfMsgAll("บันทึกแล้ว ผู้เล่นเห็นทันที");toast("บันทึกการตั้งค่าแล้ว")}catch(e){cfMsgAll(e==="locked"?"":e)}});
-$("ncBtn").addEventListener("click",async()=>{if(!isOwn())return;const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),rt=Math.max(0,Math.min(20,parseInt($("ncRTickets").value)||0)),msg=$("ncMsg");
-  if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!t&&!rt){msg.textContent="ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";return}
+$("ncBtn").addEventListener("click",async()=>{if(!isOwn())return;const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),l=Math.max(0,parseInt($("ncLeaves").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),rt=Math.max(0,Math.min(20,parseInt($("ncRTickets").value)||0)),msg=$("ncMsg");
+  if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!l&&!t&&!rt){msg.textContent="ใส่ดาว ใบไม้ หรือตั๋วอย่างน้อย 1 อย่าง";return}
   const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
-  try{await api("adm_code",{code,s,t,rt,note:$("ncNote").value.trim(),kind,max,days});msg.textContent=`สร้างโค้ด ${code} แล้ว · ${codeKind({kind})}${kind==="each"&&max?" สูงสุด "+max+" คน":""}${days?" · ใช้ได้ "+days+" วัน":""}`;["ncCode","ncStars","ncTickets","ncRTickets","ncNote","ncMax","ncDays"].forEach(i=>$(i).value="");$("ncKind").value="each";syncNcKind();loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}});
+  try{await api("adm_code",{code,s,l,t,rt,note:$("ncNote").value.trim(),kind,max,days});msg.textContent=`สร้างโค้ด ${code} แล้ว · ${codeKind({kind})}${kind==="each"&&max?" สูงสุด "+max+" คน":""}${days?" · ใช้ได้ "+days+" วัน":""}`;["ncCode","ncStars","ncLeaves","ncTickets","ncRTickets","ncNote","ncMax","ncDays"].forEach(i=>$(i).value="");$("ncKind").value="each";syncNcKind();loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}});
 function syncNcKind(){$("ncMax").hidden=$("ncKind").value==="once"}
 $("ncKind").addEventListener("change",syncNcKind);
 
@@ -2630,11 +2638,24 @@ $("skipBtn").addEventListener("click",()=>{if(!OWNER)return;act("skew",{hours:6}
 $("skipDay").addEventListener("click",()=>{if(!OWNER)return;act("skew",{hours:24}).then(()=>{autoDaily();toast("จำลองเวลาผ่านไป 1 วัน")}).catch(()=>{})});
 $("resetBtn").addEventListener("click",()=>{$("resetConfirm").hidden=false});$("resetNo").addEventListener("click",()=>{$("resetConfirm").hidden=true});
 $("resetYes").addEventListener("click",()=>{if(!OWNER)return;paidPending=false;$("resetConfirm").hidden=true;act("reset_me").then(()=>toast("ล้างข้อมูลเกมของแอดมินแล้ว")).catch(()=>{})});
-document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;["scrim","dailyModal","todayModal","petModal","shareModal","plModal"].forEach(i=>$(i).hidden=true)});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;["scrim","dailyModal","todayModal","petModal","shareModal","plModal","leafModal"].forEach(i=>$(i).hidden=true)});
+
+/* ---------- leaf shop: leaves come from play, stars only from top-ups ---------- */
+const leafOdds=rare=>{const w=rare?RATE_R:RAR.map(r=>r.share),tot=w.reduce((a,b)=>a+b,0)||1;return RAR.map((r,i)=>w[i]>0?`${r.name} ${n1(w[i]/tot*100)}%`:"").filter(Boolean).join(" · ")};
+function renderLeafShop(){const have=S.leaves||0;$("leafHave").textContent=have;
+  $("leafItems").innerHTML=LEAF_SHOP.map(it=>{const ok=have>=it.cost,rare=it.id==="rt";return `<div class="leaf-item${rare?" rare":""}"><div class="li-main"><b>${it.n}</b><span class="small">${rare?"สุ่มเพื่อนระดับแรร์ขึ้นไป":"สุ่มเพื่อน 1 ตัว"} · โอกาส ${leafOdds(rare)}</span></div>
+    <button class="li-buy" type="button" data-leaf="${it.id}" ${ok?"":"disabled"} aria-label="แลก ${it.n} ใช้ ${it.cost} ใบไม้"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><b>${it.cost}</b></button></div>`}).join("")}
+function openLeafShop(){$("leafMsg").textContent="";renderLeafShop();$("leafModal").hidden=false;$("leafClose").focus()}
+function leafBought(id){const rare=id==="rt",it=LEAF_SHOP.find(x=>x.id===id);chime([659,880,1175]);render();
+  $("leafMsg").innerHTML=`ได้${it.n} 1 ใบแล้ว <button class="mini" type="button" id="leafUse">เปิดเลย</button>`;$("leafUse").addEventListener("click",()=>{$("leafModal").hidden=true;useTicket(rare)});$("leafUse").focus()}
+async function buyLeaf(id){const it=LEAF_SHOP.find(x=>x.id===id);if(!it||(S.leaves||0)<it.cost)return;try{await api("leaf_buy",{id})}catch(e){if(e!=="locked")$("leafMsg").textContent=e;renderLeafShop();return}leafBought(id)}
+const isRareLeaf=id=>id==="rt";
+$("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListener("click",()=>{$("leafModal").hidden=true});
+$("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
 /* ---------- render ---------- */
 function render(){prune();regen();const P=powers();if(typeof tab!=="undefined"&&tab==="rank"){renderMyProfile();if(typeof LB_LOCAL!=="undefined")loadLeaderboard()}
-  $("stars").textContent=S.stars;
+  $("stars").textContent=S.stars;$("leaves").textContent=S.leaves||0;if(!$("leafModal").hidden)renderLeafShop();
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
   const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
   syncHoldLabel();$("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;

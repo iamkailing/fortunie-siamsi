@@ -57,20 +57,20 @@ const RAR=[
 const PETS=[
  {n:"หอยทากใจเย็น",e:"🐌",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"เต่าน้อยมั่นคง",e:"🐢",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"ลูกเจี๊ยบตัวจิ๋ว",e:"🐥",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
- {n:"แฮมสเตอร์แก้มป่อง",e:"🐹",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
+ {n:"ลูกเจี๊ยบตัวจิ๋ว",e:"🐥",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
+ {n:"แฮมสเตอร์แก้มป่อง",e:"🐹",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"กบน้อยนำโชค",e:"🐸",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"ผึ้งขยัน",e:"🐝",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"เต่าทองจุดดาว",e:"🐞",t:0,ab:{drop:.25},d:"โอกาสเจอเพื่อนตัวน้อย +0.25%"},
  {n:"เม่นขนนุ่ม",e:"🦔",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"กระรอกเก็บโชค",e:"🐿️",t:0,ab:{star:1},d:"ได้ 1 ดาวทุกครั้งที่เขย่า"},
+ {n:"กระรอกเก็บโชค",e:"🐿️",t:0,ab:{star:1},d:"ได้ 1 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"เพนกวินเดินเตาะแตะ",e:"🐧",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หนอนน้อยรอบิน",e:"🐛",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"กระต่ายจันทร์",e:"🐰",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
  {n:"แพนด้าฟูฟู",e:"🐼",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
  {n:"แมวนำโชค",e:"🐱",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หมาน้อยซื่อสัตย์",e:"🐶",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
- {n:"โคอาล่าขี้เซา",e:"🐨",t:1,ab:{star:2},d:"ได้ 2 ดาวทุกครั้งที่เขย่า"},
+ {n:"โคอาล่าขี้เซา",e:"🐨",t:1,ab:{star:2},d:"ได้ 2 ใบไม้ทุกครั้งที่เขย่า"},
  {n:"หมูนำทรัพย์",e:"🐷",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หมีน้ำผึ้ง",e:"🐻",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
  {n:"เป็ดน้อยลอยน้ำ",e:"🦆",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
@@ -115,7 +115,8 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
-const REW=[{s:5},{s:5},{s:10},{s:10},{s:15},{s:20},{pet:"น้องหมีเด้ง"}];
+const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}];
+const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
 const DEFAULT_PACKS=[{baht:49,stars:50},{baht:99,stars:110,tag:"คุ้มกว่า 10%"},{baht:199,stars:240,tag:"แถม 40 ดาว"},{baht:399,stars:520,tag:"แถม 120 ดาว"}];
 const NEED_T=[[1,2,8],[1,2,6],[1,2,5],[1,2,4],[1,2,3]];
 const NEED=p=>NEED_T[p?p.t:2]||[1,2,3];
@@ -125,10 +126,10 @@ const toNext=(k,p)=>{const L=lvOf(k,p);return L<MAXLV?NEED(p)[L]-(k||0):0};
 /* day key in Thailand time, so check-in resets at local midnight on server and client alike */
 const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth()+1)+"-"+d.getUTCDate()};
 
-function fresh(){return{v:6,stars:30,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
+function fresh(){return{v:6,stars:30,leaves:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,rtickets:0,pity:0,
   streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,avatarL:0,frame:"none"}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[]}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
@@ -154,7 +155,7 @@ function powers(){const P={cdr:0,drop:0,dropX:0,again:0,cap:0,star:0,burnFree:0,
 function regen(){const P=powers();if(S.charges>=P.max){S.regenAt=0;return}
   if(!S.regenAt)S.regenAt=now()+P.wait;
   while(S.charges<P.max&&now()>=S.regenAt){S.charges++;S.regenAt=S.charges<P.max?S.regenAt+P.wait:0}}
-function prune(){const before=S.inv.length;S.inv=S.inv.filter(it=>!it.at||now()-it.at<EXP);const gone=before-S.inv.length;if(gone)S.stars+=gone;return gone}
+function prune(){const before=S.inv.length;S.inv=S.inv.filter(it=>!it.at||now()-it.at<EXP);const gone=before-S.inv.length;if(gone)S.leaves=(S.leaves||0)+gone;return gone}
 const freeLeft=()=>S.charges+S.bonusFree;
 function canUseToday(){return !(S.useReadyAt>now())&&!activeBuff()}
 const streakState=()=>{const today=dk(now()),yest=dk(now()-DAY),claimed=S.streakDay===today;return{claimed,next:claimed?S.streakN:(S.streakDay===yest?S.streakN%7+1:1)}};
@@ -170,7 +171,7 @@ function giveCopy(pi){const p=PETS[pi],n=p.n,isNew=!S.owned[n];S.owned[n]=(S.own
 function poolOf(t){return PETS.map((p,i)=>i).filter(i=>PETS[i].t===t&&!PETS[i].sp)}
 function rollPet(rare){const r=pickRarity(rare?RATE_R:null),pool=poolOf(r),pi=pool[Math.floor(rnd()*pool.length)];S.rar[r]++;S.petDrops++;return giveCopy(pi)}
 /* when the box is full the oldest slip turns into 1 star dust, never lost for nothing */
-function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.stars++;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
+function addInv(f){S.inv.unshift({id:String(now())+String(Math.floor(rnd()*1e6)),f,at:now()});let over=0;while(S.inv.length>INV_MAX){S.inv.pop();S.leaves=(S.leaves||0)+1;over++}if(over)S.overflow=(S.overflow||0)+over;return over}
 function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
@@ -180,7 +181,7 @@ function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
   else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
   else throw "ยังไม่มีสิทธิ์เขย่าฟรี";
-  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.stars+=ws;S.starFrac-=ws;
+  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
   let tg=false;if(F[f][0]==="ดีมาก"&&P.tg&&rnd()<P.tg){S.tickets++;tg=true}
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
@@ -209,10 +210,11 @@ function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p
   if((S.shards[t]||0)<SHARD_COST[t])throw "เศษไม่พอ";if((S.owned[p.n]||0)>=maxCopies(p))throw "ตัวนี้เก็บครบแล้ว";S.shards[t]-=SHARD_COST[t];return giveCopy(pi)}
 function actBuddy(pi){pi=+pi;const p=PETS[pi];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้";S.buddy=pi;return{pi}}
 function actDaily(){const st=streakState();if(st.claimed)throw "รับของวันนี้ไปแล้ว";S.streakN=st.next;S.streakDay=dk(now());const r=REW[S.streakN-1];
-  const dp=powers().daily||0;S.stars+=dp;if(r.s)S.stars+=r.s;if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,s:(r.s||0)+dp,bonus:dp,pet:r.pet||null}}
-function summary(){return{stars:S.stars,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
+  const dp=powers().daily||0;S.leaves=(S.leaves||0)+dp+(r.l||0);if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,l:(r.l||0)+dp,bonus:dp,pet:r.pet||null}}
+function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
+function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
 }
 
 
@@ -395,9 +397,9 @@ async function adminAction(a, p, me, role) {
     return { ok: true };
   }
   if (a === "adm_give") {
-    await prof(); const s = int(p.s, -99999, 99999), t = int(p.t, -99, 99), rt = int(p.rt, -99, 99), note = String(p.note || "").slice(0, 60);
-    await withPlayer(uid, G => { G.S.stars = Math.max(0, G.S.stars + s); G.S.tickets = Math.max(0, G.S.tickets + t); G.S.rtickets = Math.max(0, (G.S.rtickets || 0) + rt); inbox(G, `แอดมิน${s < 0 || t < 0 || rt < 0 ? "ปรับ" : "ส่ง"}ของให้${s ? " " + (s > 0 ? "+" : "") + s + " ดาว" : ""}${t ? " ตั๋ว " + (t > 0 ? "+" : "") + t : ""}${rt ? " ตั๋วแรร์+ " + (rt > 0 ? "+" : "") + rt : ""}${note ? " · " + note : ""}`); });
-    await log(uid, "give", { s, t, rt, note }, me); return { ok: true };
+    await prof(); const s = int(p.s, -99999, 99999), l = int(p.l, -99999, 99999), t = int(p.t, -99, 99), rt = int(p.rt, -99, 99), note = String(p.note || "").slice(0, 60);
+    await withPlayer(uid, G => { G.S.stars = Math.max(0, G.S.stars + s); G.S.leaves = Math.max(0, (G.S.leaves || 0) + l); G.S.tickets = Math.max(0, G.S.tickets + t); G.S.rtickets = Math.max(0, (G.S.rtickets || 0) + rt); inbox(G, `แอดมิน${s < 0 || l < 0 || t < 0 || rt < 0 ? "ปรับ" : "ส่ง"}ของให้${s ? " " + (s > 0 ? "+" : "") + s + " ดาว" : ""}${l ? " " + (l > 0 ? "+" : "") + l + " ใบไม้" : ""}${t ? " ตั๋ว " + (t > 0 ? "+" : "") + t : ""}${rt ? " ตั๋วแรร์+ " + (rt > 0 ? "+" : "") + rt : ""}${note ? " · " + note : ""}`); });
+    await log(uid, "give", { s, l, t, rt, note }, me); return { ok: true };
   }
   if (a === "adm_smstest") {
     const phone = normPhone(p.phone); if (!phone) throw "เบอร์โทรไม่ถูกต้อง";
@@ -431,11 +433,11 @@ async function adminAction(a, p, me, role) {
   if (a === "adm_code") {
     const code = String(p.code || "").trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 24); if (!code) throw "ใส่โค้ดก่อน";
     if (p.toggle) { await sb.from("codes").update({ off: !!p.off }).eq("code", code); await log(me, p.off ? "code_off" : "code_on", { code }, me); return { ok: true }; }
-    const s = int(p.s, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99); if (!s && !t && !rt) throw "ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";
+    const s = int(p.s, 0, 99999), l = int(p.l, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99); if (!s && !l && !t && !rt) throw "ใส่ดาว ใบไม้ หรือตั๋วอย่างน้อย 1 อย่าง";
     const kind = p.kind === "once" ? "once" : "each", max_uses = kind === "once" ? 1 : int(p.max, 0, 100000), days = int(p.days, 0, 365);
     const expires_at = days ? new Date(Date.now() + days * 864e5).toISOString() : null;
-    const { error } = await sb.from("codes").upsert({ code, s, t, rt, note: String(p.note || "").slice(0, 60), off: false, kind, max_uses, expires_at }); if (error) throw "สร้างโค้ดไม่สำเร็จ";
-    await log(me, "code_new", { code, s, t, rt, kind, max_uses, days }, me); return { ok: true, code };
+    const { error } = await sb.from("codes").upsert({ code, s, l, t, rt, note: String(p.note || "").slice(0, 60), off: false, kind, max_uses, expires_at }); if (error) throw "สร้างโค้ดไม่สำเร็จ";
+    await log(me, "code_new", { code, s, l, t, rt, kind, max_uses, days }, me); return { ok: true, code };
   }
   if (a === "adm_timeline") {
     const [{ data: ev }, { data: tops }] = await Promise.all([sb.from("events").select("kind,data,at,actor").eq("user_id", uid).order("at", { ascending: false }).limit(60), sb.from("topups").select("baht,stars,status,reason,created_at,done_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(20)]);
@@ -447,21 +449,21 @@ async function adminAction(a, p, me, role) {
   }
   if (a === "adm_staff") { const pr = await prof(); if (uid === me) throw "เปลี่ยนสิทธิ์ตัวเองไม่ได้"; if (pr.is_admin) throw "คนนี้เป็นแอดมินเจ้าของอยู่แล้ว"; await sb.from("profiles").update({ staff: !!p.on }).eq("id", uid); await log(uid, p.on ? "staff_on" : "staff_off", {}, me); return { ok: true }; }
   if (a === "adm_code_batch") {
-    const pre = String(p.prefix || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10), n = int(p.count, 0, 500), s = int(p.s, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99), days = int(p.days, 0, 365);
-    if (!pre) throw "ใส่ตัวหน้าโค้ดก่อน"; if (!n) throw "ใส่จำนวนโค้ด 1–500"; if (!s && !t && !rt) throw "ใส่ดาวหรือตั๋วอย่างน้อย 1 อย่าง";
+    const pre = String(p.prefix || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10), n = int(p.count, 0, 500), s = int(p.s, 0, 99999), l = int(p.l, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99), days = int(p.days, 0, 365);
+    if (!pre) throw "ใส่ตัวหน้าโค้ดก่อน"; if (!n) throw "ใส่จำนวนโค้ด 1–500"; if (!s && !l && !t && !rt) throw "ใส่ดาว ใบไม้ หรือตั๋วอย่างน้อย 1 อย่าง";
     const CH = "ABCDEFGHJKMNPQRSTUVWXYZ23456789", batch = "b" + Date.now(), expires_at = days ? new Date(Date.now() + days * 864e5).toISOString() : null, note = String(p.note || "").slice(0, 60), out = new Set();
     while (out.size < n) { let c = pre + "-"; for (let i = 0; i < 6; i++) c += CH[Math.floor(rnd() * CH.length)]; out.add(c); }
-    const rows = [...out].map(code => ({ code, s, t, rt, note, off: false, kind: "once", max_uses: 1, expires_at, batch, prefix: pre }));
+    const rows = [...out].map(code => ({ code, s, l, t, rt, note, off: false, kind: "once", max_uses: 1, expires_at, batch, prefix: pre }));
     for (let i = 0; i < rows.length; i += 100) { const { error } = await sb.from("codes").insert(rows.slice(i, i + 100)); if (error) throw "สร้างโค้ดไม่ครบ ลองใหม่อีกครั้ง"; }
-    await log(me, "code_batch", { prefix: pre, n: rows.length, s, t, rt, days }, me); return { codes: rows.map(r => r.code) };
+    await log(me, "code_batch", { prefix: pre, n: rows.length, s, l, t, rt, days }, me); return { codes: rows.map(r => r.code) };
   }
   if (a === "adm_batch_off") { const b = String(p.batch || "").slice(0, 40); if (!b) throw "ไม่พบชุดโค้ด"; await sb.from("codes").update({ off: true }).eq("batch", b); await log(me, "batch_off", { batch: b }, me); return { ok: true }; }
   if (a === "adm_mass") {
-    const s = int(p.s, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99), note = String(p.note || "").slice(0, 60), seg = String(p.seg || "all");
-    if (!s && !t && !rt) throw "ใส่ดาวหรือตั๋วที่จะแจก";
+    const s = int(p.s, 0, 99999), l = int(p.l, 0, 99999), t = int(p.t, 0, 99), rt = int(p.rt, 0, 99), note = String(p.note || "").slice(0, 60), seg = String(p.seg || "all");
+    if (!s && !l && !t && !rt) throw "ใส่ดาว ใบไม้ หรือตั๋วที่จะแจก";
     const ids = await segmentIds(seg); if (p.preview) return { n: ids.length };
-    let n = 0; for (const id of ids) { try { await withPlayer(id, G => { G.S.stars += s; G.S.tickets += t; G.S.rtickets = (G.S.rtickets || 0) + rt; inbox(G, `แอดมินแจกของ${s ? " +" + s + " ดาว" : ""}${t ? " ตั๋ว +" + t : ""}${rt ? " ตั๋วแรร์+ +" + rt : ""}${note ? " · " + note : ""}`); }); n++; } catch (e) {} }
-    await log(me, "mass_give", { seg, n, s, t, rt, note }, me); return { n };
+    let n = 0; for (const id of ids) { try { await withPlayer(id, G => { G.S.stars += s; G.S.leaves = (G.S.leaves || 0) + l; G.S.tickets += t; G.S.rtickets = (G.S.rtickets || 0) + rt; inbox(G, `แอดมินแจกของ${s ? " +" + s + " ดาว" : ""}${l ? " +" + l + " ใบไม้" : ""}${t ? " ตั๋ว +" + t : ""}${rt ? " ตั๋วแรร์+ +" + rt : ""}${note ? " · " + note : ""}`); }); n++; } catch (e) {} }
+    await log(me, "mass_give", { seg, n, s, l, t, rt, note }, me); return { n };
   }
   if (a === "adm_delslip") { const { data: t } = await sb.from("topups").select("slip_path").eq("id", p.id).single(); if (t && t.slip_path) await sb.storage.from("slips").remove([t.slip_path]); await sb.from("topups").update({ slip_path: null }).eq("id", p.id); return { ok: true }; }
   throw "คำสั่งไม่ถูกต้อง";
@@ -562,8 +564,8 @@ async function redeem(G, uid, code) {
     const { data: r, error } = await sb.rpc("redeem_code", { p_code: code, p_uid: uid }); if (error || !r) throw "รับโค้ดไม่สำเร็จ ลองใหม่อีกครั้ง";
     if (r.err) throw ({ bad: "โค้ดนี้ใช้ไม่ได้ ลองเช็กตัวสะกดอีกครั้ง", expired: "โค้ดนี้หมดอายุแล้ว", used: "โค้ดนี้ใช้ไปแล้ว", full: c.kind === "once" ? "โค้ดนี้มีคนใช้ไปแล้ว" : "โค้ดนี้ครบจำนวนคนแล้ว" })[r.err] || "โค้ดนี้ใช้ไม่ได้";
   }
-  if (c.s) S.stars += +c.s; if (c.t) S.tickets += +c.t; if (c.rt) S.rtickets = (S.rtickets || 0) + (+c.rt); await log(uid, "redeem", { code });
-  return { s: +c.s || 0, t: +c.t || 0, rt: +c.rt || 0 };
+  if (c.s) S.stars += +c.s; if (c.l) S.leaves = (S.leaves || 0) + (+c.l); if (c.t) S.tickets += +c.t; if (c.rt) S.rtickets = (S.rtickets || 0) + (+c.rt); await log(uid, "redeem", { code });
+  return { s: +c.s || 0, l: +c.l || 0, t: +c.t || 0, rt: +c.rt || 0 };
 }
 
 Deno.serve(async (req) => {
@@ -609,6 +611,7 @@ Deno.serve(async (req) => {
         case "exchange": res = G.actExchange(p.t, p.pi); break;
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
+        case "leaf_buy": res = G.actLeafBuy(String(p.id || ""), p.n); break;
         case "showcase": res = G.actShowcase(p.pis); break;
         case "profile": res = G.actProfile(p.avatar, String(p.frame || "none"), p.L); break;
         case "ack": G.S.inbox = []; res = { ok: true }; break;
