@@ -2740,6 +2740,8 @@ const isRareLeaf=id=>id==="rt";
 $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListener("click",()=>{$("leafModal").hidden=true});
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
+var BURN_RB_NOW=false; /* rainbow jackpot shown by the current burn */
+var EGG_BACK=null; /* where to go after an egg: jars and tickets opened from the inventory stay there */
 /* ---------- guided tutorial: step-by-step, the player can only press what the lesson points at ---------- */
 /* stages (S.tutS): 1 first shake · 2 reveal + buddy cat · 3 use slip · 4 go to pets · 5 buddy info · 6 paid shake
    7 reveal bad slip + cat skill · 8 free extra shake · 9 daily check-in · 10 leaf shop ticket · 11 swap buddy · 12 burn · 13 end */
