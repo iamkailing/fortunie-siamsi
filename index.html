@@ -977,6 +977,11 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .be-card.rainbow{border-color:#c9a7ff;box-shadow:0 0 50px #c9a7ff66;background:linear-gradient(180deg,#2c1f48f0,#1c1226f0)}
 @media (prefers-reduced-motion:reduce){.burnfx.rainbow::after{animation:none}.burnfx.rainbow .burn-wrap canvas,#burnFxTop.rainbow{animation:none}}
 
+/* v93 waiting wobble while the server picks the stick */
+.stage.waiting #tube{animation:waitWob .32s ease-in-out infinite alternate}
+@keyframes waitWob{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
+@media (prefers-reduced-motion:reduce){.stage.waiting #tube{animation:none}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1870,12 +1875,12 @@ hb.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")stopHold()});
 let cur=null,ticketMode=false;
 async function finishShake(){motionOff();
   busy=true;holding=false;cancelAnimationFrame(raf);raf=0;energy=0;$("meter").style.width="0";tube.style.transform="";
-  /* the stick starts rising while the server answers, so the wait hides behind the animation */
-  const t0=performance.now();$("stickNo").textContent="";$("stage").classList.add("out");chime([392,523],.12);
-  let r;try{r=await api("shake",{paid:paidPending})}catch(e){$("stage").classList.remove("out");busy=false;if(e!=="locked")toast(e);render();return}
-  paidPending=false;cur=r;
-  $("stickNo").textContent=th(cur.f+1);
-  setTimeout(openReveal,reduce?0:Math.max(200,900-(performance.now()-t0)));
+  /* while the server answers the cup keeps a soft wobble; the stick rises only once its number is known */
+  $("stage").classList.add("waiting");
+  let r;try{r=await api("shake",{paid:paidPending})}catch(e){$("stage").classList.remove("waiting");busy=false;if(e!=="locked")toast(e);render();return}
+  paidPending=false;cur=r;$("stage").classList.remove("waiting");
+  $("stickNo").textContent=th(cur.f+1);$("stage").classList.add("out");chime([392,523],.12);
+  setTimeout(openReveal,reduce?0:900);
 }
 function openReveal(){const L=LV[F[cur.f][0]],R=$("reveal");
   R.style.setProperty("--glow",L.glow);R.classList.remove("lit");R.hidden=false;showStep("stepStick");$("bigNo").textContent=th(cur.f+1);
