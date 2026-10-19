@@ -969,11 +969,13 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .burnfx.rainbow{background:radial-gradient(circle at 50% 60%,rgba(200,160,255,calc(.2 + var(--heat,0)*.4)) 0,transparent 55%),radial-gradient(circle at 50% 60%,#241436fc,#0b0716 72%)}
 .burnfx.rainbow::after{content:"";position:fixed;inset:0;pointer-events:none;background:#fff;opacity:0;animation:rbFlash 1.1s ease-out .35s 1}
 @keyframes rbFlash{0%{opacity:0}12%{opacity:.85}100%{opacity:0}}
-.burnfx.rainbow canvas,#burnFxTop.rainbow{animation:rbHue 1.4s linear infinite}
+#burnFxTop.rainbow{animation:rbHue 1.4s linear infinite}
+.burnfx.rainbow .burn-wrap canvas{animation:rbGlow 1.6s linear infinite}
+@keyframes rbGlow{0%{filter:drop-shadow(0 0 22px #ff8a8a)}25%{filter:drop-shadow(0 0 22px #ffd36a)}50%{filter:drop-shadow(0 0 22px #8fe3a0)}75%{filter:drop-shadow(0 0 22px #8fc7ff)}100%{filter:drop-shadow(0 0 22px #c9a7ff)}}
 @keyframes rbHue{from{filter:hue-rotate(0deg) saturate(1.6)}to{filter:hue-rotate(360deg) saturate(1.6)}}
 .burnfx.rainbow .burn-cap{font-family:var(--f-display);font-size:18px;background:linear-gradient(90deg,#ff8a8a,#ffd36a,#9be38f,#8fc7ff,#c9a7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .be-card.rainbow{border-color:#c9a7ff;box-shadow:0 0 50px #c9a7ff66;background:linear-gradient(180deg,#2c1f48f0,#1c1226f0)}
-@media (prefers-reduced-motion:reduce){.burnfx.rainbow::after{animation:none}.burnfx.rainbow canvas,#burnFxTop.rainbow{animation:none}}
+@media (prefers-reduced-motion:reduce){.burnfx.rainbow::after{animation:none}.burnfx.rainbow .burn-wrap canvas,#burnFxTop.rainbow{animation:none}}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -2748,7 +2750,7 @@ function tutAllow(){const s=tutStage(),rv=!$("reveal").hidden,bf=$("burnFx")&&!$
   if(!$("todayModal").hidden)return "#todayOk";
   return ({1:"#holdBtn,#motionBox",4:'#tabbar [data-tab="pets"]',5:"",6:"#extraBtn,#holdBtn,#motionBox",8:"#holdBtn,#motionBox",
     9:"#giftBtn,#dailyClaim,#dailyClose",10:'#leafBtn,#leafItems [data-leaf="t"],#leafUse',11:`#book .slot[data-pi="${PETS.findIndex(p=>p.n===TUT_DUCK)}"],#setBuddy,#petClose`,
-    12:'#tabbar [data-tab="inv"],#inv [data-act="burn"]',13:'#tabbar [data-tab="inv"],#jarBtn',14:""})[s]||""}
+    12:'#tabbar [data-tab="inv"],'+tutBadSel(),13:'#tabbar [data-tab="inv"],#jarBtn',14:""})[s]||""}
 function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t instanceof Element))return;if(t.closest("#coach,#logoutBtn,#lockLogout,#soundBtn,#tabbar [data-tab=\"info\"],#scr-info"))return;
   const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
   e.preventDefault();e.stopPropagation();if(e.type==="click")coachNudge()}
@@ -2815,14 +2817,16 @@ function tutTick(){if(!tutReady())return;
     const sl=q(`#book .slot[data-pi="${di}"]`);if(sl&&tutScrolled!==11){tutScrolled=11;sl.scrollIntoView({block:"center"})}
     coach(sl,`ลอง<b>เปลี่ยนคู่หู</b>เป็น${TUT_DUCK}กันค่ะ แตะที่ตัวเป็ดเลย`,{tag});return}
   if(s===12){if(rv){coachHide();return}if(tab!=="inv"){coach(q('#tabbar [data-tab="inv"]'),`ตอนนี้เป็ดเป็นคู่หูแล้ว ไป<b>เผาใบที่ไม่ชอบ</b>กันค่ะ แตะเมนู <b>"คลัง"</b>`,{tag});return}
-    const b=q('#inv [data-act="burn"]');if(!b){tutSet(13);return}if(tutScrolled!==12){tutScrolled=12;b.scrollIntoView({block:"center"})}
-    coach(b,`กด<b>เผา</b>ใบที่ไม่ชอบ ได้<b>แต้มเผา</b>เพิ่มเพราะพลังเป็ด 🔥 แต้มครบ ${JAR} เปิด<b>โหลขี้เถ้า</b>สุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`,{tag});return}
+    const b=q(tutBadSel());if(!b){tutSet(13);return}if(tutScrolled!==12){tutScrolled=12;b.scrollIntoView({block:"center"})}
+    coach(b,`ใบ<b>ค่อยเป็นค่อยไป</b>ที่ได้ตอนใช้ดาว ไม่ค่อยดีใช่ไหมคะ กด<b>เผา</b>ใบนี้เลย ได้<b>แต้มเผา</b>เพิ่มเพราะพลังเป็ด 🔥 แต้มครบ ${JAR} เปิด<b>โหลขี้เถ้า</b>สุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`,{tag});return}
   if(s===13){if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้เพื่อนจาก<b>โหลขี้เถ้า</b> 🎉 โหลจะให้เพื่อนระดับ<b>แรร์ขึ้นไป</b>เสมอ (ปกติ แรร์ 80% · เอพิก 15% · ตำนาน 5%)<br><small>(รอบสอน: โหลแรกนี้ Fortunie จัดเป็นระดับแรร์)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่จากโหลขี้เถ้าเลยค่ะ 🥚",{tag,top:true});return}
     if(!(S.jarT>0)){tutSet(14);return}if(tab!=="inv"){showTab("inv");return}const jb=$("jarBtn");if(jb&&tutScrolled!==13){tutScrolled=13;jb.scrollIntoView({block:"center"})}
     coach(jb,`🌈 <b>แจ็กพ็อตไฟรุ้ง!</b> เป็ดน้อยมีโอกาส 1% ทุกครั้งที่เผา ได้ ${JAR} แต้มเต็มโหลในทีเดียว<br><small>(รอบสอน: ครั้งนี้ Fortunie จัดให้)</small><br>โหลขี้เถ้าเต็มแล้ว กด<b>เปิดโหลขี้เถ้า</b>เลยค่ะ`,{tag});return}
   if(s>=14){if(rv||bf)return;if(!home){showTab("home");return}
     coach(null,`เก่งมาก! 🌟 ครบทุกบทเรียนแล้ว<br>ต่อจากนี้เล่นได้อิสระเลยค่ะ อย่าลืมกลับมาเช็กอินทุกวัน รับใบไม้กับของขวัญนะคะ`,{tag:"จบบทเรียน",label:"เริ่มเล่นเลย",next:()=>{coachHide();tutSet(99,true);render()}});return}}
 let tutScrolled=0;
+/* the slip to burn in the lesson: the bad one from the paid shake (oldest "ค่อยเป็นค่อยไป" in the inventory) */
+function tutBadSel(){const bad=S.inv.filter(it=>F[it.f][0]==="ค่อยเป็นค่อยไป");const it=bad.length?bad[bad.length-1]:S.inv[S.inv.length-1];return it?`#inv .inv-item[data-id="${it.id}"] [data-act="burn"]`:'#inv [data-act="burn"]'}
 /* one-time tips after the lesson, not forced */
 function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=S.tutTips||{};if(S.tutTips[id])return;S.tutTips[id]=1;try{localStorage.setItem("ftn_tip_"+id,"1")}catch(e){}
   setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,{label:"เข้าใจแล้ว",next:coachHide,arrow:false})},350)}
