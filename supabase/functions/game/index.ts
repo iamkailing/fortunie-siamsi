@@ -115,6 +115,12 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
+/* guided tutorial: a brand-new player's first draws are scripted so the lesson can show each system.
+   only for accounts that started with the tutorial and have never paid money; the screen says these rounds are arranged */
+const TUT_CAT="แมวนำโชค",TUT_DUCK="เป็ดน้อยลอยน้ำ";
+const tutRig=()=>!!S.tutF&&!(S.topBaht>0);
+function tutSlip(kind){const ids=F.map((x,i)=>i).filter(i=>kind==="good"?(F[i][0]==="ดีมาก"&&i%3===0):F[i][0]==="ค่อยเป็นค่อยไป");return ids[Math.floor(rnd()*ids.length)]}
+function tutPet(n){const pi=PETS.findIndex(p=>p.n===n);S.rar[PETS[pi].t]++;S.petDrops++;return giveCopy(pi)}
 const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}],REW_NEW=[{l:100},{l:100},{l:150},{l:150},{l:200},{l:200},{pet:"น้องหมีเด้ง"}];
 const rewTable=()=>(S.dailyTot||0)<7?REW_NEW:REW; /* the first 7 check-ins of every player give the big welcome rewards */
 const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
@@ -129,10 +135,10 @@ const toNext=(k,p)=>{const L=lvOf(k,p);return L<MAXLV?NEED(p)[L]-(k||0):0};
 /* day key in Thailand time, so check-in resets at local midnight on server and client alike */
 const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth()+1)+"-"+d.getUTCDate()};
 
-function fresh(){return{v:6,stars:30,leaves:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
+function fresh(){return{v:6,stars:30,leaves:60,leafGift:1,tutF:1,tutS:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,rtickets:0,pity:0,
   streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,avatarL:0,frame:"none"}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];keepLevels();if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];keepLevels();if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0;if(!S.leafGift){S.leafGift=1;S.leaves+=60;if(Array.isArray(S.inbox))S.inbox.push({at:now(),msg:"ของขวัญเปิดระบบใบไม้ +60 ใบไม้ 🍃"})}}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
@@ -179,18 +185,19 @@ function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
 function settlePending(){if(S.pend){addInv(S.pend.f);if(S.last)S.last.fate="kept";S.pend=null}}
-function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
+function actShake(paid){let paidUsed=false;settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
   if(S.bonusFree>0)S.bonusFree--;
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
-  else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
+  else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST;paidUsed=true}
   else throw "ยังไม่มีสิทธิ์เขย่าฟรี";
-  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
+  const rig=tutRig()?(S.shakes===0?1:(S.shakes===1&&paidUsed?2:0)):0;const f=rig===1?tutSlip("good"):rig===2?tutSlip("bad"):Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
   let tg=false;if(F[f][0]==="ดีมาก"&&P.tg&&rnd()<P.tg){S.tickets++;tg=true}
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
   S.pity=(S.pity||0)+1;let pet=null,isNew=false,shard=0;
-  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
-  const again=rnd()<P.again;if(again)S.bonusFree++;
+  if(rig===1){const r=tutPet(TUT_CAT);S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}else if(rig===2){}
+  else if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
+  const again=rig===2||(rig!==1&&rnd()<P.again);if(again)S.bonusFree++;
   const cur={f,pet,isNew,shard,again,ticket,tg,fa,at:now(),fate:"pending"};S.last=cur;S.pend={f};return cur}
 function burnReward(){const P=powers(),gold=rnd()<GOLD_P+P.gold,pts=(BURN_PTS+P.bp)*(gold?GOLD_X:1);S.burned++;if(gold){S.bonusFree++;S.golds=(S.golds||0)+1}
   const lucky=!!(P.burnFree&&rnd()<P.burnFree);if(lucky)S.bonusFree++;
@@ -206,7 +213,8 @@ function actBurnSlip(id){settlePending();const i=invIndex(id);const f=S.inv[i].f
 function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)throw "ยังไม่ได้เลือกใบ";const before=S.bp||0,fs=[];let pts=0,golds=0,lucky=0,jar=0;
   for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
   if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,jar,before,gold:golds>0}}
-function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;return rollPet()}
+function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
+function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
 function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p.t!==t||p.sp)throw "เลือกเพื่อนไม่ถูกระดับ";
@@ -217,7 +225,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
 function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
 function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actTut,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
 }
 
 
@@ -621,6 +629,7 @@ Deno.serve(async (req) => {
         case "exchange": res = G.actExchange(p.t, p.pi); break;
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
+        case "tut": res = G.actTut(p.s, !!p.done); break;
         case "leaf_buy": res = G.actLeafBuy(String(p.id || ""), p.n); break;
         case "showcase": res = G.actShowcase(p.pis); break;
         case "profile": res = G.actProfile(p.avatar, String(p.frame || "none"), p.L); break;

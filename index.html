@@ -949,7 +949,7 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 .coach-b p{margin:0;font-size:14px;line-height:1.6;text-align:left}
 .coach-b b{color:#6b3fa8}
 .coach-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.coach-skip{background:none;border:0;color:#8a7a9c;font-size:12px;padding:6px 2px;text-decoration:underline}
+.coach-tag{font-size:11px;color:#8a7a9c;font-weight:600}
 .coach-next{background:#7c4dc4!important;color:#fff!important;padding:8px 16px!important;border-radius:999px}
 .coach-next[hidden]{display:none}
 .coach-hl{position:relative;z-index:85;box-shadow:0 0 0 3px #f0d28a,0 0 0 9px #f0d28a44,0 0 30px #f0d28a88!important;border-radius:16px;animation:coachPulse 1.6s ease-in-out infinite}
@@ -957,6 +957,13 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 @media (prefers-reduced-motion:reduce){.coach,.coach-hl{animation:none}}
 
 .cupscene #stickNo:empty{display:none}
+
+.coach-b small{color:#8a7a9c;font-size:12px}
+.coach.nudge{animation:coachNudge .4s ease}
+@keyframes coachNudge{20%{translate:-6px 0}40%{translate:6px 0}60%{translate:-4px 0}80%{translate:3px 0}}
+.coach-arrow{position:fixed;z-index:91;font-size:34px;line-height:1;pointer-events:none;filter:drop-shadow(0 3px 6px #0008);animation:coachBob .9s ease-in-out infinite}
+@keyframes coachBob{50%{translate:0 8px}}
+@media (prefers-reduced-motion:reduce){.coach-arrow,.coach.nudge{animation:none}}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -1528,6 +1535,12 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
 const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
+/* guided tutorial: a brand-new player's first draws are scripted so the lesson can show each system.
+   only for accounts that started with the tutorial and have never paid money; the screen says these rounds are arranged */
+const TUT_CAT="แมวนำโชค",TUT_DUCK="เป็ดน้อยลอยน้ำ";
+const tutRig=()=>!!S.tutF&&!(S.topBaht>0);
+function tutSlip(kind){const ids=F.map((x,i)=>i).filter(i=>kind==="good"?(F[i][0]==="ดีมาก"&&i%3===0):F[i][0]==="ค่อยเป็นค่อยไป");return ids[Math.floor(rnd()*ids.length)]}
+function tutPet(n){const pi=PETS.findIndex(p=>p.n===n);S.rar[PETS[pi].t]++;S.petDrops++;return giveCopy(pi)}
 const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}],REW_NEW=[{l:100},{l:100},{l:150},{l:150},{l:200},{l:200},{pet:"น้องหมีเด้ง"}];
 const rewTable=()=>(S.dailyTot||0)<7?REW_NEW:REW; /* the first 7 check-ins of every player give the big welcome rewards */
 const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
@@ -1542,10 +1555,10 @@ const toNext=(k,p)=>{const L=lvOf(k,p);return L<MAXLV?NEED(p)[L]-(k||0):0};
 /* day key in Thailand time, so check-in resets at local midnight on server and client alike */
 const dk=t=>{const d=new Date(t+TZ);return d.getUTCFullYear()+"-"+(d.getUTCMonth()+1)+"-"+d.getUTCDate()};
 
-function fresh(){return{v:6,stars:30,leaves:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
+function fresh(){return{v:6,stars:30,leaves:60,leafGift:1,tutF:1,tutS:0,owned:{},buddy:null,shakes:0,petDrops:0,spent:0,topBaht:0,burned:0,rar:[0,0,0,0,0],lv:{"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0},
   charges:1,regenAt:0,skew:0,last:null,pend:null,bonusFree:0,bp:0,jarT:0,jars:0,golds:0,shards:[0,0,0,0,0],inv:[],active:null,useReadyAt:0,tickets:0,rtickets:0,pity:0,
   streakN:0,streakDay:"",inbox:[],showcase:[],avatar:-1,avatarL:0,frame:"none"}}
-function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];keepLevels();if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0}
+function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArray(S.inv))S.inv=[];if(!Array.isArray(S.inbox))S.inbox=[];if(!S.owned)S.owned={};if(!Array.isArray(S.rar))S.rar=[0,0,0,0,0];if(!Array.isArray(S.showcase))S.showcase=[];keepLevels();if(typeof S.leaves!=="number"||!(S.leaves>=0))S.leaves=0;if(!S.leafGift){S.leafGift=1;S.leaves+=60;if(Array.isArray(S.inbox))S.inbox.push({at:now(),msg:"ของขวัญเปิดระบบใบไม้ +60 ใบไม้ 🍃"})}}
 
 /* collection score: each pet you own scores its level (Lv.1 = 1, Lv.2 = 2, Lv.3 = 3) */
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
@@ -1592,18 +1605,19 @@ function activate(f){S.active={f,until:now()+DAY};S.useReadyAt=now()+DAY}
 
 /* ----- actions (server runs these; each throws a Thai message on misuse) ----- */
 function settlePending(){if(S.pend){addInv(S.pend.f);if(S.last)S.last.fate="kept";S.pend=null}}
-function actShake(paid){settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
+function actShake(paid){let paidUsed=false;settlePending();regen();const P=powers();if(S.inv.length>=INV_MAX)throw "คลังเต็มแล้ว เผาหรือใช้ใบในคลังก่อน แล้วค่อยเขย่าใหม่นะคะ";
   if(S.bonusFree>0)S.bonusFree--;
   else if(S.charges>0){S.charges--;if(!S.regenAt)S.regenAt=now()+P.wait}
-  else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST}
+  else if(paid){if(S.stars<COST)throw "ดาวไม่พอ เติมดาวก่อนนะคะ";S.stars-=COST;S.spent+=COST;paidUsed=true}
   else throw "ยังไม่มีสิทธิ์เขย่าฟรี";
-  const f=Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
+  const rig=tutRig()?(S.shakes===0?1:(S.shakes===1&&paidUsed?2:0)):0;const f=rig===1?tutSlip("good"):rig===2?tutSlip("bad"):Math.floor(rnd()*F.length);S.lv[F[f][0]]=(S.lv[F[f][0]]||0)+1;S.shakes++;S.starFrac=(S.starFrac||0)+P.star;const ws=Math.floor(S.starFrac+1e-9);S.leaves=(S.leaves||0)+ws;S.starFrac-=ws;
   let tg=false;if(F[f][0]==="ดีมาก"&&P.tg&&rnd()<P.tg){S.tickets++;tg=true}
   let fa=false;const today=dk(now());if(S.faDay!==today){S.faDay=today;if(P.fa&&rnd()<P.fa){S.bonusFree++;fa=true}}
   const ticket=f===LUCKY;if(ticket)S.tickets++;
   S.pity=(S.pity||0)+1;let pet=null,isNew=false,shard=0;
-  if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
-  const again=rnd()<P.again;if(again)S.bonusFree++;
+  if(rig===1){const r=tutPet(TUT_CAT);S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}else if(rig===2){}
+  else if(S.petDrops===0||S.pity>=PITY-P.pity||rnd()*100<P.dropPct){const r=rollPet();S.pity=0;pet=r.pi;isNew=r.isNew;shard=r.shard}
+  const again=rig===2||(rig!==1&&rnd()<P.again);if(again)S.bonusFree++;
   const cur={f,pet,isNew,shard,again,ticket,tg,fa,at:now(),fate:"pending"};S.last=cur;S.pend={f};return cur}
 function burnReward(){const P=powers(),gold=rnd()<GOLD_P+P.gold,pts=(BURN_PTS+P.bp)*(gold?GOLD_X:1);S.burned++;if(gold){S.bonusFree++;S.golds=(S.golds||0)+1}
   const lucky=!!(P.burnFree&&rnd()<P.burnFree);if(lucky)S.bonusFree++;
@@ -1619,7 +1633,8 @@ function actBurnSlip(id){settlePending();const i=invIndex(id);const f=S.inv[i].f
 function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)throw "ยังไม่ได้เลือกใบ";const before=S.bp||0,fs=[];let pts=0,golds=0,lucky=0,jar=0;
   for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
   if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,jar,before,gold:golds>0}}
-function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;return rollPet()}
+function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
+function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
 function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p.t!==t||p.sp)throw "เลือกเพื่อนไม่ถูกระดับ";
@@ -2702,67 +2717,112 @@ const isRareLeaf=id=>id==="rt";
 $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListener("click",()=>{$("leafModal").hidden=true});
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
-/* ---------- first-time tutorial: Fortunie walks a new player through one system at a time ---------- */
-const TUT_ORDER=["shake","pet","slip","buddyTab","buddy","daily","leaf","extra","done"];
-let TUT=null,TUT_KEY="";
-const tutKey=()=>"ftn_tut_"+((typeof PROFILE!=="undefined"&&PROFILE&&PROFILE.code)||S.code||(typeof UID!=="undefined"&&UID)||"me");
-function tutReady(){if(typeof PROFILE!=="undefined"&&typeof ONLINE!=="undefined"&&ONLINE===false&&!PROFILE)return false;
+/* ---------- guided tutorial: step-by-step, the player can only press what the lesson points at ---------- */
+/* stages (S.tutS): 1 first shake · 2 reveal + buddy cat · 3 use slip · 4 go to pets · 5 buddy info · 6 paid shake
+   7 reveal bad slip + cat skill · 8 free extra shake · 9 daily check-in · 10 leaf shop ticket · 11 swap buddy · 12 burn · 13 end */
+const REVEAL_OK="#openBtn,#flip,#doneBtn,#egg,#petDone,#evoOk,#tapHint";
+let TUTV=0;
+const tutForced=()=>!!S.tutF&&(S.tutS||0)<99;
+function tutReady(){if(typeof ONLINE!=="undefined"&&ONLINE===false&&typeof PROFILE!=="undefined"&&!PROFILE)return false;
   if(typeof LOCKED!=="undefined"&&LOCKED)return false;const lg=document.getElementById("loginScreen");if(lg&&!lg.hidden)return false;
   if(typeof PREVIEW!=="undefined"&&PREVIEW)return false;return true}
-function tutLoad(){const k=tutKey();if(TUT&&TUT_KEY===k)return TUT;TUT_KEY=k;let v=null;try{v=JSON.parse(localStorage.getItem(k)||"null")}catch(e){}
-  if(!v)v=(S.shakes||0)>0?{step:"done",nb:false,seen:{}}:{step:"shake",nb:true,seen:{}};TUT=v;tutSave();return TUT}
-function tutSave(){try{localStorage.setItem(TUT_KEY,JSON.stringify(TUT))}catch(e){}}
-const tutOn=()=>TUT&&TUT.step!=="done";
-function tutGo(step){if(!TUT)return;TUT.step=step;tutSave();tutTick()}
-function tutSkip(){if(!TUT)return;TUT.step="done";TUT.nb=false;tutSave();coachHide()}
-/* bubble UI */
-let coachEl=null,coachTarget=null;
-function coachMake(){if(coachEl)return coachEl;coachEl=document.createElement("div");coachEl.className="coach";coachEl.id="coach";coachEl.hidden=true;coachEl.setAttribute("role","dialog");coachEl.setAttribute("aria-label","Fortunie สอนเล่น");
-  coachEl.innerHTML=`<img class="coach-av" src="${LOGO}" alt=""><div class="coach-b"><p id="coachTxt" aria-live="polite"></p><div class="coach-row"><button type="button" class="coach-skip" id="coachSkip">ข้ามการสอน</button><button type="button" class="mini coach-next" id="coachNext">ต่อไป</button></div></div>`;
-  document.body.appendChild(coachEl);$("coachSkip").addEventListener("click",tutSkip);$("coachNext").addEventListener("click",()=>{const f=coachEl._next;if(f)f()});
-  addEventListener("resize",()=>{if(!coachEl.hidden)coachPlace()});addEventListener("scroll",()=>{if(!coachEl.hidden)coachPlace()},true);return coachEl}
-function coachHide(){if(coachEl)coachEl.hidden=true;if(coachTarget)coachTarget.classList.remove("coach-hl");coachTarget=null}
-function coachPlace(){const c=coachEl,t=coachTarget;c.style.top=c.style.bottom="";if(!t){c.style.bottom="calc(84px + env(safe-area-inset-bottom))";return}
-  const r=t.getBoundingClientRect();if(r.top+r.height/2>innerHeight*.5)c.style.bottom=Math.max(8,innerHeight-r.top+12)+"px";else c.style.top=Math.min(innerHeight-160,r.bottom+12)+"px"}
-function coach(target,html,nextLabel,next,opts){coachMake();opts=opts||{};if(coachTarget&&coachTarget!==target)coachTarget.classList.remove("coach-hl");coachTarget=target||null;
-  if(coachTarget&&!opts.noRing)coachTarget.classList.add("coach-hl");$("coachTxt").innerHTML=html;const nb=$("coachNext");nb.hidden=!next;nb.textContent=nextLabel||"ต่อไป";coachEl._next=next||null;
-  coachEl.classList.toggle("top",!!opts.top);coachEl.hidden=false;coachPlace();if(next&&opts.focus!==false)setTimeout(()=>nb.focus(),30)}
-/* what to show for the current step */
-function tutTick(){if(!tutReady())return;tutLoad();if(!tutOn()){coachHide();return}
-  const st=TUT.step,rv=!$("reveal").hidden,home=typeof tab==="undefined"||tab==="home",bfx=$("burnFx")&&!$("burnFx").hidden;
-  const modal=[...document.querySelectorAll(".scrim")].some(m=>!m.hidden);
-  if(bfx){coachHide();return}
-  if(st==="shake"){if(rv||busy||holding||!home||modal){coachHide();return}
-    coach(hb,`ยินดีต้อนรับสู่<b>เซียมซีฮีลใจ</b>ค่ะ 🌙<br>มาเปิดเซียมซีใบแรกกันเลย ${phoneLike()&&MO.ok!==false&&!S.noMotion?"แตะปุ่มนี้แล้ว<b>เขย่ามือถือ</b> หรือ<b>กดค้าง</b>ไว้":"<b>กดค้าง</b>ปุ่มนี้"}จนหลอดเต็มนะคะ`);return}
-  if(st==="pet"||st==="slip"){if(!rv)coachHide();return}
-  if(st==="buddyTab"){if(rv||modal||busy){coachHide();return}if(tab==="pets"){tutGo("buddy");return}
-    coach(document.querySelector('#tabbar [data-tab="pets"]'),`ไปดู<b>คู่หู</b>ของคุณกันค่ะ 💜<br>แตะที่เมนู <b>"เพื่อน"</b> ด้านล่างได้เลย`);return}
-  if(st==="buddy"){if(rv||modal){coachHide();return}if(tab!=="pets"){showTab("pets");return}
-    const bp=S.buddy!=null?PETS[S.buddy]:null,pw=bp?petDesc(bp,S.owned[bp.n]||1):"";
-    coach($("buddyCard"),`นี่คือคู่หูของคุณ${bp?` <b>${esc(formName(bp,lvOf(S.owned[bp.n]||1,bp)))}</b>`:""} ✨<br>${pw?`พลัง: ${pw}<br>`:""}คู่หูช่วยให้คุณโชคดีขึ้นทุกครั้งที่เขย่า เปลี่ยนคู่หูได้ตลอด แค่แตะเพื่อนในสมุดแล้วกด "ตั้งเป็นคู่หู" · ได้ตัวซ้ำครบจะเลเวลอัป พลังแรงขึ้นค่ะ`,"ต่อไป",()=>{showTab("home");tutGo("daily")});return}
-  if(st==="daily"){if(rv||modal){coachHide();return}if(!home){showTab("home");return}
-    coach($("giftBtn"),`🎁 อย่าลืม<b>เช็กอินทุกวัน</b>ที่ไอคอนกล่องของขวัญนะคะ<br>7 ครั้งแรกแจกใบไม้เยอะเป็นพิเศษ ครบ 7 วันได้<b>น้องหมีเด้ง</b>ด้วย`,"ต่อไป",()=>tutGo("leaf"));return}
-  if(st==="leaf"){if(rv||modal){coachHide();return}
-    coach($("leafBtn"),`🍃 <b>ใบไม้</b>ได้จากการเล่น เช่น เช็กอิน และใบเซียมซีที่หมดอายุ<br>เอาไปแลก<b>ตั๋วสุ่มเพื่อน</b>ที่ร้านใบไม้ได้ แตะตรงนี้เพื่อเปิดร้านค่ะ`,"ต่อไป",()=>tutGo("extra"));return}
-  if(st==="extra"){if(rv||modal){coachHide();return}
-    coach($("chargeInfo").textContent.trim()?$("chargeInfo"):hb,`⏳ สิทธิ์<b>เขย่าฟรี</b>จะกลับมาเองตามเวลา<br>ถ้าอยากเขย่าเพิ่มทันที ใช้ ${COST} ดาวต่อครั้ง (ดาวได้จากการเติมเงิน)<br>เท่านี้ก็พร้อมแล้ว ขอให้โชคดีนะคะ 🌟`,"เริ่มเล่นเลย",()=>{TUT.step="done";tutSave();coachHide();render()});return}
-  coachHide()}
-/* one-time tips the first time a new player opens other systems */
-function tutTip(id,target,html){if(!TUT||!TUT.nb||tutOn()||TUT.seen[id])return;TUT.seen[id]=1;tutSave();setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,"เข้าใจแล้ว",coachHide)},350)}
-/* hooks into the existing flow */
-(function(){const _st=showTab;showTab=function(t){_st.apply(this,arguments);if(!TUT)return;
-    if(t==="inv")tutTip("inv",$("invHead")&&$("invHead").firstElementChild||$("scr-inv"),`📦 <b>คลัง</b>เก็บใบเซียมซีได้ ${INV_MAX} ใบ ใบจะหมดอายุใน ${Math.round(EXP/DAY)} วัน แล้วกลายเป็นใบไม้<br>🔥 เผาใบที่ไม่ชอบเพื่อเติม<b>โหลขี้เถ้า</b> ครบ ${JAR} แต้มเปิดสุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`);
+function tutStage(){let s=S.tutS||0;if(s<1)s=1;return s}
+function tutSet(n,done){if(!S.tutF)return;S.tutS=done?99:Math.max(S.tutS||0,n);if(done)S.tutF=0;
+  if(typeof api==="function"&&typeof ONLINE!=="undefined"&&ONLINE)api("tut",done?{done:1}:{s:n}).catch(()=>{});else save();setTimeout(tutTick,30)}
+/* allowed elements for the current stage */
+function tutAllow(){const s=tutStage(),rv=!$("reveal").hidden,bf=$("burnFx")&&!$("burnFx").hidden;
+  if(bf)return "#burnSkip,#beOk,#burnLight";
+  if(rv&&s<=8)return REVEAL_OK+(s===3?',#slipActions [data-fate="use"]':s===7?',#slipActions [data-fate="keep"]':s===8?",#slipActions button":"");
+  if(rv&&s===10)return REVEAL_OK;
+  if(!$("todayModal").hidden)return "#todayOk";
+  return ({1:"#holdBtn,#motionBox",4:'#tabbar [data-tab="pets"]',5:"",6:"#extraBtn,#holdBtn,#motionBox",8:"#holdBtn,#motionBox",
+    9:"#giftBtn,#dailyClaim,#dailyClose",10:'#leafBtn,#leafItems [data-leaf="t"],#leafUse',11:`#book .slot[data-pi="${PETS.findIndex(p=>p.n===TUT_DUCK)}"],#setBuddy,#petClose`,
+    12:'#tabbar [data-tab="inv"],#inv [data-act="burn"]',13:""})[s]||""}
+function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t instanceof Element))return;if(t.closest("#coach"))return;
+  const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
+  e.preventDefault();e.stopPropagation();if(e.type==="click")coachNudge()}
+["click","pointerdown","keydown"].forEach(ev=>document.addEventListener(ev,tutBlock,true));
+/* bubble + arrow */
+let coachEl=null,coachTarget=null,arrowEl=null;
+function coachMake(){if(coachEl)return;coachEl=document.createElement("div");coachEl.className="coach";coachEl.id="coach";coachEl.hidden=true;coachEl.setAttribute("role","dialog");coachEl.setAttribute("aria-label","Fortunie สอนเล่น");
+  coachEl.innerHTML=`<img class="coach-av" src="${LOGO}" alt=""><div class="coach-b"><p id="coachTxt" aria-live="polite"></p><div class="coach-row"><span class="coach-tag" id="coachTag"></span><button type="button" class="mini coach-next" id="coachNext">ต่อไป</button></div></div>`;
+  arrowEl=document.createElement("div");arrowEl.className="coach-arrow";arrowEl.hidden=true;arrowEl.setAttribute("aria-hidden","true");arrowEl.textContent="👇";
+  document.body.appendChild(coachEl);document.body.appendChild(arrowEl);$("coachNext").addEventListener("click",()=>{const f=coachEl._next;if(f)f()});
+  const re=()=>{if(!coachEl.hidden)coachPlace()};addEventListener("resize",re);addEventListener("scroll",re,true);setInterval(re,400)}
+function coachHide(){if(coachEl){coachEl.hidden=true;arrowEl.hidden=true}if(coachTarget)coachTarget.classList.remove("coach-hl");coachTarget=null}
+function coachNudge(){if(!coachEl||coachEl.hidden)return;coachEl.classList.remove("nudge");void coachEl.offsetWidth;coachEl.classList.add("nudge")}
+function coachPlace(){const c=coachEl,t=coachTarget;c.style.top=c.style.bottom="";arrowEl.hidden=!t||!coachEl._arrow;
+  if(!t||t.offsetParent===null&&getComputedStyle(t).position!=="fixed"){arrowEl.hidden=true;if(!c.classList.contains("top"))c.style.bottom="calc(84px + env(safe-area-inset-bottom))";return}
+  const r=t.getBoundingClientRect(),low=r.top+r.height/2>innerHeight*.5;
+  if(!c.classList.contains("top")){if(low)c.style.bottom=Math.max(8,innerHeight-r.top+(coachEl._arrow?52:12))+"px";else c.style.top=Math.min(innerHeight-170,r.bottom+(coachEl._arrow?52:12))+"px"}
+  if(!arrowEl.hidden){arrowEl.textContent=low?"👇":"👆";arrowEl.style.left=(r.left+r.width/2-18)+"px";arrowEl.style.top=(low?r.top-44:r.bottom+4)+"px"}}
+function coach(target,html,o){coachMake();o=o||{};if(coachTarget&&coachTarget!==target)coachTarget.classList.remove("coach-hl");coachTarget=target||null;
+  if(coachTarget&&o.ring!==false)coachTarget.classList.add("coach-hl");$("coachTxt").innerHTML=html;$("coachTag").textContent=o.tag||"";
+  const nb=$("coachNext");nb.hidden=!o.next;nb.textContent=o.label||"ต่อไป";coachEl._next=o.next||null;coachEl._arrow=o.arrow!==false&&!!target;
+  if(coachTarget&&coachTarget!==coachEl._scrolled){const r=coachTarget.getBoundingClientRect();if(r.top<70||r.bottom>innerHeight-90){coachEl._scrolled=coachTarget;try{coachTarget.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"})}catch(e){}}}
+  coachEl.classList.toggle("top",!!o.top);coachEl.hidden=false;coachPlace();if(o.next)setTimeout(()=>nb.focus(),30)}
+const q=s=>document.querySelector(s);
+/* what Fortunie says at each stage */
+function tutTick(){if(!tutReady())return;
+  if(!tutForced()){if(coachEl&&coachEl._forced){coachEl._forced=false;coachHide()}return}
+  if(!S.tutS&&(S.shakes||0)===0){S.tutS=1}
+  const s=tutStage(),rv=!$("reveal").hidden,bf=$("burnFx")&&!$("burnFx").hidden,home=typeof tab==="undefined"||tab==="home";coachMake();coachEl._forced=true;
+  const tag=`บทเรียน ${Math.min(s,12)}/12`;
+  if(bf){coachHide();return}
+  if(s===1){if(rv||busy||holding){coachHide();return}if(!home)showTab("home");
+    coach(hb,`ยินดีต้อนรับสู่<b>เซียมซีฮีลใจ</b>ค่ะ 🌙<br>มาลองเสี่ยงเซียมซีใบแรกกัน ${phoneLike()&&MO.ok!==false&&!S.noMotion?"แตะปุ่มแล้ว<b>เขย่ามือถือ</b> หรือ<b>กดค้าง</b>ไว้":"<b>กดค้าง</b>ปุ่มนี้ไว้"}จนหลอดเต็มนะคะ`,{tag});return}
+  if(s===2||s===3){if(!rv){coachHide();return}
+    const pc=$("petCard"),slip=!$("stepSlip").hidden;
+    if(slip){if(s<3){tutSet(3);return}coach(q('#slipActions [data-fate="use"]'),`📜 ใบแรกของคุณ ถ้า<b>ใช้เป็นดวงวันนี้</b> จะได้<b>โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(LVPOW["ดีมาก"]*100)}%</b> ทั้งวันเลย<br>กด "ใช้เป็นดวงวันนี้" ได้เลยค่ะ`,{tag,top:true});return}
+    if(pc&&!pc.hidden){const p=PETS.findIndex(x=>x.n===TUT_CAT);coach(pc,`ว้าว โชคดีมาก! 🎉 ได้<b>คู่หู</b>ตั้งแต่ใบแรกเลย<br>รู้ไหมคะ ปกติการเขย่าแต่ละครั้งมีโอกาสเจอเพื่อนแค่ <b>${n1(BASE_DROP)}%</b> ใบแรกนี้ Fortunie จัด<b>${TUT_CAT}</b>มาเป็นของขวัญต้อนรับ เดี๋ยวพาไปสวมใส่คู่หูกันค่ะ`,{tag,top:true,arrow:false,ring:false});return}
+    coach(null,"แตะเพื่อเปิดดูผลได้เลยค่ะ ✨",{tag,top:true});return}
+  if(s===4){if(rv||!$("todayModal").hidden){coachHide();return}if(tab==="pets"){tutSet(5);return}
+    coach(q('#tabbar [data-tab="pets"]'),`ไป<b>สวมใส่คู่หู</b>ของคุณกันค่ะ 💜<br>แตะเมนู <b>"เพื่อน"</b> ด้านล่าง`,{tag});return}
+  if(s===5){if(tab!=="pets"){showTab("pets");return}const p=PETS.find(x=>x.n===TUT_CAT);
+    coach($("buddyCard"),`นี่คือคู่หูของคุณ <b>${TUT_CAT}</b> 🐱 สวมใส่อยู่แล้ว<br>ตัวนี้ใช้ดีมาก ทุกครั้งที่เขย่ามีโอกาส <b>${Math.round(((p.lv&&p.lv[0].again)||(p.ab&&p.ab.again)||0)*100)}%</b> ได้<b>เขย่าฟรีอีกครั้ง</b> คู่หูจะช่วยให้คุณได้โอกาสที่ดีขึ้นเสมอค่ะ`,{tag,arrow:false,next:()=>{showTab("home");tutSet(6)}});return}
+  if(s===6){if(rv||busy||holding){coachHide();return}if(!home){showTab("home");return}
+    if(paidPending){coach(hb,`พร้อมแล้ว! <b>กดค้าง</b>หรือเขย่ามือถืออีกครั้งค่ะ`,{tag});return}
+    if(S.stars<COST||$("extraBox").hidden){if(S.charges+S.bonusFree>0){coach(hb,`เขย่าอีกครั้งได้เลยค่ะ`,{tag});return}tutSet(9);return}
+    coach($("extraBtn"),`สิทธิ์ฟรีใช้ไปแล้ว ลองใช้ <b>${COST} ดาว</b> เขย่าเพิ่ม 1 ครั้งดูค่ะ ⭐<br><small>(รอบสอน: ผลรอบนี้ Fortunie จัดไว้เพื่อโชว์พลังคู่หู)</small>`,{tag});return}
+  if(s===7){if(!rv){coachHide();return}const slip=!$("stepSlip").hidden;
+    if(slip)coach(q('#slipActions [data-fate="keep"]'),`ใบนี้ระดับ<b>ค่อยเป็นค่อยไป</b> ไม่ค่อยปังเท่าไหร่ 😅 <b>แต่ดูนี่!</b> พลัง<b>${TUT_CAT}</b>ทำงาน ได้<b>เขย่าฟรีอีก 1 ครั้ง</b> 🎉<br>เก็บใบนี้<b>เข้าคลัง</b>ไว้ก่อน เดี๋ยวสอนวิธีใช้ใบไม่ชอบค่ะ`,{tag,top:true});
+    else coach(null,"แตะเพื่อเปิดดูผลได้เลยค่ะ",{tag,top:true});return}
+  if(s===8){if(rv){if(!$("stepSlip").hidden)coach(null,`ใบนี้เลือกได้ตามใจเลยค่ะ ใช้ เก็บ หรือเผา ✨`,{tag,top:true});else coachHide();return}if(busy||holding){coachHide();return}if(!home){showTab("home");return}
+    coach(hb,`ใช้สิทธิ์<b>เขย่าฟรี</b>ที่แมวนำโชคให้มาเลยค่ะ 🐱`,{tag});return}
+  if(s===9){if(rv){coachHide();return}const dm=!$("dailyModal").hidden;
+    if(dm){const st=streakState();if(st.claimed)coach($("dailyClose"),`รับแล้ว! 🎁 เข้าเกมทุกวัน รับของต่อเนื่อง ครบ 7 วันได้<b>น้องหมีเด้ง</b>ค่ะ`,{tag,top:true});else coach($("dailyClaim"),`กด<b>รับรางวัลวันนี้</b>เลยค่ะ 7 ครั้งแรกแจกใบไม้เยอะเป็นพิเศษ`,{tag,top:true});return}
+    if(streakState().claimed){tutSet(10);return}if(!home){showTab("home");return}
+    coach($("giftBtn"),`🎁 ทุกวันอย่าลืม<b>เช็กอิน</b>รับของนะคะ แตะกล่องของขวัญเลย`,{tag});return}
+  if(s===10){const lm=!$("leafModal").hidden;
+    if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้<b>${TUT_DUCK}</b> 🦆 ตัวนี้เก่งเรื่อง<b>เผา</b> เผาใบเซียมซีแล้วได้<b>แต้มเผาเพิ่ม</b>ค่ะ<br><small>(ตั๋วใบแรกนี้ Fortunie จัดเป็นเป็ดน้อยไว้สอน)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่เพื่อเปิดเลยค่ะ 🥚",{tag,top:true});return}
+    if(S.tutDuck&&!lm){tutSet(11);return}
+    if(lm){const u=$("leafUse");if(u)coach(u,`กด<b>เปิดเลย</b>ค่ะ`,{tag,top:true});else coach(q('#leafItems [data-leaf="t"]'),`แลก<b>ตั๋วสุ่มเพื่อน</b> ใช้ ${LEAF_SHOP[0].cost} ใบไม้`,{tag,top:true});return}
+    coach($("leafBtn"),`🍃 Fortunie แจก<b>ใบไม้ 60 ใบ</b>ให้ทุกคนด้วยค่ะ ใบไม้ได้จากการเล่น เอาไปแลก<b>ตั๋วสุ่มเพื่อน</b>ได้<br>แตะที่ใบไม้เพื่อเปิดร้าน`,{tag});return}
+  if(s===11){const di=PETS.findIndex(p=>p.n===TUT_DUCK);if(S.buddy===di){if(!$("petModal").hidden)$("petModal").hidden=true;tutSet(12);return}if(rv)return;
+    if(!$("petModal").hidden){coach($("setBuddy"),`กด<b>ตั้งเป็นคู่หู</b>เพื่อสวมใส่${TUT_DUCK}ค่ะ`,{tag,top:true});return}if(tab!=="pets"){showTab("pets");return}
+    const sl=q(`#book .slot[data-pi="${di}"]`);if(sl&&tutScrolled!==11){tutScrolled=11;sl.scrollIntoView({block:"center"})}
+    coach(sl,`ลอง<b>เปลี่ยนคู่หู</b>เป็น${TUT_DUCK}กันค่ะ แตะที่ตัวเป็ดเลย`,{tag});return}
+  if(s===12){if(rv){coachHide();return}if(tab!=="inv"){coach(q('#tabbar [data-tab="inv"]'),`ตอนนี้เป็ดเป็นคู่หูแล้ว ไป<b>เผาใบที่ไม่ชอบ</b>กันค่ะ แตะเมนู <b>"คลัง"</b>`,{tag});return}
+    const b=q('#inv [data-act="burn"]');if(!b){tutSet(13);return}if(tutScrolled!==12){tutScrolled=12;b.scrollIntoView({block:"center"})}
+    coach(b,`กด<b>เผา</b>ใบที่ไม่ชอบ ได้<b>แต้มเผา</b>เพิ่มเพราะพลังเป็ด 🔥 แต้มครบ ${JAR} เปิด<b>โหลขี้เถ้า</b>สุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`,{tag});return}
+  if(s>=13){if(rv||bf)return;if(!home){showTab("home");return}
+    coach(null,`เก่งมาก! 🌟 ครบทุกบทเรียนแล้ว<br>ต่อจากนี้เล่นได้อิสระเลยค่ะ อย่าลืมกลับมาเช็กอินทุกวัน รับใบไม้กับของขวัญนะคะ`,{tag:"จบบทเรียน",label:"เริ่มเล่นเลย",next:()=>{coachHide();tutSet(99,true);render()}});return}}
+let tutScrolled=0;
+/* one-time tips after the lesson, not forced */
+function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=S.tutTips||{};if(S.tutTips[id])return;S.tutTips[id]=1;try{localStorage.setItem("ftn_tip_"+id,"1")}catch(e){}
+  setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,{label:"เข้าใจแล้ว",next:coachHide,arrow:false})},350)}
+(function(){const _st=showTab;showTab=function(t){_st.apply(this,arguments);
     if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>นักป๊อป: แตะคู่หูของคุณรัว ๆ เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
-    tutTick()};
-  const _ss=showSlip;showSlip=function(){_ss.apply(this,arguments);if(!TUT||!(TUT.step==="shake"||TUT.step==="pet"||TUT.step==="slip"))return;TUT.step="slip";tutSave();
-    setTimeout(()=>coach($("slipActions"),`📜 นี่คือ<b>คำทำนาย</b>ของคุณ เลือกได้ 3 ทาง<br>✨ <b>ใช้เป็นดวงวันนี้</b> ได้พลังพิเศษ 24 ชม. · 📦 <b>เก็บเข้าคลัง</b>ไว้ใช้วันหลัง · 🔥 ไม่ชอบก็<b>เผาทิ้ง</b> ได้แต้มเผาค่ะ`,"เข้าใจแล้ว",()=>coachHide(),{noRing:true,top:true}),250)};
-  const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(TUT&&(TUT.step==="slip"||TUT.step==="pet")){TUT.step="buddyTab";tutSave()}setTimeout(tutTick,400)};
-  const _ad=autoDaily;autoDaily=function(){if(tutReady())tutLoad();if(TUT&&TUT.nb&&tutOn())return;return _ad.apply(this,arguments)};
-  $("egg").addEventListener("click",()=>{if(!TUT||!(TUT.step==="shake"||TUT.step==="pet"))return;TUT.step="pet";tutSave();
-    setTimeout(()=>{const ev=$("evoFx");if(ev&&!ev.hidden)return;coach($("petCard"),`ว้าว โชคดีมาก! 🎉 ได้<b>คู่หู</b>ตั้งแต่ใบแรกเลย<br>รู้ไหมคะ ปกติการเขย่าแต่ละครั้งมีโอกาสเจอเพื่อนแค่ <b>${n1(BASE_DROP)}%</b> เท่านั้น ใบแรกนี้ Fortunie ให้เป็นของขวัญต้อนรับค่ะ<br>เพื่อนตัวนี้เป็นคู่หูของคุณแล้ว คู่หูจะช่วยให้คุณได้โอกาสที่ดีขึ้น`,"ต่อไป",()=>coachHide(),{noRing:true,top:true})},900)});
-  hb.addEventListener("pointerdown",()=>{if(TUT&&TUT.step==="shake")coachHide()});
-  const _or=openReveal;openReveal=function(){if(TUT&&TUT.step==="shake")coachHide();return _or.apply(this,arguments)};
-  const _fs=finishShake;finishShake=function(){if(TUT&&TUT.step==="shake")coachHide();return _fs.apply(this,arguments)};
+    setTimeout(tutTick,60)};
+  const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===7)tutSet(8);else if(s===8)tutSet(9)}setTimeout(tutTick,300)};
+  const _ad=autoDaily;autoDaily=function(){if(tutForced())return;return _ad.apply(this,arguments)};
+  const _or=openReveal;openReveal=function(){const r=_or.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===1)tutSet(2);else if(s===6)tutSet(7)}setTimeout(tutTick,80);return r};
+  const _ss=showSlip;showSlip=function(){_ss.apply(this,arguments);setTimeout(tutTick,80)};
+  document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#todayOk")&&tutForced()&&tutStage()===3)setTimeout(()=>tutSet(4),50)},true);
+  ["egg","petDone","flip","openBtn","doneBtn","leafBtn","giftBtn","dailyClaim","dailyClose","setBuddy"].forEach(id=>{const el=$(id);if(el)el.addEventListener("click",()=>setTimeout(tutTick,id==="egg"?1100:250))});
+  document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#leafItems,#book,#inv,#tabbar"))setTimeout(tutTick,300)});
+  hb.addEventListener("pointerdown",()=>{if(tutForced()&&coachTarget===hb)coachHide()});
+  const _br=doBurnReward;doBurnReward=function(){const r=_br.apply(this,arguments);if(tutForced()&&tutStage()===12)tutSet(13);return r};
 })();
 
 /* ---------- render ---------- */
