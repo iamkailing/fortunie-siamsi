@@ -987,6 +987,10 @@ img.pimg{display:block;object-fit:contain!important;border-radius:0!important;bo
 body{-webkit-user-select:none;user-select:none}
 input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr-admin *,#plModal *{-webkit-user-select:text;user-select:text}
 
+/* v98 tutorial slip tag */
+.tut-tag{display:inline-block;margin:6px auto 0;padding:3px 10px;border-radius:999px;background:rgba(124,92,196,.92);color:#fff;font-size:12px;font-weight:700;line-height:1.4;letter-spacing:.2px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+#paper .tut-tag{display:table;margin:6px auto 0}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1890,7 +1894,7 @@ async function finishShake(){motionOff();
 function openReveal(){const L=LV[F[cur.f][0]],R=$("reveal");
   R.style.setProperty("--glow",L.glow);R.classList.remove("lit");R.hidden=false;showStep("stepStick");$("bigNo").textContent=th(cur.f+1);
   const fr=$("front");fr.style.setProperty("--tier-bg",L.bg);fr.style.setProperty("--tier-c",L.c);
-  fr.innerHTML=`<span class="tier" style="background:${L.c}">${F[cur.f][0]}</span><span class="big-no">ใบที่ ${th(cur.f+1)}</span><span class="pn" style="padding:0 12px;text-wrap:balance">${F[cur.f][1]}</span>${cur.ticket?`<span class="abil">ใบนำโชค! ได้ตั๋วสุ่มเพื่อน 1 ใบ</span>`:""}`;
+  fr.innerHTML=`<span class="tier" style="background:${L.c}">${F[cur.f][0]}</span><span class="big-no">ใบที่ ${th(cur.f+1)}</span><span class="pn" style="padding:0 12px;text-wrap:balance">${F[cur.f][1]}</span>${cur.ticket?`<span class="abil">ใบนำโชค! ได้ตั๋วสุ่มเพื่อน 1 ใบ</span>`:""}${tutTag()}`;
   $("flip").classList.remove("open");$("doneBtn").hidden=true;$("tapHint").hidden=false;$("openBtn").focus()}
 function showStep(id){["stepStick","stepCard","stepPet","stepSlip"].forEach(k=>$(k).hidden=k!==id)}
 $("openBtn").addEventListener("click",()=>{showStep("stepCard");$("flip").focus()});
@@ -1920,7 +1924,7 @@ function slipPaperHTML(f){const [lvn,verse,o,l,w,m,a]=F[f],L=LV[lvn],b=buffOf(f)
    <span class="paper-no">ใบที่ ${th(f+1)}</span><p class="verse">${verse}</p>
    <dl><dt>ภาพรวม</dt><dd>${o}</dd><dt>ความรัก</dt><dd>${l}</dd><dt>การงาน</dt><dd>${w}</dd><dt>การเงิน</dt><dd>${m}</dd></dl>
    <div class="advice"><b>ทำแบบนี้:</b> ${a}</div><div class="buffline">ถ้าใช้เป็นดวงวันนี้: ${BUFF[b.type].n} · ${BUFF[b.type].d(b.s)}</div></div>${pk?"</div>":""}`}
-function showSlip(){const R=$("reveal");R.classList.remove("lit");showStep("stepSlip");$("paper").innerHTML=slipPaperHTML(cur.f);
+function showSlip(){const R=$("reveal");R.classList.remove("lit");showStep("stepSlip");$("paper").innerHTML=slipPaperHTML(cur.f);{const tg=tutTag(),pt=$("paper").querySelector(".paper-top");if(tg&&pt)pt.insertAdjacentHTML("afterend",tg)}
   const P=powers();
   $("slipActions").innerHTML=`${canUseToday()?`<button class="go" type="button" data-fate="use">ใช้เป็นดวงวันนี้</button>`:""}
    <button class="ghost big-ghost" type="button" data-fate="keep">เก็บเข้าคลัง${S.inv.length>=INV_WARN?` (${S.inv.length}/${INV_MAX})`:""}</button>${S.inv.length>=INV_MAX-1?`<p class="inv-full-note">เก็บใบนี้แล้วคลังจะเต็ม ต้องเคลียร์ก่อนถึงจะเขย่าต่อได้</p>`:""}
@@ -2740,6 +2744,7 @@ const isRareLeaf=id=>id==="rt";
 $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListener("click",()=>{$("leafModal").hidden=true});
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
+function tutTag(){return S.tutF&&!(S.topBaht>0)&&(S.shakes||0)<=3?`<span class="tut-tag">🎓 ใบนี้เป็นเซียมซีระบบฝึกสอน</span>`:""}
 var BURN_RB_NOW=false; /* rainbow jackpot shown by the current burn */
 var EGG_BACK=null; /* where to go after an egg: jars and tickets opened from the inventory stay there */
 /* ---------- guided tutorial: step-by-step, the player can only press what the lesson points at ---------- */
