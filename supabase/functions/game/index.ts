@@ -228,6 +228,13 @@ function actAltar(op,arg){const A=altarS(),today=dk(now());
   if(op==="wish_ok"){const w=A.wish.find(x=>x.id===arg);if(!w||w.ok)throw "ไม่พบคำขอนี้";w.ok=now();let l=0;if(now()-w.at>=3*DAY&&A.wOk!==today){A.wOk=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
   if(op==="wish_del"){A.wish=A.wish.filter(x=>x.id!==arg);return{ok:1}}
   throw "คำสั่งไม่ถูกต้อง"}
+/* v101 music unlocks + meditation reward */
+const BGM_PAID=["wind","stream","china"],BGM_COST=200,MED_SEC=600;
+function actMus(op,arg){const today=dk(now());
+  if(op==="buy"){if(!BGM_PAID.includes(arg))throw "ไม่พบเพลงนี้";S.bgm=Array.isArray(S.bgm)?S.bgm:[];if(S.bgm.includes(arg))return{ok:1};if((S.leaves||0)<BGM_COST)throw "ใบไม้ไม่พอ ต้องใช้ "+BGM_COST+" ใบไม้";S.leaves-=BGM_COST;S.bgm.push(arg);return{ok:1}}
+  if(op==="med_start"){S.medAt=now();return{ok:1}}
+  if(op==="med_done"){if(!S.medAt||now()-S.medAt<(MED_SEC-5)*1000)throw "นั่งสมาธิให้ครบ 10 นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -239,7 +246,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
 function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
 function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actTut,actAltar,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actTut,actAltar,actMus,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
 }
 
 
@@ -706,6 +713,7 @@ Deno.serve(async (req) => {
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
         case "tut": res = G.actTut(p.s, !!p.done); break;
+        case "mus": res = G.actMus(String(p.op || ""), typeof p.arg === "string" ? p.arg.slice(0, 40) : ""); break;
         case "altar": res = G.actAltar(String(p.op || ""), typeof p.arg === "string" ? p.arg.slice(0, 200) : ""); break;
         case "leaf_buy": res = G.actLeafBuy(String(p.id || ""), p.n); break;
         case "showcase": res = G.actShowcase(p.pis); break;

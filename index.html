@@ -1058,6 +1058,38 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 .a-candle{animation:aflick 2.4s ease-in-out infinite}@keyframes aflick{0%,100%{filter:brightness(1) drop-shadow(0 0 6px #ffd27a88)}40%{filter:brightness(1.12) drop-shadow(0 0 10px #ffd27acc)}70%{filter:brightness(.95) drop-shadow(0 0 5px #ffd27a77)}}
 @media (prefers-reduced-motion:reduce){.a-candle{animation:none}}
 
+/* v101 sound & feel */
+.instr-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.instr-chips button{border:1px solid var(--line);background:#ffffff0c;color:var(--text);border-radius:14px;padding:6px 2px;font:inherit;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.instr-chips button span{font-size:20px}.instr-chips button.on{background:var(--lav);color:var(--night);border-color:var(--lav)}
+.instr-stage{position:relative;width:min(100%,340px);margin:4px auto 0;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.instr-stage>img{width:100%;height:auto;display:block;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 10px 18px #0007) brightness(calc(1 + var(--e,0)*.25))}
+.bowl-stage .rim-glow{position:absolute;left:4%;top:1%;width:88.6%;height:60%;border-radius:50%;pointer-events:none;box-shadow:0 0 calc(10px + var(--e,0)*40px) calc(var(--e,0)*10px) #f6dc9a,inset 0 0 calc(var(--e,0)*30px) #fff3c4;opacity:calc(var(--e,0)*.95);mix-blend-mode:screen}
+.gong-stage .gong-glow{position:absolute;left:22%;top:28%;width:56%;height:54%;border-radius:50%;pointer-events:none;box-shadow:0 0 calc(10px + var(--e,0)*50px) calc(var(--e,0)*14px) #f6dc9a;opacity:calc(var(--e,0));mix-blend-mode:screen}
+.instr-stage .mallet{position:absolute;right:-6%;bottom:2%;width:34%;height:auto;pointer-events:none;transform:rotate(-8deg);transition:left .2s,top .2s}
+.instr-stage .mallet.held{right:auto;bottom:auto;width:30%;transform:translate(-20%,-85%) rotate(-30deg);transition:none}
+.instr-stage.hit>img,.bell-stage.ring>img{animation:ihit .5s ease}
+@keyframes ihit{20%{transform:scale(1.03) rotate(-1.5deg)}50%{transform:scale(.99) rotate(1deg)}}
+.bell-stage.ring>img{animation:iring .9s ease;transform-origin:50% 12%}
+@keyframes iring{20%{transform:rotate(7deg)}45%{transform:rotate(-5deg)}70%{transform:rotate(3deg)}}
+.reso{height:8px;border-radius:99px;background:#ffffff14;overflow:hidden;margin:10px auto 2px;width:min(100%,300px)}
+.reso i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c9a24a,#f6dc9a,#fff6d6);border-radius:99px;transition:width .1s}
+.mus-pop{display:flex;flex-direction:column;gap:8px;max-height:88dvh;overflow:auto}
+.mus-pop input[type=range]{width:100%;accent-color:var(--butter)}
+.bgm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bgm-card{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid var(--line);background:#ffffff0c;color:var(--text);border-radius:16px;padding:8px 4px;font:inherit;font-size:13px}
+.bgm-card img{width:64px;height:64px;border-radius:50%}
+.bgm-card span{font-size:11px;color:var(--muted)}.bgm-card.on{border-color:var(--butter);box-shadow:0 0 0 2px #f0d28a55}.bgm-card.locked img{filter:grayscale(.6) brightness(.8)}
+.med{position:fixed;inset:0;z-index:110;background:radial-gradient(circle at 50% 40%,#3a2660,#120a1f 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;color:var(--text)}
+.med[hidden]{display:none}
+.med-circle{width:min(62vw,260px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#f6dc9a55,#f6dc9a11 60%,transparent 70%);animation:mbreath 10s ease-in-out infinite}
+.med-circle i{width:40%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff6d6,#f0d28a);box-shadow:0 0 40px #f6dc9a}
+@keyframes mbreath{0%{transform:scale(.62)}40%{transform:scale(1)}100%{transform:scale(.62)}}
+.med-say{font-family:var(--f-display);font-size:22px;margin:0;color:var(--butter)}
+.med-time{font-size:34px;font-family:var(--f-display);font-weight:500;letter-spacing:.05em}
+@media (prefers-reduced-motion:reduce){.med-circle{animation:none}}
+#musModal{z-index:125}.med{z-index:130}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1193,7 +1225,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
   <!-- RANK -->
   <div class="screen" id="scr-rank" hidden>
     <h2 class="screen-title rk-title"><span aria-hidden="true">👑</span> อันดับ</h2>
-    <div class="rk-seg" id="rkSeg" role="group" aria-label="เลือกอันดับ"><button type="button" data-rk="pop" class="on" aria-pressed="true">👆 ป๊อปเพื่อน</button><button type="button" data-rk="collect" aria-pressed="false">🏆 นักสะสม</button></div>
+    <div class="rk-seg" id="rkSeg" role="group" aria-label="เลือกอันดับ"><button type="button" data-rk="pop" class="on" aria-pressed="true">🥣 เคาะมงคล</button><button type="button" data-rk="collect" aria-pressed="false">🏆 นักสะสม</button></div>
     <div id="rkCollect" hidden>
     <section class="profile-card" id="myProfile"></section>
     <section>
@@ -1204,7 +1236,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
     <div id="rkPop">
       <section class="profile-card pop-card" id="popStage"></section>
       <section>
-        <div class="row rk-head"><h2><span aria-hidden="true">👆</span> ท็อปนักป๊อป</h2><span class="small" id="popMe"></span></div>
+        <div class="row rk-head"><h2><span aria-hidden="true">🔔</span> ท็อปสายกังวาน</h2><span class="small" id="popMe"></span></div>
         <div class="lb-list" id="popList"></div>
       </section>
     </div>
@@ -1488,6 +1520,14 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
   <span class="small" id="paidTotal"></span>
   <button class="primary" id="paidOk" type="button">เยี่ยมเลย ไปเขย่ากัน</button>
 </div></div>
+<div class="scrim center" id="musModal" hidden><div class="pop mus-pop" role="dialog" aria-modal="true" aria-labelledby="musTitle" id="musPop"></div></div>
+<div class="med" id="medOverlay" hidden role="dialog" aria-modal="true" aria-label="นั่งสมาธิ">
+  <div class="med-circle" aria-hidden="true"><i></i></div>
+  <p class="med-say" id="medSay">หายใจเข้า…</p>
+  <b class="med-time" id="medTime">10:00</b>
+  <p class="small">นั่งให้สบาย หลับตาได้ ฟังเสียงแล้วหายใจตามวงกลม</p>
+  <button class="ghost" id="medStop" type="button">หยุด</button>
+</div>
 <div class="scrim center" id="wishModal" hidden><div class="pop wish-pop" role="dialog" aria-modal="true" aria-labelledby="wishTitle">
   <div class="row"><h2 id="wishTitle">📝 สมุดคำขอพร</h2><button class="ghost" id="wishClose" type="button">ปิด</button></div>
   <p class="small" style="text-align:left;margin:0">จดสิ่งที่อยากให้เกิดขึ้น (เห็นแค่คุณ) พอสมหวังแล้วกลับมากด "สมหวังแล้ว" ข้อที่จดไว้ครบ 3 วันขึ้นไป รับ +10 ใบไม้ วันละ 1 ครั้ง</p>
@@ -1851,6 +1891,13 @@ function actAltar(op,arg){const A=altarS(),today=dk(now());
   if(op==="wish_ok"){const w=A.wish.find(x=>x.id===arg);if(!w||w.ok)throw "ไม่พบคำขอนี้";w.ok=now();let l=0;if(now()-w.at>=3*DAY&&A.wOk!==today){A.wOk=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
   if(op==="wish_del"){A.wish=A.wish.filter(x=>x.id!==arg);return{ok:1}}
   throw "คำสั่งไม่ถูกต้อง"}
+/* v101 music unlocks + meditation reward */
+const BGM_PAID=["wind","stream","china"],BGM_COST=200,MED_SEC=600;
+function actMus(op,arg){const today=dk(now());
+  if(op==="buy"){if(!BGM_PAID.includes(arg))throw "ไม่พบเพลงนี้";S.bgm=Array.isArray(S.bgm)?S.bgm:[];if(S.bgm.includes(arg))return{ok:1};if((S.leaves||0)<BGM_COST)throw "ใบไม้ไม่พอ ต้องใช้ "+BGM_COST+" ใบไม้";S.leaves-=BGM_COST;S.bgm.push(arg);return{ok:1}}
+  if(op==="med_start"){S.medAt=now();return{ok:1}}
+  if(op==="med_done"){if(!S.medAt||now()-S.medAt<(MED_SEC-5)*1000)throw "นั่งสมาธิให้ครบ 10 นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -2025,7 +2072,7 @@ function fx(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l
 
 /* ---------- sticks + hold to shake ---------- */
 /* v81 siamsi art: layered cup, tier papers, ash jar, flame. SS_ART = {key: url}; any missing key falls back to the old drawing */
-const SS_ART={"altar_bg": "siamsi-art/altar_bg.webp", "altar_cloth30": "siamsi-art/altar_cloth30.webp", "altar_glow7": "siamsi-art/altar_glow7.webp", "altar_shelf": "siamsi-art/altar_shelf.webp", "candle": "siamsi-art/candle.webp", "cup": "siamsi-art/cup.webp", "deity_buddha": "siamsi-art/deity_buddha.webp", "deity_guanyin": "siamsi-art/deity_guanyin.webp", "deity_lakshmi": "siamsi-art/deity_lakshmi.webp", "deity_vessavana": "siamsi-art/deity_vessavana.webp", "flower_vase": "siamsi-art/flower_vase.webp", "glass_clear": "siamsi-art/glass_clear.webp", "glass_cloudy": "siamsi-art/glass_cloudy.webp", "incense_half": "siamsi-art/incense_half.webp", "incense_lit": "siamsi-art/incense_lit.webp", "incense_out": "siamsi-art/incense_out.webp", "incense_unlit": "siamsi-art/incense_unlit.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
+const SS_ART={"altar_bg": "siamsi-art/altar_bg.webp", "altar_cloth30": "siamsi-art/altar_cloth30.webp", "altar_glow7": "siamsi-art/altar_glow7.webp", "altar_shelf": "siamsi-art/altar_shelf.webp", "bell": "siamsi-art/bell.webp", "bgm_bowl": "siamsi-art/bgm_bowl.webp", "bgm_china": "siamsi-art/bgm_china.webp", "bgm_rain": "siamsi-art/bgm_rain.webp", "bgm_stream": "siamsi-art/bgm_stream.webp", "bgm_wind": "siamsi-art/bgm_wind.webp", "bowl": "siamsi-art/bowl.webp", "bowl_mallet": "siamsi-art/bowl_mallet.webp", "candle": "siamsi-art/candle.webp", "cup": "siamsi-art/cup.webp", "deity_buddha": "siamsi-art/deity_buddha.webp", "deity_guanyin": "siamsi-art/deity_guanyin.webp", "deity_lakshmi": "siamsi-art/deity_lakshmi.webp", "deity_vessavana": "siamsi-art/deity_vessavana.webp", "flower_vase": "siamsi-art/flower_vase.webp", "glass_clear": "siamsi-art/glass_clear.webp", "glass_cloudy": "siamsi-art/glass_cloudy.webp", "gong": "siamsi-art/gong.webp", "incense_half": "siamsi-art/incense_half.webp", "incense_lit": "siamsi-art/incense_lit.webp", "incense_out": "siamsi-art/incense_out.webp", "incense_unlit": "siamsi-art/incense_unlit.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
 (function(){for(const k in SS_ART){if(!SS_ART[k]||/_[tmb]$/.test(k))continue;const im=new Image();im.decoding="async";im.src=SS_ART[k];SS_IMG[k]=im}
   document.querySelectorAll("img[data-art]").forEach(i=>{const s=SS_ART[i.dataset.art];if(s)i.src=s;else i.hidden=true});
   const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(SS_ART.altar_bg)R.style.setProperty("--altar-bg",`url("${SS_ART.altar_bg}")`);if(!SS_ART.cup)R.classList.add("no-cupart");
@@ -2915,7 +2962,7 @@ function renderInfo(){const P=powers(),lvn={"ดีมาก":0,"ดี":0,"ค�
   $("stats").innerHTML=[["เขย่าทั้งหมด",S.shakes],["เจอเพื่อน",S.petDrops],["สะสมได้",PETS.filter(p=>S.owned[p.n]).length+"/"+PETS.length],["ดาวที่ใช้",S.spent],["เติม (บาท)",S.topBaht],["เผาไป",S.burned],["ไฟทอง",S.golds||0],["โหลที่เปิด",S.jars||0]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("")}
 $("profileBox").addEventListener("click",e=>{if(e.target.closest("#logoutBtn"))logout()});
 $("pvRow").addEventListener("click",e=>{const b=e.target.closest("[data-pv]");if(b&&OWNER){showTab("home");previewPull(b.dataset.pv)}});
-$("soundBtn").addEventListener("click",()=>{PREF.sound=!PREF.sound;savePref();render()});
+$("soundBtn").addEventListener("click",()=>openMus());
 $("skipBtn").addEventListener("click",()=>{if(!OWNER)return;act("skew",{hours:6}).then(()=>toast("จำลองเวลาผ่านไป 6 ชั่วโมง")).catch(()=>{})});
 $("skipDay").addEventListener("click",()=>{if(!OWNER)return;act("skew",{hours:24}).then(()=>{autoDaily();toast("จำลองเวลาผ่านไป 1 วัน")}).catch(()=>{})});
 $("resetBtn").addEventListener("click",()=>{$("resetConfirm").hidden=false});$("resetNo").addEventListener("click",()=>{$("resetConfirm").hidden=true});
@@ -2964,7 +3011,7 @@ function renderAltar(){const box=$("altarBox");if(!box)return;const A=altarS(),t
   $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
     <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b></div>
     <div class="altar-card wide"><span class="ak">คำอธิษฐานวันนี้</span>${b?`<b class="pray">${esc(F[b.f][6])}</b><span class="small" style="text-align:left">จากใบเซียมซีที่ใช้เป็นดวงวันนี้ ใบที่ ${th(b.f+1)}</span>`:`<span class="small" style="text-align:left">เขย่าเซียมซีแล้ว<b>ใช้เป็นดวงวันนี้</b> คำอธิษฐานประจำวันจะขึ้นตรงนี้</span>`}</div>
-    <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button></div>
+    <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button><button class="ghost" id="altarBowl" type="button">🥣 ถูขันทิเบต</button><button class="ghost" id="altarMed" type="button">🧘 นั่งสมาธิ 10 นาที</button></div>
     <p class="note">เพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล</p>`}
 function waterSound(){const a=ac();if(!a)return;const s=a.createBufferSource();s.buffer=noiseBuf(a,1.1,false);const f=a.createBiquadFilter();f.type="bandpass";f.frequency.value=900;f.Q.value=.8;
   const g=a.createGain(),t=a.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.12);g.gain.linearRampToValueAtTime(.05,t+.9);g.gain.linearRampToValueAtTime(0,t+1.1);
@@ -2977,6 +3024,8 @@ $("altarBox").addEventListener("click",async e=>{const t=e.target;
   if(t.closest("#altarPickCancel")){ALTAR_PICKING=false;renderAltar();return}
   if(t.closest("#altarChange")){ALTAR_PICKING=true;renderAltar();return}
   if(t.closest("#altarWishBtn")){openWish();return}
+  if(t.closest("#altarBowl")){INSTR="bowl";try{localStorage.setItem("ftn_instr","bowl")}catch(er){}showTab("rank");setRkMode("pop");return}
+  if(t.closest("#altarMed")){medStart();return}
   const A=altarS(),today=dk(now());
   if(t.closest("#altarGlass")){if(A.w===today){toast("เปลี่ยนน้ำวันนี้แล้วค่ะ 💧");return}const g=$("altarGlass");g.classList.add("pour");waterSound();vib(15);
     const r=await altarDo("water");setTimeout(()=>g.classList.remove("pour"),900);if(r){burst(1,"#bfe6ff");setTimeout(tutTick,300)}return}
@@ -2992,6 +3041,123 @@ $("wishAdd").addEventListener("click",async()=>{const v=$("wishIn").value;const 
 $("wishList").addEventListener("click",async e=>{const card=e.target.closest("[data-wid]");if(!card)return;const id=card.dataset.wid;
   if(e.target.closest(".wish-ok")){const r=await altarDo("wish_ok",id);if(r){burst(2,"#f0d28a");chime([659,784,988,1319]);$("wishMsg").textContent=r.l?`ยินดีด้วยค่ะ 🎉 รับ +${r.l} ใบไม้`:"ยินดีด้วยค่ะ 🎉";renderWish()}}
   else if(e.target.closest(".wish-del")){const r=await altarDo("wish_del",id);if(r)renderWish()}});
+
+/* ---------- v101 sound & feel: rub a singing bowl / gong, ring a bell, background music made live in the browser, a 10-minute meditation ---------- */
+var BGM=[{k:"bowl",n:"ขันทิเบต",free:1},{k:"rain",n:"ฝนตกเบา ๆ",free:1},{k:"wind",n:"ลมกับกระดิ่ง"},{k:"stream",n:"ลำธารในวัด"},{k:"china",n:"ดนตรีจีน"}],BGM_PRICE=200,MED_LEN=600;
+var MUS=(function(){let m={on:false,track:"bowl",vol:.6};try{Object.assign(m,JSON.parse(localStorage.getItem("ftn_mus")||"{}"))}catch(e){}return m})();
+function musSave(){try{localStorage.setItem("ftn_mus",JSON.stringify(MUS))}catch(e){}}
+function bgmOwned(k){const b=BGM.find(x=>x.k===k);return !!b&&(b.free||(S.bgm||[]).includes(k))}
+/* game rules for music unlocks and the meditation reward; the web build swaps this for a server call */
+async function musAct(op,arg){return await api("mus",{op,arg:arg==null?"":String(arg)})}
+/* audio: one context for everything; music does not depend on the sound-effects switch */
+function anyAc(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();return AC}catch(e){return null}}
+const NOISE={};function loopNoise(a,kind){if(NOISE[kind])return NOISE[kind];const sr=a.sampleRate,n=sr*4,b=a.createBuffer(1,n,sr),d=b.getChannelData(0);let l=0,p=[0,0,0];
+  for(let i=0;i<n;i++){const w=Math.random()*2-1;if(kind==="brown"){l=(l+.02*w)/1.02;d[i]=l*3.2}else if(kind==="pink"){p[0]=.997*p[0]+.029*w;p[1]=.985*p[1]+.032*w;p[2]=.95*p[2]+.048*w;d[i]=(p[0]+p[1]+p[2]+w*.1)*.55}else d[i]=w}
+  return NOISE[kind]=b}
+function bellTone(a,dest,f,parts,dur,vol,t){t=t||a.currentTime;parts.forEach(([r,g],i)=>{const o=a.createOscillator(),e=a.createGain();o.type="sine";o.frequency.value=f*r;
+  e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(vol*g,t+.006+i*.002);e.gain.exponentialRampToValueAtTime(.0001,t+dur*(1-i*.12));o.connect(e).connect(dest);o.start(t);o.stop(t+dur+.1)})}
+const BOWL_P=[[1,1],[2.76,.42],[5.4,.16],[8.9,.06]],GONG_P=[[1,1],[1.52,.55],[2.37,.35],[3.11,.2],[4.3,.08]],BELL_P=[[1,1],[2,.5],[2.76,.35],[4.07,.18],[5.4,.08]];
+/* a sustained voice that swells while the player rubs */
+function rubVoice(a,f,parts){const g=a.createGain();g.gain.value=0;g.connect(a.destination);const os=[];
+  parts.forEach(([r,v])=>{for(const dt of [1,1.0035]){const o=a.createOscillator(),e=a.createGain();o.type="sine";o.frequency.value=f*r*dt;e.gain.value=v*.5;o.connect(e).connect(g);o.start();os.push(o)}});
+  return{g,set(x){g.gain.setTargetAtTime(x,a.currentTime,.12)},stop(){g.gain.setTargetAtTime(0,a.currentTime,.4);setTimeout(()=>os.forEach(o=>{try{o.stop()}catch(e){}}),2500)}}}
+/* ---------- the ป๊อป stage becomes "เคาะมงคล": bowl, bell, gong, or tapping a friend like before ---------- */
+let INSTR=(()=>{try{return localStorage.getItem("ftn_instr")||"bowl"}catch(e){return "bowl"}})(),RUB=null;
+const INSTRS=[["bowl","🥣","ขันทิเบต"],["bell","🔔","ระฆัง"],["gong","🪘","ฆ้อง"],["pet","🐾","เพื่อน"]];
+function popAdd(x,y,host){const t=performance.now();popTs=popTs.filter(v=>t-v<1000);if(popTs.length>=20)return false;popTs.push(t);POP_PEND++;
+  const n=$("popNum");if(n)n.textContent=popCountNow().toLocaleString();
+  if(!reduce&&host){const r=host.getBoundingClientRect(),f=document.createElement("span");f.className="pop-plus";f.textContent="+1";f.style.left=(x-r.left)+"px";f.style.top=(y-r.top)+"px";host.appendChild(f);setTimeout(()=>f.remove(),700)}
+  if(!popTimer)popTimer=setTimeout(()=>{popTimer=0;flushPops().then(()=>{if(rkMode==="pop"&&tab==="rank"&&Date.now()-popBoardAt>30000)loadPopBoard(true)})},6000);return true}
+function instrHTML(){const chips=`<div class="instr-chips">${INSTRS.map(([k,e,n])=>`<button type="button" data-instr="${k}" class="${INSTR===k?"on":""}"><span>${e}</span>${n}</button>`).join("")}</div>`,cnt=`<div class="pop-count"><span class="rk-lbl">แต้มกังวานของฉัน</span><b id="popNum">${popCountNow().toLocaleString()}</b></div>`;
+  if(INSTR==="bowl")return cnt+chips+`<div class="instr-stage bowl-stage" id="instrPad" style="--e:0"><img src="${SS_ART.bowl||""}" alt="ขันทิเบต" draggable="false"><span class="rim-glow"></span><img class="mallet" src="${SS_ART.bowl_mallet||""}" alt="" draggable="false"></div>
+    <div class="reso"><i id="resoBar"></i></div><p class="small pop-hint" id="instrHint">ลากนิ้ววนรอบ<b>ขอบขัน</b>ช้า ๆ สม่ำเสมอ เสียงจะค่อย ๆ กังวานขึ้น · แตะขอบขันเพื่อตีเบา ๆ</p>`;
+  if(INSTR==="gong")return cnt+chips+`<div class="instr-stage gong-stage" id="instrPad" style="--e:0"><img src="${SS_ART.gong||""}" alt="ฆ้อง" draggable="false"><span class="gong-glow"></span></div>
+    <div class="reso"><i id="resoBar"></i></div><p class="small pop-hint" id="instrHint">ลากนิ้ววน ๆ ที่<b>ปุ่มกลางฆ้อง</b> แบบลูบฆ้องที่วัด เสียงจะหึ่งขึ้นเรื่อย ๆ · แตะเพื่อตีฆ้อง</p>`;
+  if(INSTR==="bell")return cnt+chips+`<div class="instr-stage bell-stage" id="instrPad"><img src="${SS_ART.bell||""}" alt="ระฆัง" draggable="false"></div><p class="small pop-hint" id="instrHint">แตะระฆังตามจังหวะ ฟังเสียงกังวานให้จบก่อนตีครั้งต่อไปก็ได้นะคะ</p>`;
+  return ""}
+const _renderPop=renderPop;
+renderPop=function(){if(INSTR==="pet"){_renderPop();const st=$("popStage");st.insertAdjacentHTML("afterbegin",`<div class="instr-chips">${INSTRS.map(([k,e,n])=>`<button type="button" data-instr="${k}" class="${INSTR===k?"on":""}"><span>${e}</span>${n}</button>`).join("")}</div>`);
+    const c=st.querySelector(".pop-count .rk-lbl");if(c)c.textContent="แต้มกังวานของฉัน";return}
+  if(RUB){RUB.stop();RUB=null}$("popStage").innerHTML=instrHTML();instrBind()};
+$("popStage").addEventListener("click",e=>{const b=e.target.closest("[data-instr]");if(!b)return;INSTR=b.dataset.instr;try{localStorage.setItem("ftn_instr",INSTR)}catch(er){}renderPop()});
+function instrBind(){const pad=$("instrPad");if(!pad)return;
+  if(INSTR==="bell"){pad.addEventListener("pointerdown",e=>{e.preventDefault();const a=ac();if(a)bellTone(a,a.destination,660,BELL_P,3.2,.2);vib(12);pad.classList.remove("ring");void pad.offsetWidth;pad.classList.add("ring");popAdd(e.clientX,e.clientY,pad)});return}
+  const isBowl=INSTR==="bowl",geo=isBowl?{cx:.484,cy:.31,rx:.443,ry:.30,lo:.62,hi:1.35}:{cx:.5,cy:.55,rx:.28,ry:.27,lo:0,hi:1.2},f0=isBowl?[196,220,247][Math.floor(rnd()*3)]:98,parts=isBowl?BOWL_P:GONG_P;
+  let E=0,down=false,last=null,travel=0,speed=0,lastT=0,moved=0,full=false,raf=0,idleAt=0;
+  const hint=$("instrHint"),bar=$("resoBar"),base=hint.innerHTML;
+  function pol(e){const r=pad.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-geo.cx,y=(e.clientY-r.top)/r.height-geo.cy,nx=x/geo.rx,ny=y/geo.ry;return{a:Math.atan2(ny,nx),d:Math.hypot(nx,ny)}}
+  function tick(ts){const dt=Math.min(.05,(ts-(lastT||ts))/1000);lastT=ts;const rubbing=down&&ts-idleAt<160;
+    const good=rubbing&&speed>2.2&&speed<8.5,fast=rubbing&&speed>=8.5;
+    E+=good?dt*.32:fast?-dt*.7:-dt*(rubbing?.08:.18);E=Math.max(0,Math.min(1,E));
+    if(E>.003&&!RUB){const a=ac();if(a)RUB=rubVoice(a,f0,parts)}if(RUB)RUB.set(E*(isBowl?.3:.36));
+    pad.style.setProperty("--e",E.toFixed(3));if(bar)bar.style.width=(E*100)+"%";
+    if(fast){hint.innerHTML="ช้าลงนิดนึงนะคะ เสียงจะกังวานขึ้น 🙏"}else if(E>.95){if(!full){full=true;burst(1,"#f6dc9a");chime([1568,2093],.12);vib([10,40,10])}hint.innerHTML=isBowl?"✨ กังวานเต็มขันแล้ว ฟังเสียงให้สุดนะคะ":"✨ ฆ้องหึ่งเต็มที่แล้ว"}else if(!rubbing&&E<.02)hint.innerHTML=base;
+    if(E<.6)full=false;
+    if(E>0||down)raf=requestAnimationFrame(tick);else{raf=0;if(RUB){RUB.stop();RUB=null}}}
+  const go=()=>{if(!raf){lastT=0;raf=requestAnimationFrame(tick)}};
+  const mal=pad.querySelector(".mallet"),malAt=e=>{if(!mal)return;const r=pad.getBoundingClientRect();mal.style.left=(e.clientX-r.left)+"px";mal.style.top=(e.clientY-r.top)+"px";mal.classList.add("held")};
+  pad.addEventListener("pointerdown",e=>{e.preventDefault();malAt(e);try{pad.setPointerCapture(e.pointerId)}catch(er){}const p=pol(e);down=true;moved=0;last=p.d>=geo.lo&&p.d<=geo.hi?p:null;idleAt=performance.now();go()});
+  pad.addEventListener("pointermove",e=>{if(!down)return;malAt(e);const p=pol(e),t=performance.now();if(p.d<geo.lo||p.d>geo.hi){last=null;return}
+    if(last){let da=p.a-last.a;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;const dts=Math.max(.008,(t-(last.t||t))/1000),w=Math.abs(da)/dts;speed=speed*.8+w*.2;travel+=Math.abs(da);moved+=Math.abs(da);
+      if(travel>=Math.PI/3){travel-=Math.PI/3;if(E>.15)popAdd(e.clientX,e.clientY,pad)}if(Math.abs(da)>.01)idleAt=t}
+    last=Object.assign(p,{t})});
+  const up=e=>{if(!down)return;down=false;if(mal){mal.classList.remove("held");mal.style.left=mal.style.top=""}if(moved<.25){const p=pol(e);if(p.d<=geo.hi){const a=ac();if(a)bellTone(a,a.destination,isBowl?f0:f0,parts,isBowl?6:7,isBowl?.16:.22);E=Math.min(1,E+.25);vib(14);pad.classList.remove("hit");void pad.offsetWidth;pad.classList.add("hit");popAdd(e.clientX,e.clientY,pad);go()}}};
+  pad.addEventListener("pointerup",up);pad.addEventListener("pointercancel",()=>{down=false;if(mal){mal.classList.remove("held");mal.style.left=mal.style.top=""}})}
+/* ---------- background music: every track is synthesised live, nothing to download or license ---------- */
+let MUSN=null;
+function musStop(fade){if(!MUSN)return;const m=MUSN;MUSN=null;clearInterval(m.timer);const a=AC;try{m.out.gain.setTargetAtTime(0,a.currentTime,fade==null?.6:fade)}catch(e){}setTimeout(()=>{m.stops.forEach(s=>{try{s.stop()}catch(e){}});try{m.out.disconnect()}catch(e){}},4000)}
+function musPlay(k){musStop(.4);const a=anyAc();if(!a)return;const out=a.createGain();out.gain.value=0;out.connect(a.destination);out.gain.setTargetAtTime(MUS.vol*.55,a.currentTime,1.2);
+  const m={k,out,stops:[],timer:0};MUSN=m;const src=(kind,filt)=>{const s=a.createBufferSource();s.buffer=loopNoise(a,kind);s.loop=true;let n=s;for(const f of filt||[]){n.connect(f);n=f}const g=a.createGain();n.connect(g).connect(out);s.start();m.stops.push(s);return g};
+  const every=(lo,hi,fn)=>{let next=a.currentTime+.5;return()=>{while(next<a.currentTime+.6){fn(next);next+=lo+Math.random()*(hi-lo)}}};
+  const filt=(type,f,q)=>{const b=a.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b};
+  const sine=(f,g)=>{const o=a.createOscillator(),e=a.createGain();o.frequency.value=f;e.gain.value=g;o.connect(e).connect(out);o.start();m.stops.push(o)};
+  let tasks=[];
+  if(k==="bowl"){sine(110,.025);sine(110.55,.02);sine(165,.008);const P=[196,220,262,294,330];tasks.push(every(6,11,t=>bellTone(a,out,P[Math.floor(Math.random()*P.length)],BOWL_P,9,.13,t)))}
+  if(k==="rain"){const g=src("pink",[filt("lowpass",1400),filt("highpass",250)]);g.gain.value=.32;
+    tasks.push(every(.03,.12,t=>{const s=a.createBufferSource();s.buffer=loopNoise(a,"white");const f=filt("bandpass",2000+Math.random()*3500,6),e=a.createGain();e.gain.setValueAtTime(.06*Math.random(),t);e.gain.exponentialRampToValueAtTime(.0001,t+.03);s.connect(f).connect(e).connect(out);s.start(t,Math.random()*3,.05)}))}
+  if(k==="wind"){const bp=filt("bandpass",500,.8),g=src("pink",[bp]);g.gain.value=.4;const lfo=a.createOscillator(),lg=a.createGain();lfo.frequency.value=.06;lg.gain.value=320;lfo.connect(lg).connect(bp.frequency);lfo.start();m.stops.push(lfo);
+    const P=[1175,1319,1568,1760,2093,2349];tasks.push(every(1.2,4.5,t=>{const n=1+Math.floor(Math.random()*3);for(let i=0;i<n;i++)bellTone(a,out,P[Math.floor(Math.random()*P.length)],BELL_P,2.6,.05,t+i*.18)}))}
+  if(k==="stream"){const g=src("brown",[filt("lowpass",1100)]);g.gain.value=.5;const g2=src("pink",[filt("bandpass",1800,.6)]);g2.gain.value=.08;
+    tasks.push(every(.07,.32,t=>{const o=a.createOscillator(),e=a.createGain(),f=280+Math.random()*500;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*2.4,t+.05);e.gain.setValueAtTime(.025*Math.random(),t);e.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(e).connect(out);o.start(t);o.stop(t+.08)}))}
+  if(k==="china"){sine(146.83,.018);sine(220,.008);const P=[293.66,329.63,369.99,440,493.88,587.33,659.25,739.99];let i=3;
+    tasks.push(every(.45,1.25,t=>{i=Math.max(0,Math.min(P.length-1,i+[-2,-1,-1,1,1,2][Math.floor(Math.random()*6)]));pluck(a,out,P[i],t,.16);if(Math.random()<.25)pluck(a,out,P[Math.max(0,i-2)]/2,t,.08)}))}
+  m.timer=setInterval(()=>{if(MUSN!==m)return;tasks.forEach(f=>f())},200);tasks.forEach(f=>f())}
+const PLUCK={};function pluck(a,dest,f,t,vol){const key=Math.round(f);let b=PLUCK[key];if(!b){const sr=a.sampleRate,n=Math.floor(sr*2.2),N=Math.max(2,Math.round(sr/f));b=a.createBuffer(1,n,sr);const d=b.getChannelData(0),ring=new Float32Array(N);
+    for(let i=0;i<N;i++)ring[i]=Math.random()*2-1;let p=0;for(let i=0;i<n;i++){const nx=(p+1)%N,v=.4985*(ring[p]+ring[nx]);d[i]=ring[p];ring[p]=v;p=nx}PLUCK[key]=b}
+  const s=a.createBufferSource(),e=a.createGain();s.buffer=b;e.gain.value=vol;s.connect(e).connect(dest);s.start(t)}
+function musApply(){if(MUS.on&&bgmOwned(MUS.track)){if(!MUSN||MUSN.k!==MUS.track)musPlay(MUS.track);else if(AC)MUSN.out.gain.setTargetAtTime(MUS.vol*.55,AC.currentTime,.3)}else musStop()}
+/* browsers only start sound after a tap: start the music on the first one */
+document.addEventListener("pointerdown",()=>{if(MUS.on&&!MUSN&&!MED)musApply()},{capture:true});
+document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden){if(!MED)AC.suspend&&AC.suspend()}else AC.resume&&AC.resume()});
+/* ---------- the sound sheet ---------- */
+function renderMus(){const sfx=typeof PREF!=="undefined"&&PREF&&"sound" in PREF?PREF.sound:S.sound;
+  $("musPop").innerHTML=`<div class="pop-head"><h2 id="musTitle">🎵 เสียงและเพลง</h2><button class="ghost" id="musClose" type="button">ปิด</button></div>
+  <label class="toggle"><input type="checkbox" id="musSfx" ${sfx?"checked":""}> เสียงเอฟเฟกต์ (เขย่า เผา ไหว้พระ)</label>
+  <label class="toggle"><input type="checkbox" id="musOn" ${MUS.on?"checked":""}> เพลงพื้นหลัง</label>
+  <label class="lbl-s" for="musVol">ความดังเพลง</label><input type="range" id="musVol" min="0" max="1" step="0.05" value="${MUS.vol}">
+  <div class="bgm-grid">${BGM.map(b=>{const own=bgmOwned(b.k);return `<button type="button" class="bgm-card${MUS.track===b.k?" on":""}${own?"":" locked"}" data-bgm="${b.k}"><img src="${SS_ART["bgm_"+b.k]||""}" alt=""><b>${b.n}</b><span>${own?(MUS.track===b.k&&MUS.on?"กำลังเล่น":"ฟรี"):`🔒 ${BGM_PRICE} ใบไม้`}</span></button>`}).join("")}</div>
+  <button class="primary" id="medBtn" type="button">🧘 นั่งสมาธิ 10 นาที</button>
+  <p class="note">เพลงทุกเพลงสร้างขึ้นสดในเครื่องของคุณ ฟังเพื่อผ่อนคลาย ไม่ใช่การรักษาโรค · นั่งสมาธิครบ 10 นาที รับ +10 ใบไม้ วันละครั้ง</p>`}
+function openMus(){renderMus();$("musModal").hidden=false}
+$("musModal").addEventListener("click",async e=>{const t=e.target;if(t.id==="musModal"||t.closest("#musClose")){$("musModal").hidden=true;return}
+  const c=t.closest("[data-bgm]");if(c){const k=c.dataset.bgm;if(!bgmOwned(k)){if((S.leaves||0)<BGM_PRICE){toast(`ใบไม้ไม่พอ ต้องใช้ ${BGM_PRICE} ใบไม้`);return}try{await musAct("buy",k);toast("ปลดล็อกเพลงแล้ว 🎵");render()}catch(er){if(er!=="locked")toast(er);return}}
+    MUS.track=k;MUS.on=true;musSave();musApply();renderMus();return}
+  if(t.closest("#medBtn")){$("musModal").hidden=true;medStart()}});
+$("musModal").addEventListener("change",e=>{const t=e.target;if(t.id==="musOn"){MUS.on=t.checked;musSave();musApply();renderMus()}
+  if(t.id==="musSfx"){if(typeof PREF!=="undefined"&&PREF&&"sound" in PREF){PREF.sound=t.checked;savePref()}else{S.sound=t.checked;save()}render()}});
+$("musModal").addEventListener("input",e=>{if(e.target.id==="musVol"){MUS.vol=+e.target.value;musSave();if(MUSN&&AC)MUSN.out.gain.setTargetAtTime(MUS.vol*.55,AC.currentTime,.1)}});
+/* ---------- meditation: breathe with the circle for 10 minutes ---------- */
+let MED=null;
+async function medStart(){const a=anyAc();try{await musAct("med_start")}catch(e){if(e!=="locked")toast(e);return}
+  const track=bgmOwned(MUS.track)?MUS.track:"bowl";if(!MUSN||MUSN.k!==track)musPlay(track);
+  MED={t0:Date.now(),timer:0,track};$("medOverlay").hidden=false;if(a)bellTone(a,a.destination,220,BOWL_P,7,.16);
+  const tick=()=>{if(!MED)return;const el=(Date.now()-MED.t0)/1000,left=Math.max(0,MED_LEN-el),cyc=el%10;
+    $("medTime").textContent=`${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,"0")}`;$("medSay").textContent=cyc<4?"หายใจเข้า…":"หายใจออก…";
+    if(left<=0){medEnd(true)}};MED.timer=setInterval(tick,250);tick()}
+async function medEnd(done){if(!MED)return;clearInterval(MED.timer);MED=null;$("medOverlay").hidden=true;
+  if(!(MUS.on&&bgmOwned(MUS.track)))musStop(2);
+  if(done){const a=ac();if(a)[0,1.6,3.2].forEach(d=>bellTone(a,a.destination,196,BOWL_P,6,.16,a.currentTime+d));try{const r=await musAct("med_done");burst(2,"#f6dc9a");toast(r&&r.l?`นั่งสมาธิครบ 10 นาที 🙏 รับ +${r.l} ใบไม้`:"นั่งสมาธิครบ 10 นาที 🙏 วันนี้รับใบไม้ไปแล้ว");render()}catch(e){if(e!=="locked")toast(e)}}}
+$("medStop").addEventListener("click",()=>medEnd(false));
 
 var BURN_RB_NOW=false; /* rainbow jackpot shown by the current burn */
 var EGG_BACK=null; /* where to go after an egg: jars and tickets opened from the inventory stay there */
@@ -3016,7 +3182,7 @@ function tutAllow(){const s=tutStage(),rv=!$("reveal").hidden,bf=$("burnFx")&&!$
   return ({1:"#holdBtn,#motionBox",4:'#tabbar [data-tab="pets"]',5:"",6:"#extraBtn,#holdBtn,#motionBox",8:"#holdBtn,#motionBox",
     9:'#tabbar [data-tab="altar"],#altarBox [data-deity],#altarGlass,#altarIncense,#giftBtn,#dailyClaim,#dailyClose',10:'#leafBtn,#leafItems [data-leaf="t"],#leafUse',11:`#book .slot[data-pi="${PETS.findIndex(p=>p.n===TUT_DUCK)}"],#setBuddy,#petClose`,
     12:'#tabbar [data-tab="inv"],'+tutBadSel(),13:'#tabbar [data-tab="inv"],#jarBtn',14:""})[s]||""}
-function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t instanceof Element))return;if(t.closest("#coach,#logoutBtn,#lockLogout,#soundBtn,#tabbar [data-tab=\"info\"],#scr-info"))return;
+function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t instanceof Element))return;if(t.closest("#coach,#logoutBtn,#lockLogout,#soundBtn,#musModal,#medOverlay,#tabbar [data-tab=\"info\"],#scr-info"))return;
   const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
   e.preventDefault();e.stopPropagation();if(e.type==="click")coachNudge()}
 ["click","pointerdown","keydown"].forEach(ev=>document.addEventListener(ev,tutBlock,true));
@@ -3103,7 +3269,7 @@ function tutBadSel(){const bad=S.inv.filter(it=>F[it.f][0]==="ค่อยเป
 function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=S.tutTips||{};if(S.tutTips[id])return;S.tutTips[id]=1;try{localStorage.setItem("ftn_tip_"+id,"1")}catch(e){}
   setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,{label:"เข้าใจแล้ว",next:coachHide,arrow:false})},350)}
 (function(){const _st=showTab;showTab=function(t){_st.apply(this,arguments);
-    if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>นักป๊อป: แตะคู่หูของคุณรัว ๆ เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
+    if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>สายกังวาน: ถูขันทิเบต ลูบฆ้อง ตีระฆัง หรือแตะคู่หู เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
     setTimeout(tutTick,60)};
   const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===7)tutSet(8);else if(s===8)tutSet(9);else if(s===13&&!(S.jarT>0))tutSet(14)}setTimeout(tutTick,300)};
   const _od=openDaily;openDaily=function(){if(!$("reveal").hidden||($("burnFx")&&!$("burnFx").hidden))return;return _od.apply(this,arguments)};
@@ -3127,7 +3293,7 @@ function render(){setTimeout(()=>{try{tutTick()}catch(e){}},0);prune();regen();c
   $("lastBox").innerHTML=S.last?lastHTML(S.last):`<div class="placeholder">ยังไม่ได้เขย่า ใบเซียมซีของคุณจะมาอยู่ตรงนี้</div>`;const sb=$("shareBtn");if(sb)sb.addEventListener("click",makeShare);
   const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),nearFull=S.inv.length>=INV_WARN,n=nearFull?"!":((S.tickets+(S.rtickets||0)+(S.jarT||0))||(canUse?"!":""));bi.hidden=!n;bi.textContent=n;bi.classList.toggle("warn",nearFull);
   hostSay();renderChips();renderFortuneFloat();renderBuddy();renderInv();renderPets();renderDaily();renderInfo();renderAltar();
-  $("soundBtn").textContent="เสียง: "+(PREF.sound?"เปิด":"ปิด");$("soundBtn").setAttribute("aria-pressed",PREF.sound?"true":"false")}
+  $("soundBtn").textContent="🎵 เสียง"+(PREF.sound?"":" ปิด");$("soundBtn").setAttribute("aria-pressed",PREF.sound?"true":"false")}
 setInterval(()=>{if(!busy&&$("reveal").hidden){render();autoDaily()}},30000);
 
 /* ---------- start ---------- */
