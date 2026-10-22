@@ -5,6 +5,11 @@
 <title>เซียมซีฮีลใจ · Fortunie</title>
 <meta name="description" content="เขย่าเซียมซีออนไลน์ สะสมเพื่อนตัวน้อย จาก Fortunie @fortuniehoro">
 <link rel="icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="เซียมซีฮีลใจ">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600&display=swap">
 <style>html,body{margin:0}
@@ -1011,6 +1016,41 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 .seg button.on{background:var(--lav);color:#1a0f2b;font-weight:600}
 #lgMsg{min-height:1.2em;color:#ffd0d0}
 .lockscreen .ghost{margin-top:8px}
+
+/* web v100: landing, cookie bar, install, stats */
+.login{flex-direction:column;align-items:center}
+.landing{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.land-logo{width:84px;height:84px;border-radius:50%;box-shadow:0 0 30px #f0d28a55}
+.landing h1{margin:2px 0 0;font-family:var(--f-display);color:var(--butter);font-size:30px}
+.land-sub{margin:0;color:var(--muted)}
+.land-stage{position:relative;display:flex;justify-content:center;padding:10px 0 0;width:100%;background:radial-gradient(circle at 50% 46%,#f6dc9a55,#f6dc9a14 42%,transparent 62%)}
+.land-stage .cupscene{height:min(260px,36dvh)}
+.cupscene .land-chosen{position:absolute;left:25%;top:2.5%;width:50%;height:50%;z-index:3;transform:translateY(67%);transition:transform .6s cubic-bezier(.2,.9,.3,1.2)}
+.land-up .cupscene .land-chosen{transform:translateY(0) rotate(-2deg)}
+.cupscene .land-chosen img{inset:0;width:100%;height:100%}
+.cupscene #landNo{position:absolute;left:50%;top:27%;transform:translateX(-50%);writing-mode:vertical-rl;font-family:var(--f-display),Mitr,sans-serif;font-size:7cqw;font-weight:600;line-height:1;color:#fff8e6;background:linear-gradient(#9b7fd6,#7458b8);padding:.35em .22em;border-radius:99px;box-shadow:0 0 0 1.5px #f3dfae,0 3px 8px #0005}
+.cupscene #landNo:empty{display:none}
+.landing .go{border:0;border-radius:999px;padding:13px 26px;font-family:var(--f-display);font-size:19px;background:linear-gradient(180deg,var(--butter),var(--gold));color:var(--night);box-shadow:0 6px 22px #f0d28a44}
+.landing .go:disabled{opacity:.6}
+#landResult{width:100%;display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
+#landResult[hidden]{display:none}
+#landPaper{text-align:left}
+.land-cta{display:flex;flex-direction:column;gap:6px;align-items:center;background:#ffffff0c;border:1px solid var(--line);border-radius:18px;padding:14px}
+.land-cta .go{width:100%}
+.landing .note{font-size:12px;opacity:.8}
+#landBack{align-self:center}
+.ck-bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:120;max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#1a0f2bf2;border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-size:13px;color:var(--text);box-shadow:0 10px 30px #0008}
+.ck-bar[hidden]{display:none}
+.ck-bar a{color:var(--gold)}
+.ck-bar .ck-yes{background:var(--lav);color:var(--night)}
+.install-box{display:flex;flex-direction:column;gap:4px}
+.install-box[hidden]{display:none}
+.stat-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.stat-sum div{background:#ffffff0c;border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.stat-sum b{font-family:var(--f-display);font-size:20px;color:var(--butter)}.stat-sum span{font-size:12px;color:var(--muted)}
+.stat-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.stat-t{min-width:560px;font-size:13px}.stat-t th,.stat-t td{white-space:nowrap;padding:5px 6px}
+@media (min-width:640px){.adm-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}}
 </style></head><body>
 <main class="wrap" id="app">
   <div class="top">
@@ -1105,6 +1145,11 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
   <div class="screen" id="scr-info" hidden>
     <h2 class="screen-title">ข้อมูล</h2>
     <div class="profile" id="profileBox"></div>
+    <section class="install-box" id="installBox" hidden>
+      <div class="row"><b>📲 เพิ่มเกมไว้ที่หน้าจอ</b><button class="mini" id="installBtn" type="button">เพิ่มเลย</button></div>
+      <span class="small" style="text-align:left">เปิดเกมได้ในแตะเดียว เหมือนแอป</span>
+      <p class="note" id="installHow" hidden>iPhone: เปิดใน Safari กดปุ่มแชร์ (สี่เหลี่ยมมีลูกศรขึ้น) แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"</p>
+    </section>
     <section>
       <h2>โอกาสของใบเซียมซี</h2>
       <table><thead><tr><th>ระดับใบ</th><th class="num">จำนวน</th><th class="num">โอกาส</th><th class="num">ออกแล้ว</th></tr></thead><tbody id="slipOdds"></tbody></table>
@@ -1137,6 +1182,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
       <button type="button" data-at="game" class="own-tab">⚖️ ระบบเกม</button>
       <button type="button" data-at="ann" class="own-tab">📢 ตั้งค่า</button>
       <button type="button" data-at="log" class="own-tab">📜 บันทึก</button>
+      <button type="button" data-at="stats" class="own-tab">📊 สถิติ</button>
     </div>
     <div class="adm-pane" data-ap="inbox">
       <div class="adm-sum" id="admSum"></div>
@@ -1250,6 +1296,9 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
         <div class="row" style="flex-wrap:nowrap"><input id="cfPayBank" type="text" maxlength="40" placeholder="ธนาคาร เช่น กสิกรไทย" aria-label="ธนาคาร"><input id="cfPayNo" type="text" inputmode="numeric" maxlength="24" placeholder="เลขบัญชี" aria-label="เลขบัญชีรับเงิน"></div>
         <div class="row" style="flex-wrap:nowrap"><span class="small">ไม่รับสลิปที่เก่ากว่า (ชม.)</span><input id="cfSlipHours" type="number" min="1" max="168" placeholder="24" aria-label="อายุสลิปสูงสุด ชั่วโมง"></div>
         <span class="small" id="cfSlipNote" style="text-align:left"></span></div>
+        <label class="lbl-s" for="cfPixel">Meta Pixel ID (ตัวเลขจาก Events Manager · เว้นว่าง = ปิด)</label>
+        <input id="cfPixel" type="text" inputmode="numeric" maxlength="20" placeholder="เช่น 123456789012345" autocomplete="off">
+        <p class="note">พิกเซลทำงานเฉพาะคนที่กด "ยอมรับ" ที่แถบคุกกี้ · ส่งเหตุการณ์ สมัคร (CompleteRegistration) และ เติมเงินผ่านอัตโนมัติ (Purchase)</p>
         <label class="lbl-s" for="cfPay">ข้อมูลรับเงิน (ผู้เล่นเห็นตอนเติมดาว)</label>
         <textarea id="cfPay" rows="3" maxlength="300" placeholder="เช่น พร้อมเพย์ 08x-xxx-xxxx ชื่อบัญชี ..."></textarea>
         <button class="primary" id="cfSave2" type="button">บันทึกประกาศและตั้งค่า</button>
@@ -1261,6 +1310,13 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
         <p class="note">สตาฟตรวจสลิปและดูรายชื่อผู้เล่นได้ แต่ส่งหรือหักของ ระงับ ล้างเกม สร้างโค้ด แจกของ แก้เรท และดูบันทึกไม่ได้ · เพิ่มสตาฟได้จากหน้าผู้เล่น กด "จัดการ" แล้วกด "ตั้งเป็นสตาฟ"</p>
         <div id="staffList" class="adm-list"></div>
         <label class="toggle"><input id="viewStaff" type="checkbox"> ดูหน้าแอดมินแบบที่สตาฟเห็น (ทดลอง)</label>
+      </section>
+    </div>
+    <div class="adm-pane" data-ap="stats" hidden>
+      <section>
+        <div class="row"><h2>สถิติผู้เล่น</h2><button class="mini" id="statReload" type="button">โหลดใหม่</button></div>
+        <div class="adm-chips" id="statDays"><button type="button" data-sd="7">7 วัน</button><button type="button" data-sd="14">14 วัน</button><button type="button" data-sd="30" class="on">30 วัน</button><button type="button" data-sd="60">60 วัน</button></div>
+        <div id="statBox"><div class="placeholder">กด "โหลดใหม่" เพื่อดูสถิติ</div></div>
       </section>
     </div>
     <div class="adm-pane" data-ap="log" hidden>
@@ -1319,6 +1375,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
     <div class="row"><h2 id="sheetTitle">ร้านดาว</h2><button class="ghost" id="closeSheet" type="button">ปิด</button></div>
     <div class="testbar" id="shopNote"></div>
     <div class="packs" id="packs"></div>
+    <p class="note">ดาวใช้ในเกมเท่านั้น แลกคืนเป็นเงินไม่ได้ · ผลเซียมซีเพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล</p>
     <div id="confirm" hidden class="pay">
       <b id="confirmText"></b>
       <span class="small" style="text-align:left" id="payInfo"></span>
@@ -1406,6 +1463,29 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 </div>
 <div class="lockscreen" id="lockScreen" hidden><img src="logo.png" alt=""><h2 id="lockTitle"></h2><p id="lockText"></p><button class="ghost" id="lockLogout" type="button">ออกจากระบบ</button></div>
 <div class="login" id="loginScreen" hidden>
+  <div class="landing" id="landing" hidden>
+    <img src="logo.png" alt="" class="land-logo">
+    <h1>เซียมซีฮีลใจ</h1>
+    <p class="land-sub">เสี่ยงเซียมซีออนไลน์ ฟรี ไม่ต้องสมัคร</p>
+    <div class="land-stage" id="landStage"><div class="cupscene" role="img" aria-label="กระบอกเซียมซี"><div class="sc" id="landTube">
+      <img class="l-cup" data-art="cup" alt="" draggable="false">
+      <img class="l-bundle" data-art="sticks" alt="" draggable="false">
+      <div class="land-chosen"><img data-art="stick" alt="" draggable="false"><span id="landNo"></span></div>
+      <img class="l-cup l-front" data-art="cup" alt="" draggable="false">
+    </div></div></div>
+    <button class="go" id="landShake" type="button">🙏 เขย่าเซียมซีฟรี</button>
+    <p class="small" id="landHint">ตั้งจิตอธิษฐานถึงเรื่องที่อยากรู้ แล้วกดเขย่าได้เลย</p>
+    <div id="landResult" hidden>
+      <div class="paper" id="landPaper"></div>
+      <div class="land-cta">
+        <b>อยากเก็บใบนี้ไว้ แล้วเล่นต่อ?</b>
+        <span class="small">สมัครฟรี ได้เขย่าทุกวัน มีเพื่อนคู่หูตัวแรก และของขวัญต้อนรับ</span>
+        <button class="go" id="landUp" type="button">สมัครฟรี เริ่มเล่นจริง</button>
+      </div>
+    </div>
+    <button class="ghost" id="landIn" type="button">มีบัญชีแล้ว เข้าสู่ระบบ</button>
+    <p class="note">เพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล · โดย Fortuniehoro · LINE @fortuniehoro</p>
+  </div>
   <form class="login-card" onsubmit="return false" aria-labelledby="lgTitle">
     <img src="logo.png" alt="" class="login-logo">
     <h1 id="lgTitle">เซียมซีฮีลใจ</h1>
@@ -1437,6 +1517,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
     <button class="go" id="lgBtn" type="submit">เข้าสู่ระบบ</button>
     <span class="small" id="lgMsg" role="status"></span>
     <p class="note">ลืมรหัสผ่าน ทักแอดมินที่ LINE @fortuniehoro · บัญชีเก่าใช้ไอดีเดิมเข้าได้เหมือนเดิม</p>
+    <button class="ghost" id="landBack" type="button">← กลับไปลองเขย่าฟรี</button>
   </form>
 </div>
 <div class="burnfx" id="burnFx" hidden><span class="small burn-cap" id="burnCap"></span><div class="burn-wrap" id="burnWrap"><canvas id="burnCv"></canvas><img class="burn-flame" data-art="flame" alt="" aria-hidden="true" draggable="false"></div><div class="worry" id="worry" hidden></div><div class="burn-buddy" id="burnBuddy" hidden><span class="bb-say" id="bbSay" hidden></span><span class="bb-face" id="bbFace"></span></div><div class="burn-end" id="burnEnd" hidden></div><button class="go" id="burnLight" type="button" hidden>เผาเลย</button><button class="burn-skip" id="burnSkip" type="button" hidden>ข้าม ⏭</button></div>
@@ -1446,6 +1527,10 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 <div class="multi-bar" id="multiBar" hidden><span id="mbCount"></span><button class="ghost" id="mbCancel" type="button">ยกเลิก</button><button class="burn" id="mbBurn" type="button" disabled>เผา</button></div>
 <div class="toast" id="toast" hidden></div>
 
+<div class="ck-bar" id="ckBar" hidden role="region" aria-label="คุกกี้">
+  <span>เว็บนี้ใช้คุกกี้ของ Meta เพื่อวัดผลโฆษณา <a href="privacy.html" target="_blank" rel="noopener">อ่านเพิ่ม</a></span>
+  <div class="row" style="flex-wrap:nowrap;gap:6px"><button class="mini" id="ckNo" type="button">ไม่อนุญาต</button><button class="mini ck-yes" id="ckYes" type="button">ยอมรับ</button></div>
+</div>
 <script>
 const F=[
 ["ดีมาก","ฟ้าเปิด ทางโล่ง","ช่วงนี้ทำอะไรมีคนช่วยหนุน เรื่องที่รอมานานเริ่มขยับ","คนโสดมีโอกาสเจอคนคุยถูกใจจากวงเพื่อน คนมีคู่ได้คุยเรื่องอนาคตกัน","งานที่ตั้งใจทำมีคนเห็น เหมาะกับการเสนอไอเดียใหม่","มีรายรับเข้ามาเป็นระยะ เก็บส่วนหนึ่งไว้ก่อนใช้","กล้าพูดสิ่งที่อยากได้ออกไปตรง ๆ"],
@@ -2890,6 +2975,99 @@ setInterval(()=>{if(idle()||(LOCKED&&AUTH))api("me").then(render).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(idle())api("me").then(render).catch(()=>{})});
 render();
 if(AUTH)boot();else showLogin();
+
+/* ===== phase 0 (web only): free demo shake before sign-up, where players come from, Meta Pixel after consent,
+   install-to-home-screen, owner stats ===== */
+(function(){
+const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+/* first-touch source: utm_source[/utm_campaign], or facebook when the link has fbclid, or the referring site */
+const SRC=(function(){let s=LS.get("ftn_src");if(s)return s;
+  try{const q=new URLSearchParams(location.search),u=(q.get("utm_source")||"").trim(),c=(q.get("utm_campaign")||"").trim();
+    if(u)s=u+(c?"/"+c:"");else if(q.get("fbclid"))s="facebook";else if(document.referrer){const h=new URL(document.referrer).hostname.replace(/^www\./,"");if(h&&h!==location.hostname)s=h}}catch(e){}
+  s=String(s||"direct").toLowerCase().replace(/[^a-z0-9_./-]/g,"").slice(0,60)||"direct";LS.set("ftn_src",s);return s})();
+window.FTN_SRC=SRC;
+/* public calls that must not touch the signed-in game state */
+const pub=body=>fetch(`${SB_URL}/functions/v1/game`,{method:"POST",headers:{"Content-Type":"application/json",apikey:SB_KEY,Authorization:"Bearer "+SB_KEY},body:JSON.stringify(body)}).then(r=>r.json());
+const TRACKED={};
+const track=kind=>{if(TRACKED[kind])return;TRACKED[kind]=1;pub({action:"track",kind,src:SRC}).catch(()=>{})};
+
+/* ---------- Meta Pixel: only after the visitor says yes ---------- */
+let PIX="",pixOn=false;
+function pixLoad(){if(pixOn||!PIX||LS.get("ftn_consent")!=="yes")return;pixOn=true;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
+  fbq("init",PIX);fbq("track","PageView")}
+const pix=(ev,data,custom)=>{if(!pixOn||!window.fbq)return;try{custom?fbq("trackCustom",ev,data||{}):fbq("track",ev,data||{})}catch(e){}};
+function consentBar(){if(!PIX||LS.get("ftn_consent"))return;const b=$("ckBar");b.hidden=false}
+$("ckYes").addEventListener("click",()=>{LS.set("ftn_consent","yes");$("ckBar").hidden=true;pixLoad()});
+$("ckNo").addEventListener("click",()=>{LS.set("ftn_consent","no");$("ckBar").hidden=true});
+function setPixel(id){id=String(id||"").replace(/\D/g,"");if(!id||PIX===id)return;PIX=id;consentBar();pixLoad()}
+
+/* every call that matters for ads goes through here: sign-up source, registration and purchase events */
+const _api=api;
+api=async function(action,params){
+  if(action==="signup")params=Object.assign({},params,{src:SRC});
+  if(action==="adm_cfg"&&$("cfPixel"))params=Object.assign({},params,{pixel:$("cfPixel").value.trim()});
+  const res=await _api(action,params);
+  if(CFG&&CFG.pixel)setPixel(CFG.pixel);
+  if(action==="signup")pix("CompleteRegistration",{content_name:"signup"});
+  if(action==="topup"&&res&&res.auto&&res.stars)pix("Purchase",{value:+res.baht||0,currency:"THB"});
+  return res};
+const _fill=fillCfg;fillCfg=function(force){_fill(force);if($("cfPixel"))$("cfPixel").value=CFG.pixel||""};
+
+/* ---------- landing: one free demo shake, no account needed ---------- */
+const _setAuth=setAuth;setAuth=function(a){_setAuth(a);if(a)LS.set("ftn_acct","1")};
+if(AUTH)LS.set("ftn_acct","1");
+const wantLanding=()=>!AUTH&&!LS.get("ftn_acct")&&!/[?&]login\b/.test(location.search);
+const loginForm=()=>document.querySelector("#loginScreen .login-card");
+function showLanding(on){$("landing").hidden=!on;loginForm().hidden=on;if(on){track("land");const f=+LS.get("ftn_demo");if(LS.get("ftn_demo")!==null&&F[f])landShow(f,false)}}
+const _showLogin=showLogin;showLogin=function(){_showLogin();showLanding(wantLanding())};
+$("landIn").addEventListener("click",()=>{showLanding(false);setLoginMode("in");setTimeout(()=>$("lgId").focus(),50)});
+$("landUp").addEventListener("click",()=>{showLanding(false);setLoginMode("up");setTimeout(()=>$("lgEmail").focus(),50)});
+$("landBack").addEventListener("click",()=>{if(!AUTH)showLanding(true)});
+let landBusy=false;
+function landShow(f,fresh){const L=LV[F[f][0]];$("landNo").textContent=th(f+1);$("landStage").classList.add("land-up");
+  $("landPaper").innerHTML=slipPaperHTML(f);$("landResult").hidden=false;
+  $("landShake").hidden=true;$("landHint").textContent=fresh?"":"ใบทดลองของคุณ";
+  if(fresh)setTimeout(()=>$("landResult").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"}),60)}
+$("landShake").addEventListener("click",()=>{if(landBusy)return;landBusy=true;$("landShake").disabled=true;
+  const tube=$("landTube"),t0=performance.now(),dur=reduce?200:1600;let lastC=0;track("demo");pix("DemoShake",{},true);
+  (function step(ts){const k=(ts-t0)/dur;if(k<1){const amp=reduce?0:2.2+k*2.2;tube.style.transform=`rotate(${Math.sin(ts/45)*amp}deg) translateX(${Math.sin(ts/33)*amp*.5}px)`;
+      if(ts-lastC>70+Math.random()*90){lastC=ts;clack();vib(8)}requestAnimationFrame(step);return}
+    tube.style.transform="";const f=Math.floor(rnd()*F.length);LS.set("ftn_demo",String(f));chime([784,988,1319]);
+    setTimeout(()=>{landShow(f,true);burst(1,LV[F[f][0]].glow||"#f0d28a");landBusy=false},reduce?0:700)})(t0)});
+
+/* ---------- install to home screen ---------- */
+let deferredInstall=null;
+const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;syncInstall()});
+window.addEventListener("appinstalled",()=>{deferredInstall=null;syncInstall();toast("เพิ่มไว้ที่หน้าจอแล้ว 🙏")});
+function syncInstall(){const box=$("installBox");if(!box)return;box.hidden=standalone()||(!deferredInstall&&!isIOS)}
+$("installBtn").addEventListener("click",async()=>{if(deferredInstall){deferredInstall.prompt();try{await deferredInstall.userChoice}catch(e){}deferredInstall=null;syncInstall()}
+  else $("installHow").hidden=!$("installHow").hidden});
+syncInstall();
+
+/* ---------- owner stats ---------- */
+let statDays=30;
+const pct=(a,b)=>b?Math.round(a/b*100)+"%":"–";
+async function loadStats(){const el=$("statBox");if(!el||!isOwn())return;el.innerHTML=`<div class="placeholder">กำลังคำนวณ…</div>`;
+  try{const r=await api("adm_stats",{days:statDays});const T=r.rows.reduce((a,x)=>{for(const k in x)if(k!=="d")a[k]=(a[k]||0)+x[k];return a},{});
+    const sum=`<div class="stat-sum"><div><b>${T.signup||0}</b><span>คนสมัคร</span></div><div><b>${pct(T.tut,T.signup)}</b><span>จบบทเรียน</span></div><div><b>${pct(T.d1,T.d1n)}</b><span>กลับมาวันถัดไป</span></div><div><b>${pct(T.d7,T.d7n)}</b><span>ยังเล่นหลัง 7 วัน</span></div><div><b>${pct(T.pay,T.signup)}</b><span>เคยจ่าย</span></div><div><b>${T.signup?Math.round((T.baht||0)/T.signup):0} ฿</b><span>รายได้ต่อคนสมัคร</span></div></div>`;
+    const rows=r.rows.filter(x=>x.land||x.demo||x.signup).map(x=>`<tr><td>${x.d.slice(8)}/${x.d.slice(5,7)}</td><td class="num">${x.land}</td><td class="num">${x.demo}</td><td class="num">${x.signup}</td><td class="num">${pct(x.tut,x.signup)}</td><td class="num">${x.d1n?pct(x.d1,x.d1n):"รอ"}</td><td class="num">${x.d7n?pct(x.d7,x.d7n):"รอ"}</td><td class="num">${x.pay}</td><td class="num">${x.baht}</td></tr>`).join("");
+    const src=r.bySrc.map(x=>`<tr><td>${esc(x.src)}</td><td class="num">${x.signup}</td><td class="num">${pct(x.tut,x.signup)}</td><td class="num">${x.pay}</td><td class="num">${x.baht}</td><td class="num">${x.signup?Math.round(x.baht/x.signup):0}</td></tr>`).join("");
+    el.innerHTML=sum+`<h2 style="margin-top:14px">รายวัน (นับตามวันที่สมัคร · ซ่อนวันที่ไม่มีอะไร)</h2><div class="stat-wrap"><table class="stat-t"><thead><tr><th>วัน</th><th class="num">เข้าหน้าแรก</th><th class="num">เขย่าทดลอง</th><th class="num">สมัคร</th><th class="num">จบบทเรียน</th><th class="num">วันถัดไป</th><th class="num">หลัง 7 วัน</th><th class="num">จ่าย (คน)</th><th class="num">ยอด (฿)</th></tr></thead><tbody>${rows||`<tr><td colspan="9">ยังไม่มีข้อมูลในช่วงนี้</td></tr>`}</tbody></table></div>
+      <h2 style="margin-top:14px">แยกตามแหล่งที่มา</h2><div class="stat-wrap"><table class="stat-t"><thead><tr><th>แหล่ง</th><th class="num">สมัคร</th><th class="num">จบบทเรียน</th><th class="num">จ่าย (คน)</th><th class="num">ยอด (฿)</th><th class="num">฿/คน</th></tr></thead><tbody>${src||`<tr><td colspan="6">ยังไม่มีข้อมูล</td></tr>`}</tbody></table></div>
+      <p class="note">ไม่นับบัญชีแอดมินและสตาฟ · "เข้าหน้าแรก" และ "เขย่าทดลอง" นับเฉพาะคนที่ยังไม่ได้ล็อกอิน เริ่มเก็บตั้งแต่ระบบนี้เปิด · "วันถัดไป" และ "หลัง 7 วัน" นับตั้งแต่ระบบนี้เปิดเช่นกัน วันที่ยังไม่ครบกำหนดขึ้นว่า "รอ" · เอาค่าแอดต่อคนสมัครจาก Meta มาเทียบกับ "รายได้ต่อคนสมัคร"</p>`}
+  catch(e){el.innerHTML=`<div class="placeholder">${esc(typeof e==="string"?e:"โหลดสถิติไม่สำเร็จ")}</div>`}}
+$("statDays").addEventListener("click",e=>{const b=e.target.closest("[data-sd]");if(!b)return;statDays=+b.dataset.sd;$("statDays").querySelectorAll("[data-sd]").forEach(x=>x.classList.toggle("on",x===b));loadStats()});
+$("statReload").addEventListener("click",loadStats);
+const _showAdmTab=showAdmTab;showAdmTab=function(t){_showAdmTab(t);if(t==="stats")loadStats()};
+
+/* ---------- start: public config (pixel id) + landing if this device has never signed in ---------- */
+pub({action:"config"}).then(j=>{if(j&&j.cfg&&j.cfg.pixel)setPixel(j.cfg.pixel)}).catch(()=>{});
+if(document.querySelector('#admTabs [data-at="stats"].on'))setTimeout(loadStats,1500);
+if(!AUTH&&!$("loginScreen").hidden)showLanding(wantLanding());
+})();
 
 </script>
 </body></html>

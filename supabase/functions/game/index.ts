@@ -292,7 +292,7 @@ const int = (v, lo, hi) => { const n = Math.trunc(Number(v) || 0); return Math.m
 let CFG_C = null, CFG_AT = 0;
 const TUT_FROM = Date.parse("2026-10-19T17:40:00Z"); /* accounts created from 00:40 Bangkok time, 20 Oct 2026 */
 async function getConfig() { if (CFG_C && Date.now() - CFG_AT < 10000) return CFG_C; CFG_C = await getConfigRaw(); CFG_AT = Date.now(); return CFG_C; }
-async function getConfigRaw() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates,slip_auto,slip_name,slip_tail,slip_hours,pay_bank,pay_no").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
+async function getConfigRaw() { const { data } = await sb.from("config").select("pay,ann,maint,packs,signup_approval,sms_verify,rates,slip_auto,slip_name,slip_tail,slip_hours,pay_bank,pay_no,pixel_id").eq("id", 1).single(); return data || { pay: "", ann: "", maint: false, packs: DEFAULT_PACKS, signup_approval: false, sms_verify: false }; }
 async function loadState(uid) {
   const { data } = await sb.from("player_state").select("state,ver").eq("id", uid).maybeSingle();
   return data ? { st: Object.assign(fresh(), data.state), ver: data.ver } : { st: fresh(), ver: -1 };
@@ -316,6 +316,63 @@ async function withPlayer(uid, fn) {
 }
 const inbox = (G, msg) => { G.S.inbox.push({ at: Date.now(), msg }); if (G.S.inbox.length > 20) G.S.inbox.splice(0, G.S.inbox.length - 20); };
 
+/* ---------- measuring: where players come from, what they do on the first visit, which days they come back ---------- */
+const cleanSrc = v => String(v || "").toLowerCase().replace(/[^a-z0-9_./-]/g, "").slice(0, 60) || "direct";
+const bkkDay = t => new Date(new Date(t).getTime() + 7 * 3600e3).toISOString().slice(0, 10);
+const TRACK_KINDS = new Set(["land", "demo"]), TRACK_SEEN = new Map();
+/* visitors who are not signed in: a landing view or a free demo shake. One per address and kind every 10 minutes, so nobody can flood the table */
+async function track(req, p) {
+  const kind = String(p.kind || ""); if (!TRACK_KINDS.has(kind)) return fail("bad kind");
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "?", key = ip + "|" + kind, t = Date.now();
+  if (TRACK_SEEN.size > 20000) TRACK_SEEN.clear();
+  if (t - (TRACK_SEEN.get(key) || 0) < 600e3) return out({ ok: true });
+  TRACK_SEEN.set(key, t);
+  await sb.from("events").insert({ user_id: null, kind, data: { src: cleanSrc(p.src) } });
+  return out({ ok: true });
+}
+/* read every row of a query, 1000 at a time */
+async function allRows(make) { const outRows = []; for (let i = 0; i < 50; i++) { const { data, error } = await make().range(i * 1000, i * 1000 + 999); if (error) throw "อ่านข้อมูลไม่สำเร็จ"; outRows.push(...(data || [])); if (!data || data.length < 1000) break; } return outRows; }
+/* owner stats: one row per sign-up day for the last N days */
+async function adminStats(days) {
+  days = Math.max(7, Math.min(60, Math.trunc(+days || 30)));
+  const today = bkkDay(Date.now()), since = new Date(Date.parse(today + "T00:00:00+07:00") - (days - 1) * 864e5).toISOString();
+  const [anon, profs, sus] = await Promise.all([
+    allRows(() => sb.from("events").select("kind,at,data").in("kind", ["land", "demo"]).gte("at", since).order("at")),
+    allRows(() => sb.from("profiles").select("id,created_at,is_admin,staff").gte("created_at", since).order("created_at")),
+    allRows(() => sb.from("events").select("user_id,data").eq("kind", "signup").gte("at", since).order("at")),
+  ]);
+  const players = profs.filter(x => !x.is_admin && !x.staff), ids = players.map(x => x.id), idSet = new Set(ids);
+  const chunks = []; for (let i = 0; i < ids.length; i += 200) chunks.push(ids.slice(i, i + 200));
+  const states = [], act = [], pays = [];
+  for (const c of chunks) {
+    const [st, ev, tp] = await Promise.all([
+      allRows(() => sb.from("player_state").select("id,state").in("id", c).order("id")),
+      allRows(() => sb.from("events").select("user_id,at").eq("kind", "day").in("user_id", c).order("at")),
+      allRows(() => sb.from("topups").select("user_id,baht,created_at").eq("status", "approved").in("user_id", c).order("created_at")),
+    ]);
+    states.push(...st); act.push(...ev); pays.push(...tp);
+  }
+  const srcOf = {}; for (const e of sus) if (idSet.has(e.user_id)) srcOf[e.user_id] = cleanSrc(e.data && e.data.src);
+  const tutOf = {}; for (const r of states) { const S = r.state || {}; tutOf[r.id] = { done: S.tutS === 99, shakes: +S.shakes || 0 }; }
+  const dnum = d => Math.round(Date.parse(d + "T00:00:00Z") / 864e5);
+  const seen = {}; for (const e of act) (seen[e.user_id] = seen[e.user_id] || new Set()).add(dnum(bkkDay(e.at)));
+  const paid = {}; for (const t of pays) { const x = paid[t.user_id] = paid[t.user_id] || { baht: 0 }; x.baht += +t.baht || 0; }
+  const row = d => ({ d, land: 0, demo: 0, signup: 0, tut: 0, d1: 0, d7: 0, d1n: 0, d7n: 0, pay: 0, baht: 0 });
+  const byDay = {}; for (let i = 0; i < days; i++) { const d = bkkDay(Date.parse(today + "T12:00:00+07:00") - i * 864e5); byDay[d] = row(d); }
+  for (const e of anon) { const r = byDay[bkkDay(e.at)]; if (r) r[e.kind]++; }
+  const tday = dnum(today), bySrc = {};
+  for (const p of players) {
+    const d = bkkDay(p.created_at), r = byDay[d]; if (!r) continue; const n = dnum(d), s = seen[p.id] || new Set(), src = srcOf[p.id] || "direct";
+    const b = bySrc[src] = bySrc[src] || { src, signup: 0, tut: 0, pay: 0, baht: 0 };
+    r.signup++; b.signup++;
+    if (tutOf[p.id] && tutOf[p.id].done) { r.tut++; b.tut++; }
+    if (tday >= n + 1) { r.d1n++; if (s.has(n + 1)) r.d1++; }
+    if (tday >= n + 7) { r.d7n++; if ([...s].some(x => x >= n + 7)) r.d7++; }
+    if (paid[p.id]) { r.pay++; r.baht += paid[p.id].baht; b.pay++; b.baht += paid[p.id].baht; }
+  }
+  return { days, today, rows: Object.values(byDay), bySrc: Object.values(bySrc).sort((x, y) => y.signup - x.signup) };
+}
+
 /* sign up with email + phone; the login id is made from the player code so nobody has to invent one */
 async function signUp(p) {
   const email = String(p.email || "").trim().toLowerCase(), phone = normPhone(p.phone), pass = String(p.password || "");
@@ -335,7 +392,7 @@ async function signUp(p) {
   if (e2) { await sb.auth.admin.deleteUser(uid); return fail("สมัครไม่สำเร็จ ลองใหม่อีกครั้ง"); }
   await sb.from("player_state").insert({ id: uid, state: fresh(), ver: 0 });
   if (cfg.sms_verify) await sb.from("otp_codes").delete().eq("phone", phone);
-  await log(uid, "signup", { login, pending: !approved, sms: !!cfg.sms_verify });
+  await log(uid, "signup", { login, pending: !approved, sms: !!cfg.sms_verify, src: cleanSrc(p.src) });
   return out({ ok: true, res: { email: `${login}@${EMAIL_DOMAIN}`, pending: !approved } });
 }
 /* turn what the player typed (email / phone / old id) into the sign-in address; unknown ids get a look-alike so nobody can probe who has an account */
@@ -396,6 +453,7 @@ async function adminAction(a, p, me, role) {
   const uid = p.uid;
   const prof = async () => { const { data } = await sb.from("profiles").select("*").eq("id", uid).single(); if (!data) throw "ไม่พบผู้เล่น"; return data; };
   if (a === "adm_list") return await adminList();
+  if (a === "adm_stats") return await adminStats(p.days);
   if (a === "adm_topup") {
     const { data: t } = await sb.from("topups").select("*").eq("id", p.id).single(); if (!t || t.status !== "pending") throw "คำขอนี้ถูกจัดการไปแล้ว";
     if (p.ok && p.baht != null) { const b = int(p.baht, 0, 100000); if (b < 1) throw "ใส่ยอดเงินในสลิปก่อน"; const c = await getConfig(); const packs = Array.isArray(c.packs) && c.packs.length ? c.packs : DEFAULT_PACKS;
@@ -438,7 +496,7 @@ async function adminAction(a, p, me, role) {
     CFG_C = null; { const old = await getConfig(); const diff = [];
       const j = x => JSON.stringify(x || null); if (rates && j(rates) !== j(old.rates)) diff.push("rates"); if (j(packs) !== j(old.packs)) diff.push("packs"); if (String(p.ann || "") !== (old.ann || "")) diff.push("ann"); if (!!p.maint !== !!old.maint) diff.push("maint");
       if (diff.length) await log(me, "cfg", { diff, rates: rates || old.rates || null, old_rates: old.rates || null, packs, ann: String(p.ann || "").slice(0, 120), maint: !!p.maint }, me); }
-    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, slip_auto: !!p.slipAuto, slip_name: String(p.slipName || "").slice(0, 80), slip_tail: String(p.slipTail || "").replace(/\D/g, "").slice(-6), pay_bank: String(p.payBank || "").slice(0, 40), pay_no: String(p.payNo || "").replace(/[^\d-]/g, "").slice(0, 24), slip_hours: int(p.slipHours || 24, 1, 168), packs, ...(rates ? { rates } : {}), updated_at: new Date().toISOString() }).eq("id", 1);
+    await sb.from("config").update({ pay: String(p.pay || "").slice(0, 300), ann: String(p.ann || "").slice(0, 120), maint: !!p.maint, signup_approval: !!p.approval, sms_verify: !!p.sms, slip_auto: !!p.slipAuto, slip_name: String(p.slipName || "").slice(0, 80), slip_tail: String(p.slipTail || "").replace(/\D/g, "").slice(-6), pay_bank: String(p.payBank || "").slice(0, 40), pay_no: String(p.payNo || "").replace(/[^\d-]/g, "").slice(0, 24), slip_hours: int(p.slipHours || 24, 1, 168), ...(p.pixel !== undefined ? { pixel_id: String(p.pixel || "").replace(/\D/g, "").slice(0, 20) } : {}), packs, ...(rates ? { rates } : {}), updated_at: new Date().toISOString() }).eq("id", 1);
     CFG_C = null;
     return { ok: true };
   }
@@ -586,7 +644,8 @@ Deno.serve(async (req) => {
   const a = String(p.action || "");
   try {
     if (a === "signup") return await signUp(p);
-    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint, approval: !!c.signup_approval, sms: !!c.sms_verify } }); }
+    if (a === "config") { const c = await getConfig(); return out({ cfg: { ann: c.ann, maint: c.maint, approval: !!c.signup_approval, sms: !!c.sms_verify, pixel: c.pixel_id || "" } }); }
+    if (a === "track") return await track(req, p);
     if (a === "otp_send") return await otpSend(p);
     if (a === "resolve") return await resolveId(p);
     const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
@@ -651,9 +710,10 @@ Deno.serve(async (req) => {
       const same = JSON.stringify(show) === JSON.stringify(prof.showcase || []) && av.pi === (prof.avatar ?? -1) && av.L === (prof.avatar_l ?? 1) && fr === (prof.frame || "none");
       if (sc !== (prof.score || 0)) await sb.from("profiles").update({ score: sc, score_at: new Date().toISOString(), ...look }).eq("id", uid);
       else if (!same) await sb.from("profiles").update(look).eq("id", uid); }
-    const t0 = Date.now(); if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
+    const t0 = Date.now(); if (!prof.last_seen || bkkDay(t0) !== bkkDay(prof.last_seen)) log(uid, "day", {}).then(() => {});
+    if (t0 - new Date(prof.last_seen).getTime() > 60e3) sb.from("profiles").update({ last_seen: new Date(t0).toISOString() }).eq("id", uid).then(() => {});
     const { data: tops } = usePre ? await pre.tops : await TOPS(uid);
-    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, staff: STAFF, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, rates: G.applyRates(cfg.rates), approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET), autoSlip: !!(cfg.slip_auto && SLIP_KEY), payBank: cfg.pay_bank || "", payNo: cfg.pay_no || "", payName: cfg.slip_name || "", topupMin: TOPUP_MIN, slipMaxH: cfg.slip_hours || 24, ...(ADMIN ? { slipAuto: !!cfg.slip_auto, slipName: cfg.slip_name || "", slipTail: cfg.slip_tail || "", slipHours: cfg.slip_hours || 24, slipReady: !!SLIP_KEY } : {}) }, topups: tops || [] });
+    return out({ res, state: G.S, now: G.now(), profile: { name: prof.name, login: prof.login, code: prof.code, admin: ADMIN, staff: STAFF, email: prof.email || "", phone: prof.phone || "" }, cfg: { pay: cfg.pay, ann: cfg.ann, maint: cfg.maint, packs: cfg.packs, rates: G.applyRates(cfg.rates), approval: !!cfg.signup_approval, sms: !!cfg.sms_verify, smsReady: !!(TBS_KEY && TBS_SECRET), autoSlip: !!(cfg.slip_auto && SLIP_KEY), payBank: cfg.pay_bank || "", payNo: cfg.pay_no || "", payName: cfg.slip_name || "", topupMin: TOPUP_MIN, slipMaxH: cfg.slip_hours || 24, pixel: cfg.pixel_id || "", ...(ADMIN ? { slipAuto: !!cfg.slip_auto, slipName: cfg.slip_name || "", slipTail: cfg.slip_tail || "", slipHours: cfg.slip_hours || 24, slipReady: !!SLIP_KEY } : {}) }, topups: tops || [] });
   } catch (e) {
     return fail(typeof e === "string" ? e : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", typeof e === "string" ? 400 : 500);
   }
