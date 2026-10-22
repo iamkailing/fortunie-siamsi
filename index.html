@@ -246,7 +246,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 
 /* v12: buddy, floating fortune, paper slip, top-up slips, admin */
 [hidden]{display:none!important}
-.tabbar{grid-template-columns:repeat(var(--tabs,6),1fr)}
+.tabbar{grid-template-columns:repeat(var(--tabs,7),1fr)}
 .purple{filter:sepia(1) saturate(4) hue-rotate(220deg) brightness(1.05)}
 .egg:focus-visible,.pet-big:focus-visible,.buddy:focus-visible{outline:none;filter:drop-shadow(0 0 0 transparent) drop-shadow(0 0 18px #fbeec2)}
 .egg:focus{outline:none}
@@ -999,6 +999,65 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
  color:#fff;font-size:15px;font-weight:800;letter-spacing:.3px;text-shadow:0 1px 2px rgba(0,0,0,.35);border-top:2px dashed rgba(255,255,255,.55);border-bottom:2px dashed rgba(255,255,255,.55);white-space:nowrap}
 #front .tut-tag{top:58%;width:104%;transform:translate(-50%,-50%) rotate(-7deg);font-size:13px;padding:5px 0}
 
+/* v100 altar */
+#scr-altar{background:linear-gradient(#24163866,#241638ee),var(--altar-bg,none) center top/cover no-repeat;border-radius:20px;padding-top:6px}
+.altar-step{margin:4px auto 6px;max-width:340px;text-align:center;background:#00000040;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px}
+.altar-step b:first-child{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--butter);color:var(--night);margin-right:4px;font-size:12px}
+.altar-step.done{background:#f0d28a22;color:var(--butter)}
+.altar-scene{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1/1.02;container-type:inline-size}
+.altar-scene>*{position:absolute}
+.altar-scene img{display:block;-webkit-user-drag:none;pointer-events:none}
+.a-glow{left:-4%;width:108%;bottom:14%;opacity:.95;animation:aglow 4s ease-in-out infinite}
+@keyframes aglow{50%{opacity:.7}}
+.a-deity{left:50%;bottom:30.5%;height:62%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
+.a-deity img{height:100%;width:auto;filter:drop-shadow(0 6px 14px #0006)}
+.deity-ph{display:block;text-align:center;font-size:40px;line-height:1.2;color:var(--butter)}
+.a-shelf{left:0;width:100%;bottom:2%}
+.a-cloth{left:2%;width:96%;bottom:14.5%}
+.a-vase{left:2%;width:14%;bottom:27%}
+.a-candle{right:5%;width:6.5%;bottom:27%}
+.altar-scene button{background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.a-glass{left:17%;width:12%;bottom:27%}
+.a-incense{left:66%;width:14%;bottom:26.5%;transform:translateX(-50%)}
+.altar-scene button img{width:100%;height:auto;transition:transform .3s}
+.altar-scene button.todo::after{content:"";position:absolute;inset:-14% -18%;border-radius:50%;border:2px solid #f6dc9a;box-shadow:0 0 18px #f6dc9a99;animation:atodo 1.6s ease-in-out infinite;pointer-events:none}
+@keyframes atodo{0%,100%{opacity:.25;transform:scale(.92)}50%{opacity:1;transform:scale(1.04)}}
+.a-glass.pour img{animation:apour .9s ease}
+@keyframes apour{30%{transform:rotate(-14deg) translateY(-6%)}60%{transform:rotate(4deg)}}
+.a-glass.nudge img,.a-incense.nudge img{animation:anudge .4s}
+@keyframes anudge{25%{transform:translateX(-6%)}75%{transform:translateX(6%)}}
+.smoke{position:absolute;left:50%;bottom:96%;width:40%;height:80%;transform:translateX(-50%);pointer-events:none}
+.smoke.half{bottom:62%}
+.smoke i{position:absolute;bottom:0;left:30%;width:50%;height:42%;border-radius:50%;background:radial-gradient(#ffffffd9,#ffffff55 45%,#ffffff00 72%);filter:blur(2px);opacity:0;animation:asmoke 4.2s linear infinite}
+.smoke i:nth-child(2){animation-delay:1.4s}.smoke i:nth-child(3){animation-delay:2.8s}
+@keyframes asmoke{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:.75}100%{opacity:0;transform:translate(30%,-180%) scale(1.8)}}
+@media (prefers-reduced-motion:reduce){.a-glow,.smoke i,.altar-scene button.todo::after{animation:none}.smoke i{opacity:.4}}
+.altar-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.altar-card{background:#ffffff0c;border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;text-align:left}
+.altar-card.wide{grid-column:1/-1}
+.altar-card .ak{font-size:12px;color:var(--muted)}
+.altar-card b{font-family:var(--f-display);font-weight:500}
+.altar-card .pray{font-family:inherit;font-size:16px;color:var(--butter)}
+.daycol{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:-2px;box-shadow:0 0 0 2px #fff6}
+.altar-btns{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.altar-info .note{grid-column:1/-1;text-align:center;font-size:12px;opacity:.75;margin:2px 0 0}
+.deity-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.deity-card{display:flex;flex-direction:column;align-items:center;gap:4px;background:#ffffff0c;border:1px solid var(--line);border-radius:18px;padding:12px 8px;color:var(--text);text-align:center;font:inherit}
+.deity-card.on{border-color:var(--butter);box-shadow:0 0 0 2px #f0d28a55}
+.deity-card .deity-img{height:150px;display:flex;align-items:flex-end;justify-content:center}
+.deity-card img{height:100%;width:auto;filter:drop-shadow(0 4px 10px #0006)}
+.deity-card b{font-family:var(--f-display);font-weight:500;color:var(--butter)}
+.deity-card span:last-child{font-size:12px;color:var(--muted)}
+.wish-pop{display:flex;flex-direction:column;gap:8px;max-height:86dvh;overflow:auto}
+.wish-pop textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);background:#ffffff12;color:var(--text);border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical}
+.wish-list{display:flex;flex-direction:column;gap:8px}
+.wish{background:#ffffff0c;border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-align:left}
+.wish p{margin:0 0 6px;white-space:pre-wrap;word-break:break-word}
+.wish.ok{border-color:#f0d28a88;background:#f0d28a14}
+.wish .row{gap:6px}.wish .row span:last-child{display:flex;gap:6px}
+.a-candle{animation:aflick 2.4s ease-in-out infinite}@keyframes aflick{0%,100%{filter:brightness(1) drop-shadow(0 0 6px #ffd27a88)}40%{filter:brightness(1.12) drop-shadow(0 0 10px #ffd27acc)}70%{filter:brightness(.95) drop-shadow(0 0 5px #ffd27a77)}}
+@media (prefers-reduced-motion:reduce){.a-candle{animation:none}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1101,6 +1160,27 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
   </div>
 
   <!-- INVENTORY -->
+  <!-- ALTAR -->
+  <div class="screen" id="scr-altar" hidden>
+    <div id="altarBox">
+      <div id="altarPick" hidden></div>
+      <div id="altarMain" hidden>
+        <p class="altar-step" id="altarStep" role="status"></p>
+        <div class="altar-scene">
+          <img class="a-glow" id="altarGlow" data-art="altar_glow7" alt="" hidden>
+          <div class="a-deity" id="altarDeity"></div>
+          <img class="a-shelf" data-art="altar_shelf" alt="">
+          <img class="a-cloth" id="altarCloth" data-art="altar_cloth30" alt="" hidden>
+          <img class="a-vase" data-art="flower_vase" alt="">
+          <button type="button" class="a-glass" id="altarGlass" aria-label="แก้วน้ำถวายพระ"></button>
+          <button type="button" class="a-incense" id="altarIncense" aria-label="กระถางธูป"></button>
+          <img class="a-candle" data-art="candle" alt="">
+        </div>
+        <div class="altar-info" id="altarInfo"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="screen" id="scr-inv" hidden>
     <section>
       <div class="row"><h2 class="screen-title">คลังเซียมซี</h2><span class="small" id="invCount"></span></div>
@@ -1332,6 +1412,7 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 
 <nav class="tabbar" aria-label="เมนูเกม" id="tabbar">
   <button type="button" data-tab="home" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-1 18H9z M9 7h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เขย่า</span></button>
+  <button type="button" data-tab="altar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15h18 M5 15v4 M19 15v4 M12 4c1.6 1.6 2.4 3.4 2.4 5.2A2.4 2.4 0 0 1 12 11.6a2.4 2.4 0 0 1-2.4-2.4C9.6 7.4 10.4 5.6 12 4z M8 15c0-1.5 1.8-2.6 4-2.6s4 1.1 4 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>หิ้งพระ</span></button>
   <button type="button" data-tab="inv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z M4 7l2-4h12l2 4 M10 11h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>คลัง</span><b class="badge" id="badgeInv" hidden></b></button>
   <button type="button" data-tab="pets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4 0-7-2.5-7-5.5S8 9 12 9s7 2.5 7 5.5S16 20 12 20z M6 8.5a1.6 1.6 0 1 0 0-.1 M18 8.5a1.6 1.6 0 1 0 0-.1 M9.5 5a1.6 1.6 0 1 0 0-.1 M14.5 5a1.6 1.6 0 1 0 0-.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เพื่อน</span></button>
   <button type="button" data-tab="rank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z M8 6H5a3 3 0 0 0 3 4 M16 6h3a3 3 0 0 1-3 4 M12 13v4 M8.5 20h7 M10 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>อันดับ</span></button>
@@ -1406,6 +1487,14 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
   <span class="small" id="paidInfo"></span>
   <span class="small" id="paidTotal"></span>
   <button class="primary" id="paidOk" type="button">เยี่ยมเลย ไปเขย่ากัน</button>
+</div></div>
+<div class="scrim center" id="wishModal" hidden><div class="pop wish-pop" role="dialog" aria-modal="true" aria-labelledby="wishTitle">
+  <div class="row"><h2 id="wishTitle">📝 สมุดคำขอพร</h2><button class="ghost" id="wishClose" type="button">ปิด</button></div>
+  <p class="small" style="text-align:left;margin:0">จดสิ่งที่อยากให้เกิดขึ้น (เห็นแค่คุณ) พอสมหวังแล้วกลับมากด "สมหวังแล้ว" ข้อที่จดไว้ครบ 3 วันขึ้นไป รับ +10 ใบไม้ วันละ 1 ครั้ง</p>
+  <textarea id="wishIn" maxlength="120" rows="2" placeholder="เช่น ขอให้สอบผ่าน ขอให้งานใหม่ราบรื่น"></textarea>
+  <button class="primary" id="wishAdd" type="button">จดคำขอพร</button>
+  <span class="small" id="wishMsg" role="status"></span>
+  <div id="wishList" class="wish-list"></div>
 </div></div>
 <div class="scrim center" id="leafModal" hidden><div class="pop leaf-pop" role="dialog" aria-modal="true" aria-labelledby="leafTitle">
   <div class="leaf-head"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><div><h2 id="leafTitle">ร้านใบไม้</h2><p class="small">คุณมี <b id="leafHave">0</b> ใบไม้</p></div></div>
@@ -1748,6 +1837,20 @@ function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)th
   for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;leaf+=r.leaf;if(r.rainbow)rainbows++;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
   if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,leaf,rainbows,rainbow:rainbows>0,jar,before,gold:golds>0}}
 function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
+/* v100 altar: pick a deity; change the water then light incense = the daily check-in; a private wish book */
+const DEITY_KEYS=["lakshmi","buddha","guanyin","vessavana"];
+function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
+function actAltar(op,arg){const A=altarS(),today=dk(now());
+  if(op==="pick"){if(!DEITY_KEYS.includes(arg))throw "ไม่พบองค์นี้";A.d=arg;return{ok:1}}
+  if(op==="water"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";A.w=today;return{ok:1}}
+  if(op==="incense"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";if(A.w!==today)throw "เปลี่ยนน้ำพระก่อนนะคะ";if(A.i===today)throw "วันนี้จุดธูปแล้วค่ะ";
+    A.i=today;A.iAt=now();A.st=A.last===dk(now()-DAY)?A.st+1:1;A.last=today;A.tot++;if(A.st>=7)A.glow=1;if(A.st>=30)A.cloth=1;
+    const daily=streakState().claimed?null:actDaily();return{st:A.st,tot:A.tot,daily}}
+  if(op==="wish"){const t=String(arg||"").replace(/[\u0000-\u001f<>]/g,"").replace(/\s+/g," ").trim().slice(0,120);if(!t)throw "พิมพ์คำขอพรก่อนนะคะ";
+    if(A.wish.filter(w=>!w.ok).length>=10)throw "จดคำขอพรได้สูงสุด 10 ข้อ ลองกดสมหวังหรือลบข้อเก่าก่อนนะคะ";A.wish.unshift({id:"w"+now().toString(36)+Math.floor(rnd()*1e4),t,at:now()});A.wish=A.wish.slice(0,30);return{ok:1}}
+  if(op==="wish_ok"){const w=A.wish.find(x=>x.id===arg);if(!w||w.ok)throw "ไม่พบคำขอนี้";w.ok=now();let l=0;if(now()-w.at>=3*DAY&&A.wOk!==today){A.wOk=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  if(op==="wish_del"){A.wish=A.wish.filter(x=>x.id!==arg);return{ok:1}}
+  throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -1780,7 +1883,7 @@ async function api(action,params){const tk=await token();
   if(j.locked){LOCKED=j;applyLock();throw "locked"}
   if(LOCKED){LOCKED=null;applyLock()}
   if(j.state){S=Object.assign(fresh(),j.state);norm();OFF=j.now-Date.now();ONLINE=true}
-  if(j.profile){PROFILE=j.profile;OWNER=!!j.profile.admin;const AD=OWNER||!!j.profile.staff;$("adminTab").hidden=!AD;$("tabbar").style.setProperty("--tabs",AD?7:6);if(tab==="rank")renderMyProfile()}
+  if(j.profile){PROFILE=j.profile;OWNER=!!j.profile.admin;const AD=OWNER||!!j.profile.staff;$("adminTab").hidden=!AD;$("tabbar").style.setProperty("--tabs",AD?8:7);if(tab==="rank")renderMyProfile()}
   if(j.cfg){CFG=j.cfg;applyRates(CFG.rates);if(Array.isArray(CFG.packs)&&CFG.packs.length)PACKS=CFG.packs;renderAnn()}
   if(j.topups)MYREQ=j.topups;
   if(S.inbox&&S.inbox.length)showInbox();
@@ -1922,10 +2025,10 @@ function fx(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l
 
 /* ---------- sticks + hold to shake ---------- */
 /* v81 siamsi art: layered cup, tier papers, ash jar, flame. SS_ART = {key: url}; any missing key falls back to the old drawing */
-const SS_ART={"cup": "siamsi-art/cup.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
+const SS_ART={"altar_bg": "siamsi-art/altar_bg.webp", "altar_cloth30": "siamsi-art/altar_cloth30.webp", "altar_glow7": "siamsi-art/altar_glow7.webp", "altar_shelf": "siamsi-art/altar_shelf.webp", "candle": "siamsi-art/candle.webp", "cup": "siamsi-art/cup.webp", "deity_buddha": "siamsi-art/deity_buddha.webp", "deity_guanyin": "siamsi-art/deity_guanyin.webp", "deity_lakshmi": "siamsi-art/deity_lakshmi.webp", "deity_vessavana": "siamsi-art/deity_vessavana.webp", "flower_vase": "siamsi-art/flower_vase.webp", "glass_clear": "siamsi-art/glass_clear.webp", "glass_cloudy": "siamsi-art/glass_cloudy.webp", "incense_half": "siamsi-art/incense_half.webp", "incense_lit": "siamsi-art/incense_lit.webp", "incense_out": "siamsi-art/incense_out.webp", "incense_unlit": "siamsi-art/incense_unlit.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
 (function(){for(const k in SS_ART){if(!SS_ART[k]||/_[tmb]$/.test(k))continue;const im=new Image();im.decoding="async";im.src=SS_ART[k];SS_IMG[k]=im}
   document.querySelectorAll("img[data-art]").forEach(i=>{const s=SS_ART[i.dataset.art];if(s)i.src=s;else i.hidden=true});
-  const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(!SS_ART.cup)R.classList.add("no-cupart");
+  const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(SS_ART.altar_bg)R.style.setProperty("--altar-bg",`url("${SS_ART.altar_bg}")`);if(!SS_ART.cup)R.classList.add("no-cupart");
   let css="";for(const k of ["grad","good","vgood"])if(SS_ART["p_"+k+"_t"])css+=`.ssp-${k}{--pt:url("${SS_ART["p_"+k+"_t"]}");--pm:url("${SS_ART["p_"+k+"_m"]}");--pb:url("${SS_ART["p_"+k+"_b"]}")}`;
   if(css){const st=document.createElement("style");st.textContent=css;document.head.appendChild(st)}})();
 const paperK=lvn=>{const k=PAPER_K[lvn];return k&&SS_ART["p_"+k+"_t"]?k:""};
@@ -2289,7 +2392,7 @@ let sayLock=0;
 function hostSay(){if(Date.now()<sayLock)return;const st=streakState(),h=new Date(now()).getHours(),soon=S.inv.find(it=>it.at&&it.at+EXP-now()<DAY);
   const greet=h<11?"อรุณสวัสดิ์ค่ะ":h<16?"สวัสดีตอนบ่ายค่ะ":h<20?"สวัสดีตอนเย็นค่ะ":"ดึกแล้ว พักผ่อนบ้างนะคะ";let m;
   if(invFull())m=`<b>คลังเต็มแล้ว ${S.inv.length}/${INV_MAX} ใบ</b> เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้นะคะ`;
-  else if(!st.claimed)m=`<b>${greet}</b> วันนี้มีของขวัญเช็กอินรออยู่ กดไอคอนของขวัญด้านบนได้เลย`;
+  else if(!st.claimed)m=`<b>${greet}</b> วันนี้ยังไม่ได้ไหว้พระ ไปที่เมนู<b>หิ้งพระ</b> เปลี่ยนน้ำ จุดธูป รับของขวัญเช็กอินได้เลย`;
   else if(soon)m=`<b>ใกล้หมดอายุ</b> ใบที่ ${th(soon.f+1)} ในคลังจะหมดอายุใน ${fmt(soon.at+EXP-now())}`;
   else if(S.rtickets)m=`<b>มีตั๋วแรร์+ ${S.rtickets} ใบ</b> สุ่มได้แรร์ เอพิก หรือตำนาน ไปเปิดที่คลังได้เลยค่ะ`;
   else if(S.tickets)m=`<b>มีตั๋วสุ่มเพื่อน ${S.tickets} ใบ</b> ไปเปิดที่คลังได้เลยค่ะ`;
@@ -2494,13 +2597,13 @@ async function claimStreak(){const st=streakState();if(st.claimed)return;$("dail
   $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.l+" ใบไม้"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
   if(r.pet){const bi=PETS.findIndex(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bi>=0)setTimeout(()=>giftReveal(bi,k<=1),450)}}
 function renderDaily(){const st=streakState(),doneN=st.claimed?S.streakN:st.next-1;
-  $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"เข้าเกมต่อเนื่องครบ 7 วัน รับน้องหมีเด้ง เพื่อนพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
+  $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"ไหว้พระที่หิ้งทุกวัน (เปลี่ยนน้ำ + จุดธูป) ครบ 7 วัน รับน้องหมีเด้ง เพื่อนพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
   $("days").innerHTML=rewTable().map((r,i)=>{const d=i+1,state=d<=doneN?"done":(!st.claimed&&d===st.next?"now":"");
     return `<div class="day ${state}${r.pet?" big":""}"><span class="dn">วันที่ ${d}</span>${r.pet?`<span class="rw"><span class="purple">🐻</span></span><span class="rl">น้องหมีเด้ง</span>`:`<span class="rw"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span><span class="rl">${r.l} ใบไม้</span>`}${state==="done"?`<i class="ok">รับแล้ว</i>`:""}</div>`}).join("");
-  $("dailyClaim").disabled=st.claimed;$("dailyClaim").textContent=st.claimed?"รับแล้ว กลับมาพรุ่งนี้นะคะ":`รับรางวัลวันที่ ${st.next}`;$("giftDot").hidden=st.claimed}
+  $("dailyClaim").disabled=st.claimed;$("dailyClaim").textContent=st.claimed?"รับแล้ว กลับมาพรุ่งนี้นะคะ":`🙏 ไปไหว้พระ รับรางวัลวันที่ ${st.next}`;$("giftDot").hidden=st.claimed}
 function openDaily(){renderDaily();$("dailyModal").hidden=false;($("dailyClaim").disabled?$("dailyClose"):$("dailyClaim")).focus()}
 function autoDaily(){if(!ONLINE)return;const st=streakState(),d=dk(now());if(!st.claimed&&PREF.popDay!==d&&$("reveal").hidden&&$("loginScreen").hidden){PREF.popDay=d;savePref();setTimeout(openDaily,600)}}
-$("giftBtn").addEventListener("click",openDaily);$("dailyClose").addEventListener("click",()=>{$("dailyModal").hidden=true});$("dailyClaim").addEventListener("click",claimStreak);
+$("giftBtn").addEventListener("click",openDaily);$("dailyClose").addEventListener("click",()=>{$("dailyModal").hidden=true});$("dailyClaim").addEventListener("click",()=>{$("dailyModal").hidden=true;showTab("altar")});
 
 /* ---------- share card ---------- */
 function makeShare(){const r=S.last;if(!r)return;const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");centerText(x);
@@ -2799,7 +2902,7 @@ $("ncKind").addEventListener("change",syncNcKind);
 
 /* ---------- tabs + info ---------- */
 let tab="home";
-function showTab(t){if(t==="shop"){openSheet();return}tab=t;if(t==="admin")loadAdmin();["home","inv","pets","rank","info","admin"].forEach(k=>$("scr-"+k).hidden=k!==t);if(t==="rank")renderRank();
+function showTab(t){if(t==="shop"){openSheet();return}tab=t;if(t==="admin")loadAdmin();["home","altar","inv","pets","rank","info","admin"].forEach(k=>$("scr-"+k).hidden=k!==t);if(t==="altar"){ALTAR_PICKING=false;renderAltar()}if(t==="rank")renderRank();
   document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));window.scrollTo(0,0);renderMultiBar()}
 $("tabbar").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b)showTab(b.dataset.tab)});
 function renderInfo(){const P=powers(),lvn={"ดีมาก":0,"ดี":0,"ค่อยเป็นค่อยไป":0};F.forEach(f=>lvn[f[0]]++);
@@ -2833,6 +2936,63 @@ $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListe
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
 function tutTag(){return S.tutF&&!(S.topBaht>0)&&(S.shakes||0)<=3?`<span class="tut-tag">🎓 ใบนี้เป็นเซียมซีระบบฝึกสอน</span>`:""}
+/* ---------- v100 altar (หิ้งพระ): pick a deity, change the water + light incense = daily check-in, wish book ---------- */
+var DEITIES=[{k:"lakshmi",n:"พระแม่ลักษมี",d:"นับถือเรื่องความมั่งคั่ง ความงาม และความรัก"},{k:"buddha",n:"พระพุทธรูป",d:"เตือนใจให้สงบ มีสติ และใช้ปัญญา"},{k:"guanyin",n:"เจ้าแม่กวนอิม",d:"นับถือเรื่องความเมตตา และการปกป้องคุ้มครอง"},{k:"vessavana",n:"ท้าวเวสสุวรรณ",d:"นับถือเรื่องโชคลาภ และปัดเป่าสิ่งไม่ดี"}];
+var DAYCOL=[["อาทิตย์","แดง","#e0524f"],["จันทร์","เหลือง","#f2cf4a"],["อังคาร","ชมพู","#f19ac0"],["พุธ","เขียว","#5fbf73"],["พฤหัสบดี","ส้ม","#f0954a"],["ศุกร์","ฟ้า","#6cb4ef"],["เสาร์","ม่วง","#a27ad8"]];
+var ALTAR_PICKING=false,ALTAR_BUSY=false,TUT_ALTAR_T=0;
+function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
+/* the game rules for the altar; the web build swaps this for a server call with the same answers */
+async function altarAct(op,arg){const r=await api("altar",{op,arg:arg==null?"":String(arg)});if(r&&r.daily)showDailyWeb(r.daily);return r}
+function showDailyWeb(r){chime([659,784,988,1319]);burst(2,"#f0d28a");sayLock=Date.now()+6000;
+  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.l+" ใบไม้"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;
+  setTimeout(()=>toast(`เช็กอินวันที่ ${r.day}/7 · ${r.pet?"ได้น้องหมีเด้ง 🐻":"+"+r.l+" ใบไม้"}`),1400);
+  if(r.pet){const bi=PETS.findIndex(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bi>=0)setTimeout(()=>giftReveal(bi,k<=1),450)}}
+const altarArt=k=>SS_ART[k]||"";
+function altarIncenseState(){const A=altarS(),today=dk(now());if(A.i!==today)return A.tot?"out":"unlit";const h=(now()-A.iAt)/3600e3;return h<3?"lit":h<9?"half":"out"}
+function renderAltar(){const box=$("altarBox");if(!box)return;const A=altarS(),today=dk(now()),D=DEITIES.find(x=>x.k===A.d);
+  const pick=$("altarPick");pick.hidden=!!(D&&!ALTAR_PICKING);$("altarMain").hidden=!pick.hidden;
+  if(!pick.hidden){pick.innerHTML=`<h2 class="screen-title" style="margin-bottom:4px">เลือกองค์ที่จะบูชา</h2><p class="small" style="text-align:left;margin:0 0 10px">เลือกได้ 1 องค์ เปลี่ยนภายหลังได้ทุกเมื่อ</p><div class="deity-grid">${DEITIES.map(x=>`<button type="button" class="deity-card${A.d===x.k?" on":""}" data-deity="${x.k}"><span class="deity-img">${altarArt("deity_"+x.k)?`<img src="${altarArt("deity_"+x.k)}" alt="">`:"🪷"}</span><b>${x.n}</b><span>${x.d}</span></button>`).join("")}</div>${D?`<button class="ghost" id="altarPickCancel" type="button" style="margin-top:10px">ยกเลิก</button>`:""}`;return}
+  const water=A.w===today,lit=A.i===today,inc=altarIncenseState(),dc=DAYCOL[new Date(now()).getDay()];
+  $("altarDeity").innerHTML=altarArt("deity_"+D.k)?`<img src="${altarArt("deity_"+D.k)}" alt="${D.n}">`:`<span class="deity-ph">🪷<br>${D.n}</span>`;
+  $("altarGlass").innerHTML=`<img src="${altarArt(water?"glass_clear":"glass_cloudy")}" alt="${water?"น้ำใส เปลี่ยนแล้ววันนี้":"แก้วน้ำ ถึงเวลาเปลี่ยนน้ำ"}">`;
+  $("altarIncense").innerHTML=`<img src="${altarArt("incense_"+inc)}" alt="${lit?"ธูปจุดแล้ววันนี้":"กระถางธูป"}">${inc==="lit"||inc==="half"?`<span class="smoke ${inc}" aria-hidden="true"><i></i><i></i><i></i></span>`:""}`;
+  $("altarGlass").classList.toggle("todo",!water);$("altarIncense").classList.toggle("todo",water&&!lit);
+  $("altarGlow").hidden=!A.glow;$("altarCloth").hidden=!A.cloth;
+  $("altarStep").innerHTML=!water?`<b>1</b> แตะ<b>แก้วน้ำ</b>เพื่อเปลี่ยนน้ำพระ`:!lit?`<b>2</b> แตะ<b>กระถางธูป</b>เพื่อจุดธูปบูชา`:`🙏 ไหว้พระวันนี้แล้ว กลับมาพรุ่งนี้นะคะ`;
+  $("altarStep").classList.toggle("done",lit);
+  const b=activeBuff(),wl=A.wish.filter(w=>!w.ok).length;
+  $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
+    <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b></div>
+    <div class="altar-card wide"><span class="ak">คำอธิษฐานวันนี้</span>${b?`<b class="pray">${esc(F[b.f][6])}</b><span class="small" style="text-align:left">จากใบเซียมซีที่ใช้เป็นดวงวันนี้ ใบที่ ${th(b.f+1)}</span>`:`<span class="small" style="text-align:left">เขย่าเซียมซีแล้ว<b>ใช้เป็นดวงวันนี้</b> คำอธิษฐานประจำวันจะขึ้นตรงนี้</span>`}</div>
+    <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button></div>
+    <p class="note">เพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล</p>`}
+function waterSound(){const a=ac();if(!a)return;const s=a.createBufferSource();s.buffer=noiseBuf(a,1.1,false);const f=a.createBiquadFilter();f.type="bandpass";f.frequency.value=900;f.Q.value=.8;
+  const g=a.createGain(),t=a.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.12);g.gain.linearRampToValueAtTime(.05,t+.9);g.gain.linearRampToValueAtTime(0,t+1.1);
+  f.frequency.setValueAtTime(700,t);f.frequency.linearRampToValueAtTime(1500,t+1);s.connect(f).connect(g).connect(a.destination);s.start();setTimeout(()=>chime([1568,2093],.12),900)}
+function igniteSound(){const a=ac();if(!a)return;const s=a.createBufferSource();s.buffer=noiseBuf(a,.35,false);const f=a.createBiquadFilter();f.type="highpass";f.frequency.value=2500;
+  const g=a.createGain(),t=a.currentTime;g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);s.connect(f).connect(g).connect(a.destination);s.start();setTimeout(()=>chime([523,659,784,1047],.14),300)}
+async function altarDo(op,arg){if(ALTAR_BUSY)return null;ALTAR_BUSY=true;try{return await altarAct(op,arg)}catch(e){if(e!=="locked")toast(e);return null}finally{ALTAR_BUSY=false;renderAltar();render()}}
+$("altarBox").addEventListener("click",async e=>{const t=e.target;
+  const dc=t.closest("[data-deity]");if(dc){const r=await altarDo("pick",dc.dataset.deity);if(r){ALTAR_PICKING=false;chime([784,988,1175],.1);renderAltar();setTimeout(tutTick,200)}return}
+  if(t.closest("#altarPickCancel")){ALTAR_PICKING=false;renderAltar();return}
+  if(t.closest("#altarChange")){ALTAR_PICKING=true;renderAltar();return}
+  if(t.closest("#altarWishBtn")){openWish();return}
+  const A=altarS(),today=dk(now());
+  if(t.closest("#altarGlass")){if(A.w===today){toast("เปลี่ยนน้ำวันนี้แล้วค่ะ 💧");return}const g=$("altarGlass");g.classList.add("pour");waterSound();vib(15);
+    const r=await altarDo("water");setTimeout(()=>g.classList.remove("pour"),900);if(r){burst(1,"#bfe6ff");setTimeout(tutTick,300)}return}
+  if(t.closest("#altarIncense")){if(A.w!==today){toast("เปลี่ยนน้ำพระก่อนนะคะ 💧");const g=$("altarGlass");g.classList.remove("nudge");void g.offsetWidth;g.classList.add("nudge");return}
+    if(A.i===today){toast("ธูปยังจุดอยู่ค่ะ 🙏");return}igniteSound();vib(20);
+    const r=await altarDo("incense");if(r){burst(2,"#f0d28a");toast(`ไหว้พระแล้ว 🙏 ต่อเนื่อง ${r.st} วัน`);if(r.st===7||r.st===30)setTimeout(()=>toast(r.st===7?"✨ ครบ 7 วันติด หิ้งได้แสงทองแล้ว":"🎀 ครบ 30 วันติด หิ้งได้ผ้าแพรแล้ว"),2800);setTimeout(tutTick,600)}return}});
+/* wish book */
+function renderWish(){const A=altarS(),L=A.wish;
+  $("wishList").innerHTML=L.length?L.map(w=>`<div class="wish${w.ok?" ok":""}" data-wid="${esc(w.id)}"><p>${esc(w.t)}</p><div class="row"><span class="small">${w.ok?"สมหวังแล้ว 🙏 · ":"จดไว้ "}${new Date(w.ok||w.at).toLocaleDateString("th-TH",{day:"numeric",month:"short"})}</span><span>${w.ok?"":`<button class="mini wish-ok" type="button">สมหวังแล้ว</button>`}<button class="mini wish-del" type="button" aria-label="ลบคำขอนี้">ลบ</button></span></div></div>`).join(""):`<div class="placeholder">ยังไม่มีคำขอพร ลองจดสิ่งที่อยากให้เกิดขึ้นดูนะคะ</div>`}
+function openWish(){renderWish();$("wishMsg").textContent="";$("wishModal").hidden=false;setTimeout(()=>$("wishIn").focus(),50)}
+$("wishClose").addEventListener("click",()=>{$("wishModal").hidden=true});
+$("wishAdd").addEventListener("click",async()=>{const v=$("wishIn").value;const r=await altarDo("wish",v);if(r){$("wishIn").value="";$("wishMsg").textContent="จดคำขอพรแล้ว 🙏";chime([659,880],.1);renderWish()}});
+$("wishList").addEventListener("click",async e=>{const card=e.target.closest("[data-wid]");if(!card)return;const id=card.dataset.wid;
+  if(e.target.closest(".wish-ok")){const r=await altarDo("wish_ok",id);if(r){burst(2,"#f0d28a");chime([659,784,988,1319]);$("wishMsg").textContent=r.l?`ยินดีด้วยค่ะ 🎉 รับ +${r.l} ใบไม้`:"ยินดีด้วยค่ะ 🎉";renderWish()}}
+  else if(e.target.closest(".wish-del")){const r=await altarDo("wish_del",id);if(r)renderWish()}});
+
 var BURN_RB_NOW=false; /* rainbow jackpot shown by the current burn */
 var EGG_BACK=null; /* where to go after an egg: jars and tickets opened from the inventory stay there */
 /* ---------- guided tutorial: step-by-step, the player can only press what the lesson points at ---------- */
@@ -2854,7 +3014,7 @@ function tutAllow(){const s=tutStage(),rv=!$("reveal").hidden,bf=$("burnFx")&&!$
   if(rv&&(s===10||s===13))return REVEAL_OK;
   if(!$("todayModal").hidden)return "#todayOk";
   return ({1:"#holdBtn,#motionBox",4:'#tabbar [data-tab="pets"]',5:"",6:"#extraBtn,#holdBtn,#motionBox",8:"#holdBtn,#motionBox",
-    9:"#giftBtn,#dailyClaim,#dailyClose",10:'#leafBtn,#leafItems [data-leaf="t"],#leafUse',11:`#book .slot[data-pi="${PETS.findIndex(p=>p.n===TUT_DUCK)}"],#setBuddy,#petClose`,
+    9:'#tabbar [data-tab="altar"],#altarBox [data-deity],#altarGlass,#altarIncense,#giftBtn,#dailyClaim,#dailyClose',10:'#leafBtn,#leafItems [data-leaf="t"],#leafUse',11:`#book .slot[data-pi="${PETS.findIndex(p=>p.n===TUT_DUCK)}"],#setBuddy,#petClose`,
     12:'#tabbar [data-tab="inv"],'+tutBadSel(),13:'#tabbar [data-tab="inv"],#jarBtn',14:""})[s]||""}
 function tutBlock(e){if(!tutForced()||!tutReady())return;const t=e.target;if(!(t instanceof Element))return;if(t.closest("#coach,#logoutBtn,#lockLogout,#soundBtn,#tabbar [data-tab=\"info\"],#scr-info"))return;
   const ok=tutAllow();if(ok&&t.closest(ok))return;if(e.type==="keydown"&&!(e.key==="Escape"||((e.key==="Enter"||e.key===" ")&&!(ok&&t.closest(ok)))))return;
@@ -2912,9 +3072,13 @@ function tutTick(){if(!tutReady())return;
   if(s===8){if(rv){if(!$("stepSlip").hidden)coach(q('#slipActions [data-fate="keep"]'),`ใบนี้<b>เก็บเข้าคลัง</b>ไว้ก่อนนะคะ เดี๋ยวพาไปดูวิธีใช้ใบในคลัง 📦`,{tag,top:true});else coachHide();return}if(busy||holding){coachHide();return}if(!home){showTab("home");return}
     coach(hb,`ใช้สิทธิ์<b>เขย่าฟรี</b>ที่แมวนำโชคให้มาเลยค่ะ 🐱`,{tag});return}
   if(s===9){if(rv){coachHide();return}const dm=!$("dailyModal").hidden;
-    if(dm){const st=streakState();if(st.claimed)coach($("dailyClose"),`รับแล้ว! 🎁 เข้าเกมทุกวัน รับของต่อเนื่อง ครบ 7 วันได้<b>น้องหมีเด้ง</b>ค่ะ`,{tag,top:true});else coach($("dailyClaim"),`กด<b>รับรางวัลวันนี้</b>เลยค่ะ 7 ครั้งแรกแจกใบไม้เยอะเป็นพิเศษ`,{tag,top:true});return}
-    if(streakState().claimed){tutSet(10);return}if(!home){showTab("home");return}
-    coach($("giftBtn"),`🎁 ทุกวันอย่าลืม<b>เช็กอิน</b>รับของนะคะ แตะกล่องของขวัญเลย`,{tag});return}
+    if(dm){coach($("dailyClaim"),`กด<b>ไปไหว้พระ</b>เลยค่ะ`,{tag,top:true});return}
+    if(streakState().claimed){if(tab==="altar"){if(!TUT_ALTAR_T){TUT_ALTAR_T=setTimeout(()=>{TUT_ALTAR_T=0;showTab("home");tutSet(10)},2600)}coachHide();return}tutSet(10);return}
+    if(tab!=="altar"){coach(q('#tabbar [data-tab="altar"]'),`🙏 ทุกวันมา<b>ไหว้พระ</b>ที่หิ้งเพื่อเช็กอินรับของนะคะ 7 ครั้งแรกแจกใบไม้เยอะเป็นพิเศษ<br>แตะเมนู <b>"หิ้งพระ"</b> ด้านล่าง`,{tag});return}
+    const A=altarS(),today=dk(now());
+    if(!A.d||ALTAR_PICKING){coach(q("#altarBox [data-deity]"),`เลือก<b>องค์ที่อยากบูชา</b>ได้ 1 องค์ค่ะ เปลี่ยนทีหลังได้`,{tag,top:true,ring:false,arrow:false});return}
+    if(A.w!==today){coach($("altarGlass"),`ขั้นแรก แตะ<b>แก้วน้ำ</b>เพื่อเปลี่ยนน้ำพระค่ะ 💧`,{tag,top:true});return}
+    coach($("altarIncense"),`แล้วแตะ<b>กระถางธูป</b>เพื่อจุดธูปบูชา ครบ 2 ขั้นนับเป็นเช็กอินของวันนี้ค่ะ 🙏`,{tag,top:true});return}
   if(s===10){const lm=!$("leafModal").hidden;
     if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้<b>${TUT_DUCK}</b> 🦆 ตัวนี้เก่งเรื่อง<b>เผา</b> เผาใบเซียมซีแล้วได้<b>แต้มเผาเพิ่ม</b>ค่ะ<br><small>(ตั๋วใบแรกนี้ Fortunie จัดเป็นเป็ดน้อยไว้สอน)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่เพื่อเปิดเลยค่ะ 🥚",{tag,top:true});return}
     if(S.tutDuck&&!lm){tutSet(11);return}
@@ -2931,7 +3095,7 @@ function tutTick(){if(!tutReady())return;
     if(!(S.jarT>0)){tutSet(14);return}if(tab!=="inv"){showTab("inv");return}const jb=$("jarBtn");if(jb&&tutScrolled!==13){tutScrolled=13;jb.scrollIntoView({block:"center"})}
     coach(jb,`🌈 <b>แจ็กพ็อตไฟรุ้ง!</b> เป็ดน้อยมีโอกาส 1% ทุกครั้งที่เผา ได้ ${JAR} แต้มเต็มโหลในทีเดียว<br><small>(รอบสอน: ครั้งนี้ Fortunie จัดให้)</small><br>โหลขี้เถ้าเต็มแล้ว กด<b>เปิดโหลขี้เถ้า</b>เลยค่ะ`,{tag});return}
   if(s>=14){if(rv||bf)return;if(!home){showTab("home");return}
-    coach(null,`เก่งมาก! 🌟 ครบทุกบทเรียนแล้ว<br>ต่อจากนี้เล่นได้อิสระเลยค่ะ อย่าลืมกลับมาเช็กอินทุกวัน รับใบไม้กับของขวัญนะคะ`,{tag:"จบบทเรียน",label:"เริ่มเล่นเลย",next:()=>{coachHide();tutSet(99,true);render()}});return}}
+    coach(null,`เก่งมาก! 🌟 ครบทุกบทเรียนแล้ว<br>ต่อจากนี้เล่นได้อิสระเลยค่ะ อย่าลืมกลับมาไหว้พระทุกวัน รับใบไม้กับของขวัญนะคะ`,{tag:"จบบทเรียน",label:"เริ่มเล่นเลย",next:()=>{coachHide();tutSet(99,true);render()}});return}}
 let tutScrolled=0;
 /* the slip to burn in the lesson: the bad one from the paid shake (oldest "ค่อยเป็นค่อยไป" in the inventory) */
 function tutBadSel(){const bad=S.inv.filter(it=>F[it.f][0]==="ค่อยเป็นค่อยไป");const it=bad.length?bad[bad.length-1]:S.inv[S.inv.length-1];return it?`#inv .inv-item[data-id="${it.id}"] [data-act="burn"]`:'#inv [data-act="burn"]'}
@@ -2948,7 +3112,7 @@ function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=
   const _ss=showSlip;showSlip=function(){_ss.apply(this,arguments);setTimeout(tutTick,80)};
   document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#todayOk")&&tutForced()&&tutStage()===3)setTimeout(()=>tutSet(4),50)},true);
   ["egg","petDone","flip","openBtn","doneBtn","leafBtn","giftBtn","dailyClaim","dailyClose","setBuddy"].forEach(id=>{const el=$(id);if(el)el.addEventListener("click",()=>setTimeout(tutTick,id==="egg"?1100:250))});
-  document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#leafItems,#book,#inv,#tabbar"))setTimeout(tutTick,300)});
+  document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#leafItems,#book,#inv,#tabbar,#altarBox"))setTimeout(tutTick,300)});
   hb.addEventListener("pointerdown",()=>{if(tutForced()&&coachTarget===hb)coachHide()});
   const _br=doBurnReward;doBurnReward=function(){const r=_br.apply(this,arguments);if(tutForced()&&tutStage()===12)tutSet(13);return r};
 })();
@@ -2962,7 +3126,7 @@ function render(){setTimeout(()=>{try{tutTick()}catch(e){}},0);prune();regen();c
   $("chargeInfo").innerHTML=`สิทธิ์เขย่าฟรี <b>${S.charges}/${P.max}</b>${S.bonusFree?` + โบนัส <b>${S.bonusFree}</b>`:""}${S.charges<P.max&&S.regenAt?` · ได้สิทธิ์ถัดไปใน ${fmt(S.regenAt-now())}`:""}`;
   $("lastBox").innerHTML=S.last?lastHTML(S.last):`<div class="placeholder">ยังไม่ได้เขย่า ใบเซียมซีของคุณจะมาอยู่ตรงนี้</div>`;const sb=$("shareBtn");if(sb)sb.addEventListener("click",makeShare);
   const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),nearFull=S.inv.length>=INV_WARN,n=nearFull?"!":((S.tickets+(S.rtickets||0)+(S.jarT||0))||(canUse?"!":""));bi.hidden=!n;bi.textContent=n;bi.classList.toggle("warn",nearFull);
-  hostSay();renderChips();renderFortuneFloat();renderBuddy();renderInv();renderPets();renderDaily();renderInfo();
+  hostSay();renderChips();renderFortuneFloat();renderBuddy();renderInv();renderPets();renderDaily();renderInfo();renderAltar();
   $("soundBtn").textContent="เสียง: "+(PREF.sound?"เปิด":"ปิด");$("soundBtn").setAttribute("aria-pressed",PREF.sound?"true":"false")}
 setInterval(()=>{if(!busy&&$("reveal").hidden){render();autoDaily()}},30000);
 

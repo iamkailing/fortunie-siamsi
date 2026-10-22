@@ -214,6 +214,20 @@ function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)th
   for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;leaf+=r.leaf;if(r.rainbow)rainbows++;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
   if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,leaf,rainbows,rainbow:rainbows>0,jar,before,gold:golds>0}}
 function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
+/* v100 altar: pick a deity; change the water then light incense = the daily check-in; a private wish book */
+const DEITY_KEYS=["lakshmi","buddha","guanyin","vessavana"];
+function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
+function actAltar(op,arg){const A=altarS(),today=dk(now());
+  if(op==="pick"){if(!DEITY_KEYS.includes(arg))throw "ไม่พบองค์นี้";A.d=arg;return{ok:1}}
+  if(op==="water"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";A.w=today;return{ok:1}}
+  if(op==="incense"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";if(A.w!==today)throw "เปลี่ยนน้ำพระก่อนนะคะ";if(A.i===today)throw "วันนี้จุดธูปแล้วค่ะ";
+    A.i=today;A.iAt=now();A.st=A.last===dk(now()-DAY)?A.st+1:1;A.last=today;A.tot++;if(A.st>=7)A.glow=1;if(A.st>=30)A.cloth=1;
+    const daily=streakState().claimed?null:actDaily();return{st:A.st,tot:A.tot,daily}}
+  if(op==="wish"){const t=String(arg||"").replace(/[\u0000-\u001f<>]/g,"").replace(/\s+/g," ").trim().slice(0,120);if(!t)throw "พิมพ์คำขอพรก่อนนะคะ";
+    if(A.wish.filter(w=>!w.ok).length>=10)throw "จดคำขอพรได้สูงสุด 10 ข้อ ลองกดสมหวังหรือลบข้อเก่าก่อนนะคะ";A.wish.unshift({id:"w"+now().toString(36)+Math.floor(rnd()*1e4),t,at:now()});A.wish=A.wish.slice(0,30);return{ok:1}}
+  if(op==="wish_ok"){const w=A.wish.find(x=>x.id===arg);if(!w||w.ok)throw "ไม่พบคำขอนี้";w.ok=now();let l=0;if(now()-w.at>=3*DAY&&A.wOk!==today){A.wOk=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  if(op==="wish_del"){A.wish=A.wish.filter(x=>x.id!==arg);return{ok:1}}
+  throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีโหลขี้เถ้าเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
@@ -225,7 +239,7 @@ function actDaily(){const st=streakState();if(st.claimed)throw "รับขอ�
 function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "ใบไม้ไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
 function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 
-  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actTut,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
+  return { get S() { return S; }, set S(v) { S = v; }, admin, fresh,norm,prune,regen,summary,powers,actShake,actDecide,actUseSlip,actBurnSlip,actBurnMany,actTicket,applyRates,cleanRates,actJar,actExchange,actBuddy,actDaily,actLeafBuy,actTut,actAltar,actShowcase,collScore,showcaseOut,actProfile,avatarOut,DEFAULT_PACKS,now };
 }
 
 
@@ -692,6 +706,7 @@ Deno.serve(async (req) => {
         case "buddy": res = G.actBuddy(p.pi); break;
         case "daily": res = G.actDaily(); break;
         case "tut": res = G.actTut(p.s, !!p.done); break;
+        case "altar": res = G.actAltar(String(p.op || ""), typeof p.arg === "string" ? p.arg.slice(0, 200) : ""); break;
         case "leaf_buy": res = G.actLeafBuy(String(p.id || ""), p.n); break;
         case "showcase": res = G.actShowcase(p.pis); break;
         case "profile": res = G.actProfile(p.avatar, String(p.frame || "none"), p.L); break;
