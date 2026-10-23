@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#241638">
 <title>เซียมซีฮีลใจ · Fortunie</title>
-<meta name="description" content="เขย่าเซียมซีออนไลน์ สะสมเพื่อนตัวน้อย จาก Fortunie @fortuniehoro">
+<meta name="description" content="เขย่าเซียมซีออนไลน์ ไหว้พระที่หิ้งทุกวัน สะสมสัตว์มงคลผู้พิทักษ์ จาก Fortunie @fortuniehoro">
 <link rel="icon" href="icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -1152,6 +1152,14 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
 #shareModal .pop{gap:8px}
 #cfSpecial{width:100%;box-sizing:border-box;border:1px solid var(--line);background:#ffffff12;color:var(--text);border-radius:12px;padding:10px;font:inherit;font-size:14px;resize:vertical}
 
+/* v102 auspicious animals: summon-stick icon + day-7 gift art */
+i.ico-sum{display:none}
+:root.has-sum i.ico-sum{display:inline-block;width:1.3em;height:1.3em;vertical-align:-.3em;margin-right:5px;background:var(--ico-sum) center/contain no-repeat;filter:drop-shadow(0 1px 2px #2a134055)}
+.ticket.rare>span{display:block}
+.day.big .rw{height:46px}
+.day .rw img.day-pet{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 2px 4px #1a0b2e66)}
+.tabbar button[data-tab="pets"] span{white-space:nowrap;font-size:min(12px,2.9vw);letter-spacing:-.2px}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1309,13 +1317,13 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
   </div>
   <!-- PETS -->
   <div class="screen" id="scr-pets" hidden>
-    <h2 class="screen-title">เพื่อนตัวน้อย</h2>
+    <h2 class="screen-title">สัตว์มงคลผู้พิทักษ์</h2>
     <div id="buddyCard"></div>
     <section id="shardBox"></section>
     <section>
       <div class="row"><h2>สมุดสะสม</h2><span class="small" id="progress"></span></div>
       <div class="book" id="book"></div>
-      <p class="note">เลือกคู่หูได้ทีละ 1 ตัว พลังของคู่หูเท่านั้นที่มีผล ได้ตัวซ้ำเพื่อนจะวิวัฒนาการเปลี่ยนร่าง (มี 3 ร่าง) สกิลแรงขึ้นทุกร่าง ทุกระดับมี 2 ตัว = ร่าง 2 · ร่าง 3 ต้องมี ธรรมดา 8 · หายาก 6 · แรร์ 5 · เอพิก 4 · ตำนาน 3 ตัว ได้เกินจากนั้นเป็นเศษเพื่อน</p>
+      <p class="note">เลือกคู่หูได้ทีละ 1 ตัว พลังของคู่หูเท่านั้นที่มีผล ได้ตัวซ้ำสัตว์มงคลจะวิวัฒนาการเปลี่ยนร่าง (มี 3 ร่าง) สกิลแรงขึ้นทุกร่าง ทุกระดับมี 2 ตัว = ร่าง 2 · ร่าง 3 ต้องมี ธรรมดา 8 · หายาก 6 · แรร์ 5 · เอพิก 4 · ตำนาน 3 ตัว ได้เกินจากนั้นเป็นเศษสัตว์มงคล</p>
     </section>
   </div>
 
@@ -1332,15 +1340,15 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
     <section>
       <h2>โอกาสของใบเซียมซี</h2>
       <table><thead><tr><th>ระดับใบ</th><th class="num">จำนวน</th><th class="num">โอกาส</th><th class="num">ออกแล้ว</th></tr></thead><tbody id="slipOdds"></tbody></table>
-      <p class="note">ทุกใบมีโอกาสเท่ากัน 1 ใน 44 (ราว 2.3%) ใบที่ ๒๓ "พระจันทร์เต็มดวง" เป็นใบนำโชค ได้ตั๋วสุ่มเพื่อน 1 ใบทุกครั้งที่ออก</p>
+      <p class="note">ทุกใบมีโอกาสเท่ากัน 1 ใน 44 (ราว 2.3%) ใบที่ ๒๓ "พระจันทร์เต็มดวง" เป็นใบนำโชค ได้เซียมเรียกผู้พิทักษ์ 1 ใบทุกครั้งที่ออก</p>
     </section>
     <section>
-      <h2>โอกาสเจอเพื่อนตัวน้อย</h2>
-      <table><thead><tr><th>ระดับเพื่อน</th><th class="num">ถ้าเจอเพื่อน</th><th class="num">ต่อการเขย่า</th></tr></thead><tbody id="petOdds"></tbody></table>
+      <h2>โอกาสเจอสัตว์มงคล</h2>
+      <table><thead><tr><th>ระดับสัตว์มงคล</th><th class="num">ถ้าเจอสัตว์มงคล</th><th class="num">ต่อการเขย่า</th></tr></thead><tbody id="petOdds"></tbody></table>
       <p class="note" id="dropNote"></p>
-      <h2 style="margin-top:14px">ตั๋วแรร์+ (ได้จากแอดมิน / โค้ด)</h2>
-      <table><thead><tr><th>ระดับเพื่อน</th><th class="num">โอกาสต่อใบ</th></tr></thead><tbody id="rareOdds"></tbody></table>
-      <p class="note">ตั๋วแรร์+ สุ่มเฉพาะเพื่อนระดับ แรร์ เอพิก และตำนาน ตัวในระดับเดียวกันมีโอกาสเท่ากัน</p>
+      <h2 style="margin-top:14px">เซียมเรียกแรร์+ (ได้จากแอดมิน / โค้ด)</h2>
+      <table><thead><tr><th>ระดับสัตว์มงคล</th><th class="num">โอกาสต่อใบ</th></tr></thead><tbody id="rareOdds"></tbody></table>
+      <p class="note">เซียมเรียกแรร์+ สุ่มเฉพาะสัตว์มงคลระดับ แรร์ เอพิก และตำนาน ตัวในระดับเดียวกันมีโอกาสเท่ากัน</p>
     </section>
     <section id="testTools">
       <div class="row"><h2>เครื่องมือทดสอบ</h2><div class="extra"><button class="ghost" id="skipBtn" type="button">เวลาผ่านไป 6 ชม.</button><button class="ghost" id="skipDay" type="button">ข้าม 1 วัน</button><button class="ghost" id="resetBtn" type="button">ล้างข้อมูล</button></div></div>
@@ -1392,7 +1400,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         <h2>สร้างโค้ดรับของ</h2>
       <div class="adm-form">
         <input id="ncCode" type="text" maxlength="24" placeholder="โค้ด เช่น LOVE349" autocomplete="off">
-        <div class="row" style="flex-wrap:nowrap"><input id="ncStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="ncLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="ncTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="ncRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+        <div class="row" style="flex-wrap:nowrap"><input id="ncStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="ncLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="ncTickets" type="number" min="0" max="20" placeholder="เซียมเรียก"><input id="ncRTickets" type="number" min="0" max="20" placeholder="เซียมเรียกแรร์+"></div>
         <input id="ncNote" type="text" maxlength="60" placeholder="หมายเหตุ เช่น ซื้อ PB01">
         <label class="lbl-s" for="ncKind">แบบโค้ด</label>
         <select id="ncKind"><option value="each">คนละครั้ง · ใครก็ใช้ได้ คนละ 1 ครั้ง</option><option value="once">ครั้งเดียวหมด · คนแรกที่ใช้ได้ไป แล้วโค้ดหมด</option></select>
@@ -1406,7 +1414,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         <p class="note">ได้โค้ดคนละอัน ใช้ได้ครั้งเดียวแล้วหมด เหมาะกับแนบไปกับสินค้า เช่น ซื้อ PB01 ได้โค้ดหนึ่งอัน</p>
         <div class="adm-form">
           <div class="row" style="flex-wrap:nowrap"><input id="bcPrefix" type="text" maxlength="10" placeholder="ตัวหน้า เช่น PB01" autocomplete="off"><input id="bcCount" type="number" min="1" max="500" placeholder="จำนวน (สูงสุด 500)"></div>
-          <div class="row" style="flex-wrap:nowrap"><input id="bcStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="bcLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="bcTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="bcRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+          <div class="row" style="flex-wrap:nowrap"><input id="bcStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="bcLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="bcTickets" type="number" min="0" max="20" placeholder="เซียมเรียก"><input id="bcRTickets" type="number" min="0" max="20" placeholder="เซียมเรียกแรร์+"></div>
           <div class="row" style="flex-wrap:nowrap"><input id="bcNote" type="text" maxlength="60" placeholder="หมายเหตุ เช่น ล็อตเดือน ต.ค."><input id="bcDays" type="number" min="0" max="365" placeholder="ใช้ได้กี่วัน (ว่าง = ตลอด)"></div>
           <button class="primary" id="bcBtn" type="button">สร้างชุดโค้ด</button>
           <span class="small" id="bcMsg" style="text-align:left"></span>
@@ -1422,7 +1430,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         <div class="adm-form">
           <label class="lbl-s" for="mgSeg">แจกให้ใคร</label>
           <select id="mgSeg"><option value="all">ผู้เล่นทุกคน</option><option value="d7">คนที่เล่นใน 7 วันที่ผ่านมา</option><option value="today">คนที่เล่นวันนี้</option><option value="paid">คนที่เคยเติมเงิน</option></select>
-          <div class="row" style="flex-wrap:nowrap"><input id="mgStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="mgLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="mgTickets" type="number" min="0" max="20" placeholder="ตั๋ว"><input id="mgRTickets" type="number" min="0" max="20" placeholder="ตั๋วแรร์+"></div>
+          <div class="row" style="flex-wrap:nowrap"><input id="mgStars" type="number" min="0" max="9999" placeholder="เหรียญทอง"><input id="mgLeaves" type="number" min="0" max="9999" placeholder="แต้มบุญ"><input id="mgTickets" type="number" min="0" max="20" placeholder="เซียมเรียก"><input id="mgRTickets" type="number" min="0" max="20" placeholder="เซียมเรียกแรร์+"></div>
           <input id="mgNote" type="text" maxlength="60" placeholder="ข้อความถึงผู้เล่น เช่น ของขวัญวันเกิดเพจ">
           <span class="small" id="mgCount" style="text-align:left"></span>
           <div class="row" style="justify-content:flex-start"><button class="primary" id="mgBtn" type="button">แจกของ</button><button class="burn" id="mgYes" type="button" hidden>ยืนยัน แจกเลย</button></div>
@@ -1436,10 +1444,10 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         <div class="adm-form">
         <b class="lbl-s">แพ็กเหรียญทอง (บาท → เหรียญทอง)</b>
         <div id="cfPacks" class="cf-packs"></div>
-        <b class="lbl-s">เรทสุ่มเพื่อน (ผู้เล่นเห็นเรทนี้ในหน้าข้อมูล)</b>
-        <span class="small" style="text-align:left">ตั๋วปกติ + เพื่อนจากการเขย่า · ต้องรวม 100%</span>
+        <b class="lbl-s">เรทสุ่มสัตว์มงคล (ผู้เล่นเห็นเรทนี้ในหน้าข้อมูล)</b>
+        <span class="small" style="text-align:left">เซียมเรียกปกติ + สัตว์มงคลจากการเขย่า · ต้องรวม 100%</span>
         <div class="rt-grid" id="rtN"></div><span class="rt-sum" id="rtSum_n"></span>
-        <span class="small" style="text-align:left">ตั๋วแรร์+ (สุ่มเฉพาะ แรร์ / เอพิก / ตำนาน) · ต้องรวม 100%</span>
+        <span class="small" style="text-align:left">เซียมเรียกแรร์+ (สุ่มเฉพาะ แรร์ / เอพิก / ตำนาน) · ต้องรวม 100%</span>
         <div class="rt-grid" id="rtR"></div><span class="rt-sum" id="rtSum_r"></span>
         <button class="ghost" id="rtReset" type="button" style="align-self:flex-start">คืนค่าเรทเริ่มต้น</button>
         <button class="primary" id="cfSave" type="button">บันทึกระบบเกม</button>
@@ -1447,7 +1455,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         </div>
       </section>
       <section>
-        <h2>ทดลองดูฉากสุ่มเพื่อน</h2>
+        <h2>ทดลองดูฉากสุ่มสัตว์มงคล</h2>
         <p class="note">เปิดฉากสุ่มจริงตามระดับที่เลือก เพื่อเช็กเสียงและเอฟเฟค ไม่บันทึกอะไรลงเกม</p>
         <div class="pv-row" id="pvRow"><button class="mini" type="button" data-pv="common">ธรรมดา</button><button class="mini" type="button" data-pv="rare">แรร์</button><button class="mini" type="button" data-pv="epic">เอพิก</button><button class="mini" type="button" data-pv="legend">ตำนาน</button><button class="mini" type="button" data-pv="evo">วิวัฒนาการร่าง 3</button></div>
       </section>
@@ -1462,7 +1470,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
         <h2>ประกาศและตั้งค่า</h2>
         <div class="adm-form">
         <label class="lbl-s" for="cfAnn">ประกาศบนหน้าแรก (เว้นว่างได้)</label>
-        <input id="cfAnn" type="text" maxlength="120" placeholder="เช่น สุดสัปดาห์นี้เติม 99 ได้ตั๋วฟรี">
+        <input id="cfAnn" type="text" maxlength="120" placeholder="เช่น สุดสัปดาห์นี้เติม 99 ได้เซียมเรียกฟรี">
         <label class="lbl-s" for="cfSpecial">วันพิเศษเพิ่มเติม (นอกจากวันพระที่มีให้แล้ว) บรรทัดละ 1 วัน: ปี-เดือน-วัน ชื่อวัน แต้มบุญที่ให้เพิ่ม</label>
         <textarea id="cfSpecial" rows="3" maxlength="2400" placeholder="2026-12-31 วันส่งท้ายปี 30&#10;2027-02-06 ตรุษจีน 50"></textarea>
         <span class="small" id="cfSpecialNote" style="text-align:left">ผู้เล่นที่ไหว้พระในวันนั้นจะได้แต้มบุญเพิ่มตามที่ใส่ (สูงสุดวันละ 200)</span>
@@ -1516,7 +1524,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
   <button type="button" data-tab="home" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-1 18H9z M9 7h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เขย่า</span></button>
   <button type="button" data-tab="altar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15h18 M5 15v4 M19 15v4 M12 4c1.6 1.6 2.4 3.4 2.4 5.2A2.4 2.4 0 0 1 12 11.6a2.4 2.4 0 0 1-2.4-2.4C9.6 7.4 10.4 5.6 12 4z M8 15c0-1.5 1.8-2.6 4-2.6s4 1.1 4 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>หิ้งพระ</span></button>
   <button type="button" data-tab="inv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z M4 7l2-4h12l2 4 M10 11h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>คลัง</span><b class="badge" id="badgeInv" hidden></b></button>
-  <button type="button" data-tab="pets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4 0-7-2.5-7-5.5S8 9 12 9s7 2.5 7 5.5S16 20 12 20z M6 8.5a1.6 1.6 0 1 0 0-.1 M18 8.5a1.6 1.6 0 1 0 0-.1 M9.5 5a1.6 1.6 0 1 0 0-.1 M14.5 5a1.6 1.6 0 1 0 0-.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>เพื่อน</span></button>
+  <button type="button" data-tab="pets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20c-4 0-7-2.5-7-5.5S8 9 12 9s7 2.5 7 5.5S16 20 12 20z M6 8.5a1.6 1.6 0 1 0 0-.1 M18 8.5a1.6 1.6 0 1 0 0-.1 M9.5 5a1.6 1.6 0 1 0 0-.1 M14.5 5a1.6 1.6 0 1 0 0-.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>สัตว์มงคล</span></button>
   <button type="button" data-tab="rank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z M8 6H5a3 3 0 0 0 3 4 M16 6h3a3 3 0 0 1-3 4 M12 13v4 M8.5 20h7 M10 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>อันดับ</span></button>
   <button type="button" data-tab="shop"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>ร้านค้า</span><b class="badge soft" id="badgeShop" hidden></b></button>
   <button type="button" data-tab="info"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5 M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>ข้อมูล</span></button>
@@ -1539,7 +1547,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
     <button class="go" id="doneBtn" type="button" hidden>อ่านใบเซียมซี</button>
   </div>
   <div id="stepPet" class="step" hidden>
-    <span class="lbl" id="petLbl">มีเพื่อนตัวน้อยตามมาด้วย!</span>
+    <span class="lbl" id="petLbl">มีสัตว์มงคลตามมาด้วย!</span>
     <button class="egg" id="egg" type="button" aria-label="แตะไข่เพื่อเปิด">🥚</button>
     <p class="tap" id="eggHint">แตะไข่เพื่อเปิด</p>
     <div class="face front petcard" id="petCard" hidden></div>
@@ -1568,7 +1576,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
       <span class="small" id="payMsg" style="text-align:left"></span>
     </div>
     <div id="myReqs" class="adm-list"></div>
-    <div class="redeem"><b>มีโค้ดรับของ?</b><span class="small" style="text-align:left">ซื้อดูดวงใน LINE แล้วแอดมินจะส่งโค้ดรับตั๋ว แต้มบุญ หรือเหรียญทองให้</span>
+    <div class="redeem"><b>มีโค้ดรับของ?</b><span class="small" style="text-align:left">ซื้อดูดวงใน LINE แล้วแอดมินจะส่งโค้ดรับเซียมเรียก แต้มบุญ หรือเหรียญทองให้</span>
       <div class="row" style="flex-wrap:nowrap"><input id="codeIn" type="text" maxlength="24" placeholder="ใส่โค้ด" autocomplete="off"><button class="primary" id="codeBtn" type="button">รับของ</button></div><span class="small" id="codeMsg" style="text-align:left"></span></div>
   </div>
 </div>
@@ -1630,7 +1638,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
     <div class="own-only pl-own">
     <b class="sub-h">เพิ่ม / หักของ</b>
     <span class="small" style="text-align:left">ใส่เลขติดลบเพื่อหัก เช่น -50</span>
-    <div class="row" style="flex-wrap:nowrap"><input id="plStars" type="number" min="-9999" max="9999" placeholder="เหรียญทอง"><input id="plLeaves" type="number" min="-9999" max="9999" placeholder="แต้มบุญ"><input id="plTickets" type="number" min="-20" max="20" placeholder="ตั๋ว"><input id="plRTickets" type="number" min="-20" max="20" placeholder="ตั๋วแรร์+"></div>
+    <div class="row" style="flex-wrap:nowrap"><input id="plStars" type="number" min="-9999" max="9999" placeholder="เหรียญทอง"><input id="plLeaves" type="number" min="-9999" max="9999" placeholder="แต้มบุญ"><input id="plTickets" type="number" min="-20" max="20" placeholder="เซียมเรียก"><input id="plRTickets" type="number" min="-20" max="20" placeholder="เซียมเรียกแรร์+"></div>
     <input id="plNote" type="text" maxlength="60" placeholder="ข้อความถึงผู้เล่น (ไม่บังคับ)">
     <button class="primary" id="plGive" type="button">ส่งให้ผู้เล่น</button>
     <b class="sub-h">ชื่อในเกม</b>
@@ -1681,7 +1689,7 @@ a.line-cta{display:block;text-decoration:none;color:var(--text)}
       <div class="paper" id="landPaper"></div>
       <div class="land-cta">
         <b>อยากเก็บใบนี้ไว้ แล้วเล่นต่อ?</b>
-        <span class="small">สมัครฟรี ได้เขย่าทุกวัน มีเพื่อนคู่หูตัวแรก และของขวัญต้อนรับ</span>
+        <span class="small">สมัครฟรี ได้เขย่าทุกวัน มีสัตว์มงคลคู่หูตัวแรก และของขวัญต้อนรับ</span>
         <button class="go" id="landUp" type="button">สมัครฟรี เริ่มเล่นจริง</button>
       </div>
     </div>
@@ -1789,53 +1797,54 @@ const RAR=[
  {name:"ตำนาน",share:2,c:"#d9a531",bg:"#fdf3d6",glow:"#f0d28a"}
 ];
 const PETS=[
- {n:"หอยทากใจเย็น",e:"🐌",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
+ {n:"หอยทากใจเย็น",dn:"ปลาคาร์ฟ",e:"🎏",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
  {n:"เต่าน้อยมั่นคง",e:"🐢",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"ลูกเจี๊ยบตัวจิ๋ว",e:"🐥",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
- {n:"แฮมสเตอร์แก้มป่อง",e:"🐹",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
- {n:"กบน้อยนำโชค",e:"🐸",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"ผึ้งขยัน",e:"🐝",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"เต่าทองจุดดาว",e:"🐞",t:0,ab:{drop:.25},d:"โอกาสเจอเพื่อนตัวน้อย +0.25%"},
- {n:"เม่นขนนุ่ม",e:"🦔",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
- {n:"กระรอกเก็บโชค",e:"🐿️",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
- {n:"เพนกวินเดินเตาะแตะ",e:"🐧",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"หนอนน้อยรอบิน",e:"🐛",t:0,ab:{burnLeaf:3},d:"เผาใบแล้วได้แต้มบุญ +3"},
+ {n:"ลูกเจี๊ยบตัวจิ๋ว",dn:"ไก่ทองนำลาภ",e:"🐓",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
+ {n:"แฮมสเตอร์แก้มป่อง",dn:"คางคกสามขา",e:"🐸",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
+ {n:"กบน้อยนำโชค",dn:"ปลาทองนำโชค",e:"🐠",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
+ {n:"ผึ้งขยัน",dn:"ค้างคาวนำโชค",e:"🦇",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
+ {n:"เต่าทองจุดดาว",dn:"นกสาลิกา",e:"🐦",t:0,ab:{drop:.25},d:"โอกาสเจอสัตว์มงคล +0.25%"},
+ {n:"เม่นขนนุ่ม",dn:"หนูทองนำทรัพย์",e:"🐭",t:0,ab:{cdr:.05},d:"เวลารอเขย่าฟรีลดลง 5%"},
+ {n:"กระรอกเก็บโชค",dn:"กวางนำลาภ",e:"🦌",t:0,ab:{star:1},d:"ได้ 1 แต้มบุญทุกครั้งที่เขย่า"},
+ {n:"เพนกวินเดินเตาะแตะ",dn:"นกกระเรียน",e:"🕊️",t:0,ab:{again:.05},d:"5% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
+ {n:"หนอนน้อยรอบิน",dn:"ปลาตะเพียนทอง",e:"🐟",t:0,ab:{burnLeaf:3},d:"เผาใบแล้วได้แต้มบุญ +3"},
  {n:"กระต่ายจันทร์",e:"🐰",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
- {n:"แพนด้าฟูฟู",e:"🐼",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
+ {n:"แพนด้าฟูฟู",dn:"กิเลน",e:"🦄",t:1,ab:{drop:.5},d:"โอกาสเจอสัตว์มงคล +0.5%"},
  {n:"แมวนำโชค",e:"🐱",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หมาน้อยซื่อสัตย์",e:"🐶",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
- {n:"โคอาล่าขี้เซา",e:"🐨",t:1,ab:{star:2},d:"ได้ 2 แต้มบุญทุกครั้งที่เขย่า"},
+ {n:"โคอาล่าขี้เซา",dn:"ม้าทองมงคล",e:"🐴",t:1,ab:{star:2},d:"ได้ 2 แต้มบุญทุกครั้งที่เขย่า"},
  {n:"หมูนำทรัพย์",e:"🐷",t:1,ab:{again:.10},d:"10% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"หมีน้ำผึ้ง",e:"🐻",t:1,ab:{drop:.5},d:"โอกาสเจอเพื่อนตัวน้อย +0.5%"},
- {n:"เป็ดน้อยลอยน้ำ",e:"🦆",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
+ {n:"หมีน้ำผึ้ง",dn:"โคทองนำลาภ",e:"🐮",t:1,ab:{drop:.5},d:"โอกาสเจอสัตว์มงคล +0.5%"},
+ {n:"เป็ดน้อยลอยน้ำ",dn:"เป็ดแมนดาริน",e:"🦆",t:1,ab:{cdr:.10},d:"เวลารอเขย่าฟรีลดลง 10%"},
  {n:"แกะขนเมฆ",e:"🐑",t:1,ab:{burnLeaf:5},d:"เผาใบแล้วได้แต้มบุญ +5"},
- {n:"จิ้งจอกไพ่ทาโรต์",e:"🦊",t:2,ab:{cap:1,cdr:.10},d:"เก็บสิทธิ์ฟรีได้เพิ่ม 1 และเวลารอลดลง 10%"},
- {n:"นกฮูกดวงดาว",e:"🦉",t:2,ab:{drop:1},d:"โอกาสเจอเพื่อนตัวน้อย +1%"},
- {n:"โลมาสายรุ้ง",e:"🐬",t:2,ab:{again:.15},d:"15% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"ปลาหมึกแปดโชค",e:"🐙",t:2,ab:{cdr:.15},d:"เวลารอเขย่าฟรีลดลง 15%"},
- {n:"นกแก้วช่างพูด",e:"🦜",t:2,ab:{drop:1},d:"โอกาสเจอเพื่อนตัวน้อย +1%"},
- {n:"หมาป่าเดือนเพ็ญ",e:"🐺",t:2,ab:{again:.15},d:"15% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"วาฬฝันหวาน",e:"🐳",t:2,ab:{cdr:.15},d:"เวลารอเขย่าฟรีลดลง 15%"},
- {n:"ผีเสื้อราตรี",e:"🦋",t:3,ab:{cdr:.25},d:"เวลารอเขย่าฟรีลดลง 25%"},
- {n:"ยูนิคอร์นเมฆ",e:"🦄",t:3,ab:{again:.25},d:"25% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
+ {n:"จิ้งจอกไพ่ทาโรต์",dn:"จิ้งจอกเก้าหาง",e:"🦊",t:2,ab:{cap:1,cdr:.10},d:"เก็บสิทธิ์ฟรีได้เพิ่ม 1 และเวลารอลดลง 10%"},
+ {n:"นกฮูกดวงดาว",e:"🦉",t:2,ab:{drop:1},d:"โอกาสเจอสัตว์มงคล +1%"},
+ {n:"โลมาสายรุ้ง",dn:"ปลามังกร",e:"🐡",t:2,ab:{again:.15},d:"15% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
+ {n:"ปลาหมึกแปดโชค",dn:"ปี่เซียะ",e:"🐲",t:2,ab:{cdr:.15},d:"เวลารอเขย่าฟรีลดลง 15%"},
+ {n:"นกแก้วช่างพูด",dn:"นกการเวก",e:"🐦",t:2,ab:{drop:1},d:"โอกาสเจอสัตว์มงคล +1%"},
+ {n:"หมาป่าเดือนเพ็ญ",dn:"ช้างเผือก",e:"🐘",t:2,ab:{again:.15},d:"15% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
+ {n:"วาฬฝันหวาน",dn:"เต่ามังกร",e:"🐢",t:2,ab:{cdr:.15},d:"เวลารอเขย่าฟรีลดลง 15%"},
+ {n:"ผีเสื้อราตรี",dn:"นาคน้อย",e:"🐍",t:3,ab:{cdr:.25},d:"เวลารอเขย่าฟรีลดลง 25%"},
+ {n:"ยูนิคอร์นเมฆ",dn:"นกฟีนิกซ์",e:"🐦",t:3,ab:{again:.25},d:"25% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
  {n:"หงส์ขาว",e:"🦢",t:3,ab:{burnLeaf:6},d:"เผาใบแล้วได้แต้มบุญ +6"},
- {n:"เสือขาวเฝ้าดวง",e:"🐯",t:3,ab:{drop:1.5},d:"โอกาสเจอเพื่อนตัวน้อย +1.5%"},
+ {n:"เสือขาวเฝ้าดวง",e:"🐯",t:3,ab:{drop:1.5},d:"โอกาสเจอสัตว์มงคล +1.5%"},
  {n:"สิงโตทอง",e:"🦁",t:3,ab:{cap:1,cdr:.20},d:"เก็บสิทธิ์ฟรีได้เพิ่ม 1 และเวลารอลดลง 20%"},
- {n:"น้องหมีเด้ง",e:"🐻",t:2,sp:1,purple:1,ab:{cdr:.10,again:.10},d:""},
+ {n:"น้องหมีเด้ง",dn:"ลูกช้างทองประจำหิ้ง",e:"🐘",t:2,sp:1,purple:1,ab:{cdr:.10,again:.10},d:""},
  {n:"มังกรทอง",e:"🐉",t:4,ab:{again:.40},d:"40% ที่เขย่าแล้วได้เขย่าฟรีอีกครั้ง"},
- {n:"นกยูงราชินี",e:"🦚",t:4,ab:{baseMul:3},d:"โอกาสเจอเพื่อนพื้นฐาน x3 (5% เป็น 15%)"},
+ {n:"นกยูงราชินี",e:"🦚",t:4,ab:{baseMul:3},d:"โอกาสเจอสัตว์มงคลพื้นฐาน x3 (5% เป็น 15%)"},
  {n:"ฟอร์จูนี่",img:1,t:4,ab:{extra:1},d:"ได้สิทธิ์เขย่าฟรีเพิ่มวันละ 1 ครั้ง"}
 ];
 /* v2 companions: per-level skills, role, and three forms (emoji + name) */
-const PET_EXTRA={"หอยทากใจเย็น": {"role": "time", "fn": ["หอยทากใจเย็น", "หอยทากนาฬิกาทราย", "ราชันหอยทากกาลเวลา"], "fe": ["🐌", "🐌", "🐌"], "lv": [{"cdr": 0.1, "cap": 1}, {"cdr": 0.15, "cap": 1}, {"cdr": 0.2, "cap": 1}]}, "เต่าน้อยมั่นคง": {"role": "pity", "fn": ["เต่าน้อยมั่นคง", "เต่าโล่ศิลา", "เต่าพิทักษ์พันปี"], "fe": ["🐢", "🐢", "🐢"], "lv": [{"pity": 1}, {"pity": 2}, {"pity": 3}]}, "ลูกเจี๊ยบตัวจิ๋ว": {"role": "gold", "fn": ["ลูกเจี๊ยบตัวจิ๋ว", "ไก่น้อยเปลวทอง", "พญาไก่เพลิงทอง"], "fe": ["🐣", "🐥", "🐓"], "lv": [{"gold": 0.12}, {"gold": 0.18, "bp": 1}, {"gold": 0.26, "bp": 1}]}, "แฮมสเตอร์แก้มป่อง": {"role": "star", "fn": ["แฮมสเตอร์แก้มป่อง", "แฮมสเตอร์คลังดาว", "เจ้าสัวแฮมสเตอร์"], "fe": ["🐹", "🐹", "🐹"], "lv": [{"star": 0.8}, {"star": 1.2}, {"star": 1.6}]}, "กบน้อยนำโชค": {"role": "again", "fn": ["กบน้อยนำโชค", "กบใบบัวสี่แฉก", "เจ้าชายกบโคลเวอร์"], "fe": ["🐸", "🐸", "🐸"], "lv": [{"again": 0.05}, {"again": 0.08}, {"again": 0.12}]}, "ผึ้งขยัน": {"role": "bp", "fn": ["ผึ้งขยัน", "ผึ้งเก็บเถ้าทอง", "ราชินีผึ้งเพลิง"], "fe": ["🐝", "🐝", "🐝"], "lv": [{"bp": 1}, {"bp": 3}, {"bp": 4}]}, "เต่าทองจุดดาว": {"role": "find", "fn": ["เต่าทองจุดดาว", "เต่าทองกล้องดาว", "เต่าทองนักดาราศาสตร์"], "fe": ["🐞", "🐞", "🐞"], "lv": [{"dropX": 0.19}, {"dropX": 0.28}, {"dropX": 0.42}]}, "เม่นขนนุ่ม": {"role": "ticket", "fn": ["เม่นขนนุ่ม", "เม่นหนามตั๋วทอง", "เม่นราชาบัตรนำโชค"], "fe": ["🦔", "🦔", "🦔"], "lv": [{"tg": 0.05}, {"tg": 0.07}, {"tg": 0.11}]}, "กระรอกเก็บโชค": {"role": "daily", "fn": ["กระรอกเก็บโชค", "กระรอกกล่องของขวัญ", "จอมกระรอกคลังของขวัญ"], "fe": ["🐿️", "🐿️", "🐿️"], "lv": [{"daily": 1}, {"daily": 2}, {"daily": 3}]}, "เพนกวินเดินเตาะแตะ": {"role": "dawn", "fn": ["เพนกวินเดินเตาะแตะ", "เพนกวินรับอรุณ", "จักรพรรดิเพนกวินรุ่งอรุณ"], "fe": ["🐧", "🐧", "🐧"], "lv": [{"fa": 0.12}, {"fa": 0.18}, {"fa": 0.28}]}, "หนอนน้อยรอบิน": {"role": "leaf", "fn": ["หนอนน้อยรอบิน", "ดักแด้ใบไม้ไฟ", "ผีเสื้อเพลิงคืนชีพ"], "fe": ["🐛", "🐛", "🦋"], "lv": [{"burnLeaf": 3}, {"burnLeaf": 5}, {"burnLeaf": 7}]}, "กระต่ายจันทร์": {"role": "dawn", "fn": ["กระต่ายจันทร์", "กระต่ายกระโดดฟ้า", "เทพกระต่ายพระจันทร์"], "fe": ["🐰", "🐇", "🐇"], "lv": [{"fa": 0.22}, {"fa": 0.32}, {"fa": 0.45}]}, "แพนด้าฟูฟู": {"role": "find", "fn": ["แพนด้าฟูฟู", "แพนด้านักสำรวจ", "แพนด้ามหาปราชญ์ไผ่ทอง"], "fe": ["🐼", "🐼", "🐼"], "lv": [{"dropX": 0.33}, {"dropX": 0.48}, {"dropX": 0.67}]}, "แมวนำโชค": {"role": "again", "fn": ["แมวนำโชค", "แมวกวักทองคำ", "เทพแมวกวักเก้าชีวิต"], "fe": ["🐱", "🐈", "🐈‍⬛"], "lv": [{"again": 0.1}, {"again": 0.13}, {"again": 0.18}]}, "หมาน้อยซื่อสัตย์": {"role": "pity", "fn": ["หมาน้อยซื่อสัตย์", "หมาพิทักษ์", "อัศวินสุนัขโล่ทอง"], "fe": ["🐶", "🐕", "🐕‍🦺"], "lv": [{"pity": 2}, {"pity": 3}, {"pity": 4}]}, "โคอาล่าขี้เซา": {"role": "time", "fn": ["โคอาล่าขี้เซา", "โคอาล่าหมอนเมฆ", "ราชาโคอาล่านิทรา"], "fe": ["🐨", "🐨", "🐨"], "lv": [{"cdr": 0.17, "cap": 1}, {"cdr": 0.26, "cap": 1}, {"cdr": 0.32, "cap": 2}]}, "หมูนำทรัพย์": {"role": "star", "fn": ["หมูนำทรัพย์", "หมูออมสินทอง", "เทพหมูมหาเศรษฐี"], "fe": ["🐷", "🐖", "🐖"], "lv": [{"star": 1.3}, {"star": 2}, {"star": 2.8}]}, "หมีน้ำผึ้ง": {"role": "daily", "fn": ["หมีน้ำผึ้ง", "หมีโหลน้ำผึ้งทอง", "ราชาหมีคลังน้ำผึ้ง"], "fe": ["🐻", "🐻", "🐻"], "lv": [{"daily": 2}, {"daily": 3}, {"daily": 4}]}, "เป็ดน้อยลอยน้ำ": {"role": "bp", "fn": ["เป็ดน้อยลอยน้ำ", "เป็ดเปลวเทียน", "พญาเป็ดเพลิงทอง"], "fe": ["🦆", "🦆", "🦆"], "lv": [{"bp": 2, "rainbow": 0.01}, {"bp": 4, "rainbow": 0.01}, {"bp": 6, "rainbow": 0.01}]}, "แกะขนเมฆ": {"role": "leaf", "fn": ["แกะขนเมฆ", "แกะเมฆสายฟ้า", "แกะเขาทองเหนือเมฆ"], "fe": ["🐑", "🐑", "🐏"], "lv": [{"burnLeaf": 5}, {"burnLeaf": 7}, {"burnLeaf": 9}]}, "จิ้งจอกไพ่ทาโรต์": {"role": "ticket", "fn": ["จิ้งจอกไพ่ทาโรต์", "จิ้งจอกสองหางพยากรณ์", "จิ้งจอกเก้าหางแห่งชะตา"], "fe": ["🦊", "🦊", "🦊"], "lv": [{"tg": 0.15}, {"tg": 0.22}, {"tg": 0.32}]}, "นกฮูกดวงดาว": {"role": "find", "fn": ["นกฮูกดวงดาว", "นกฮูกส่องจักรวาล", "มหาปราชญ์นกฮูกดาราจักร"], "fe": ["🦉", "🦉", "🦉"], "lv": [{"dropX": 0.52}, {"dropX": 0.76}, {"dropX": 1.07}]}, "โลมาสายรุ้ง": {"role": "again", "fn": ["โลมาสายรุ้ง", "โลมาคลื่นรุ้ง", "เทพโลมาประตูรุ้ง"], "fe": ["🐬", "🐬", "🐬"], "lv": [{"again": 0.15}, {"again": 0.2}, {"again": 0.26}]}, "ปลาหมึกแปดโชค": {"role": "gold", "fn": ["ปลาหมึกแปดโชค", "ปลาหมึกแปดเปลว", "ราชันหมึกเพลิงแปดทิศ"], "fe": ["🐙", "🐙", "🐙"], "lv": [{"gold": 0.18, "bp": 1}, {"gold": 0.26, "bp": 2}, {"gold": 0.35, "bp": 3}]}, "นกแก้วช่างพูด": {"role": "daily", "fn": ["นกแก้วช่างพูด", "นกแก้วพรายของขวัญ", "นกแก้วทูตสวรรค์"], "fe": ["🦜", "🦜", "🦜"], "lv": [{"daily": 4}, {"daily": 5}, {"daily": 7}]}, "หมาป่าเดือนเพ็ญ": {"role": "dawn", "fn": ["หมาป่าเดือนเพ็ญ", "หมาป่าหอนรุ่งอรุณ", "ราชาหมาป่าจันทรา"], "fe": ["🐺", "🐺", "🐺"], "lv": [{"fa": 0.35}, {"fa": 0.5}, {"fa": 0.7}]}, "วาฬฝันหวาน": {"role": "time", "fn": ["วาฬฝันหวาน", "วาฬนาฬิกาฝัน", "วาฬจักรวาลนิรันดร์"], "fe": ["🐳", "🐋", "🐋"], "lv": [{"cdr": 0.24, "cap": 1}, {"cdr": 0.32, "cap": 2}, {"cdr": 0.45, "cap": 2}]}, "ผีเสื้อราตรี": {"role": "time", "fn": ["ผีเสื้อราตรี", "ผีเสื้อจันทร์คราส", "ราชินีผีเสื้อรัตติกาล"], "fe": ["🦋", "🦋", "🦋"], "lv": [{"cdr": 0.3, "cap": 1, "fa": 0.15}, {"cdr": 0.38, "cap": 2, "fa": 0.2}, {"cdr": 0.45, "cap": 2, "fa": 0.3}]}, "ยูนิคอร์นเมฆ": {"role": "again", "fn": ["ยูนิคอร์นเมฆ", "ยูนิคอร์นสายรุ้ง", "ยูนิคอร์นจักรวาล"], "fe": ["🦄", "🦄", "🦄"], "lv": [{"again": 0.22}, {"again": 0.28}, {"again": 0.35}]}, "หงส์ขาว": {"role": "leaf", "fn": ["หงส์ขาว", "หงส์เพลิงเงิน", "หงส์ฟีนิกซ์ขาว"], "fe": ["🦢", "🦢", "🦢"], "lv": [{"burnLeaf": 6, "gold": 0.08, "bp": 2}, {"burnLeaf": 8, "gold": 0.12, "bp": 3}, {"burnLeaf": 10, "gold": 0.14, "bp": 3}]}, "เสือขาวเฝ้าดวง": {"role": "find", "fn": ["เสือขาวเฝ้าดวง", "เสือขาวลายดาว", "พยัคฆ์ขาวเทวะ"], "fe": ["🐯", "🐅", "🐅"], "lv": [{"dropX": 0.6, "pity": 2}, {"dropX": 0.85, "pity": 3}, {"dropX": 1.2, "pity": 4}]}, "สิงโตทอง": {"role": "star", "fn": ["สิงโตทอง", "สิงโตแผงตะวัน", "ราชสีห์จักรพรรดิทอง"], "fe": ["🦁", "🦁", "🦁"], "lv": [{"star": 3, "daily": 2}, {"star": 5, "daily": 3}, {"star": 7, "daily": 5}]}, "น้องหมีเด้ง": {"role": "time", "fn": ["น้องหมีเด้ง", "หมีเด้งเด้ง", "ราชาหมีเด้งม่วงทอง"], "fe": ["🐻", "🐻", "🐻"], "lv": [{"cdr": 0.08, "cap": 1, "again": 0.05}, {"cdr": 0.15, "cap": 1, "again": 0.09}, {"cdr": 0.22, "cap": 1, "again": 0.15}]}, "มังกรทอง": {"role": "again", "fn": ["มังกรทอง", "มังกรทองเหินฟ้า", "จักรพรรดิมังกรทอง"], "fe": ["🐲", "🐉", "🐉"], "lv": [{"again": 0.33}, {"again": 0.42}, {"again": 0.52, "againCap": 0.55}]}, "นกยูงราชินี": {"role": "find", "fn": ["นกยูงราชินี", "นกยูงรำแพน", "เทพีนกยูงพันดาว"], "fe": ["🦚", "🦚", "🦚"]}, "ฟอร์จูนี่": {"role": "extra", "fn": ["ฟอร์จูนี่", "ฟอร์จูนี่ปีกแสง", "เทพธิดาฟอร์จูนี่"], "lv": [{"extra": 1}, {"extra": 1, "cdr": 0.15, "fa": 0.3}, {"extra": 1, "cdr": 0.3, "cap": 1, "fa": 0.6}]}};
+const PET_EXTRA={"หอยทากใจเย็น": {"role": "time", "fn": ["ลูกปลาคาร์ฟ", "ปลาคาร์ฟแดงทอง", "มังกรคาร์ฟข้ามประตู"], "fe": ["🐟", "🎏", "🐉"], "lv": [{"cdr": 0.1, "cap": 1}, {"cdr": 0.15, "cap": 1}, {"cdr": 0.2, "cap": 1}]}, "เต่าน้อยมั่นคง": {"role": "pity", "fn": ["เต่าน้อยมั่นคง", "เต่าโล่ศิลา", "เต่าพิทักษ์พันปี"], "fe": ["🐢", "🐢", "🐢"], "lv": [{"pity": 1}, {"pity": 2}, {"pity": 3}]}, "ลูกเจี๊ยบตัวจิ๋ว": {"role": "gold", "fn": ["ลูกไก่ทอง", "ไก่ทองขันรับโชค", "พญาไก่ฟ้าทอง"], "fe": ["🐥", "🐓", "🐓"], "lv": [{"gold": 0.12}, {"gold": 0.18, "bp": 1}, {"gold": 0.26, "bp": 1}]}, "แฮมสเตอร์แก้มป่อง": {"role": "star", "fn": ["คางคกน้อยคาบเหรียญ", "คางคกสามขาทอง", "เทพคางคกเงินทอง"], "fe": ["🐸", "🐸", "🐸"], "lv": [{"star": 0.8}, {"star": 1.2}, {"star": 1.6}]}, "กบน้อยนำโชค": {"role": "again", "fn": ["ลูกปลาทอง", "ปลาทองหางพลิ้ว", "ราชาปลาทองหางทอง"], "fe": ["🐠", "🐠", "🐠"], "lv": [{"again": 0.05}, {"again": 0.08}, {"again": 0.12}]}, "ผึ้งขยัน": {"role": "bp", "fn": ["ค้างคาวน้อยนำโชค", "ค้างคาวทองห้าพร", "เทพค้างคาวหมื่นโชค"], "fe": ["🦇", "🦇", "🦇"], "lv": [{"bp": 1}, {"bp": 3}, {"bp": 4}]}, "เต่าทองจุดดาว": {"role": "find", "fn": ["ลูกนกสาลิกา", "สาลิกาลิ้นทอง", "พญาสาลิกาเมตตา"], "fe": ["🐤", "🐦", "🐦"], "lv": [{"dropX": 0.19}, {"dropX": 0.28}, {"dropX": 0.42}]}, "เม่นขนนุ่ม": {"role": "ticket", "fn": ["หนูน้อยถุงทอง", "หนูทองแบกเหรียญ", "เทพหนูทรัพย์ล้น"], "fe": ["🐭", "🐭", "🐭"], "lv": [{"tg": 0.05}, {"tg": 0.07}, {"tg": 0.11}]}, "กระรอกเก็บโชค": {"role": "daily", "fn": ["ลูกกวางดาวทอง", "กวางเขาทอง", "กวางเทพลาภยศ"], "fe": ["🦌", "🦌", "🦌"], "lv": [{"daily": 1}, {"daily": 2}, {"daily": 3}]}, "เพนกวินเดินเตาะแตะ": {"role": "dawn", "fn": ["ลูกนกกระเรียน", "กระเรียนรับอรุณ", "กระเรียนเทพพันปี"], "fe": ["🕊️", "🕊️", "🕊️"], "lv": [{"fa": 0.12}, {"fa": 0.18}, {"fa": 0.28}]}, "หนอนน้อยรอบิน": {"role": "leaf", "fn": ["ลูกปลาตะเพียน", "ปลาตะเพียนทอง", "พญาตะเพียนเงินทอง"], "fe": ["🐟", "🐟", "🐟"], "lv": [{"burnLeaf": 3}, {"burnLeaf": 5}, {"burnLeaf": 7}]}, "กระต่ายจันทร์": {"role": "dawn", "fn": ["กระต่ายจันทร์", "กระต่ายกระโดดฟ้า", "เทพกระต่ายพระจันทร์"], "fe": ["🐰", "🐇", "🐇"], "lv": [{"fa": 0.22}, {"fa": 0.32}, {"fa": 0.45}]}, "แพนด้าฟูฟู": {"role": "find", "fn": ["ลูกกิเลน", "กิเลนเกล็ดหยก", "กิเลนเทพนำโชค"], "fe": ["🦄", "🦄", "🦄"], "lv": [{"dropX": 0.33}, {"dropX": 0.48}, {"dropX": 0.67}]}, "แมวนำโชค": {"role": "again", "fn": ["แมวนำโชค", "แมวกวักทองคำ", "เทพแมวกวักเก้าชีวิต"], "fe": ["🐱", "🐈", "🐈‍⬛"], "lv": [{"again": 0.1}, {"again": 0.13}, {"again": 0.18}]}, "หมาน้อยซื่อสัตย์": {"role": "pity", "fn": ["หมาน้อยซื่อสัตย์", "หมาพิทักษ์", "อัศวินสุนัขโล่ทอง"], "fe": ["🐶", "🐕", "🐕‍🦺"], "lv": [{"pity": 2}, {"pity": 3}, {"pity": 4}]}, "โคอาล่าขี้เซา": {"role": "time", "fn": ["ลูกม้าทอง", "ม้าทองควบเมฆ", "ม้าเทพแปดทิศ"], "fe": ["🐴", "🐎", "🐎"], "lv": [{"cdr": 0.17, "cap": 1}, {"cdr": 0.26, "cap": 1}, {"cdr": 0.32, "cap": 2}]}, "หมูนำทรัพย์": {"role": "star", "fn": ["หมูนำทรัพย์", "หมูออมสินทอง", "เทพหมูมหาเศรษฐี"], "fe": ["🐷", "🐖", "🐖"], "lv": [{"star": 1.3}, {"star": 2}, {"star": 2.8}]}, "หมีน้ำผึ้ง": {"role": "daily", "fn": ["ลูกโคทอง", "โคทองพวงมาลัย", "พญาโคทองคำ"], "fe": ["🐮", "🐂", "🐂"], "lv": [{"daily": 2}, {"daily": 3}, {"daily": 4}]}, "เป็ดน้อยลอยน้ำ": {"role": "bp", "fn": ["เป็ดแมนดารินน้อย", "คู่เป็ดแมนดาริน", "เป็ดแมนดารินเทพสมพงศ์"], "fe": ["🦆", "🦆", "🦆"], "lv": [{"bp": 2, "rainbow": 0.01}, {"bp": 4, "rainbow": 0.01}, {"bp": 6, "rainbow": 0.01}]}, "แกะขนเมฆ": {"role": "leaf", "fn": ["แกะขนเมฆ", "แกะเมฆสายฟ้า", "แกะเขาทองเหนือเมฆ"], "fe": ["🐑", "🐑", "🐏"], "lv": [{"burnLeaf": 5}, {"burnLeaf": 7}, {"burnLeaf": 9}]}, "จิ้งจอกไพ่ทาโรต์": {"role": "ticket", "fn": ["จิ้งจอกเงินน้อย", "จิ้งจอกห้าหาง", "จิ้งจอกเก้าหางเทพธิดา"], "fe": ["🦊", "🦊", "🦊"], "lv": [{"tg": 0.15}, {"tg": 0.22}, {"tg": 0.32}]}, "นกฮูกดวงดาว": {"role": "find", "fn": ["นกฮูกดวงดาว", "นกฮูกส่องจักรวาล", "มหาปราชญ์นกฮูกดาราจักร"], "fe": ["🦉", "🦉", "🦉"], "lv": [{"dropX": 0.52}, {"dropX": 0.76}, {"dropX": 1.07}]}, "โลมาสายรุ้ง": {"role": "again", "fn": ["ลูกปลามังกร", "ปลามังกรทอง", "เทพปลามังกรเก้าเกล็ด"], "fe": ["🐡", "🐡", "🐡"], "lv": [{"again": 0.15}, {"again": 0.2}, {"again": 0.26}]}, "ปลาหมึกแปดโชค": {"role": "gold", "fn": ["ลูกปี่เซียะ", "ปี่เซียะหยกทอง", "ปี่เซียะเทพคลังทรัพย์"], "fe": ["🐲", "🐲", "🐲"], "lv": [{"gold": 0.18, "bp": 1}, {"gold": 0.26, "bp": 2}, {"gold": 0.35, "bp": 3}]}, "นกแก้วช่างพูด": {"role": "daily", "fn": ["ลูกนกการเวก", "การเวกปีกทอง", "พญานกการเวกเสียงทิพย์"], "fe": ["🐤", "🐦", "🐦"], "lv": [{"daily": 4}, {"daily": 5}, {"daily": 7}]}, "หมาป่าเดือนเพ็ญ": {"role": "dawn", "fn": ["ลูกช้างเผือก", "ช้างเผือกทรงเครื่อง", "พญาช้างเผือกงาทอง"], "fe": ["🐘", "🐘", "🐘"], "lv": [{"fa": 0.35}, {"fa": 0.5}, {"fa": 0.7}]}, "วาฬฝันหวาน": {"role": "time", "fn": ["ลูกเต่ามังกร", "เต่ามังกรเกล็ดทอง", "พญาเต่ามังกรหมื่นปี"], "fe": ["🐢", "🐢", "🐢"], "lv": [{"cdr": 0.24, "cap": 1}, {"cdr": 0.32, "cap": 2}, {"cdr": 0.45, "cap": 2}]}, "ผีเสื้อราตรี": {"role": "time", "fn": ["นาคน้อยเกล็ดแก้ว", "นาคราชเกล็ดมรกต", "นาคราชบัวทอง"], "fe": ["🐍", "🐍", "🐍"], "lv": [{"cdr": 0.3, "cap": 1, "fa": 0.15}, {"cdr": 0.38, "cap": 2, "fa": 0.2}, {"cdr": 0.45, "cap": 2, "fa": 0.3}]}, "ยูนิคอร์นเมฆ": {"role": "again", "fn": ["ลูกนกฟีนิกซ์", "ฟีนิกซ์ปีกรุ้ง", "ฟีนิกซ์เทพคืนชีพ"], "fe": ["🐣", "🐦", "🐦"], "lv": [{"again": 0.22}, {"again": 0.28}, {"again": 0.35}]}, "หงส์ขาว": {"role": "leaf", "fn": ["หงส์ขาว", "หงส์เพลิงเงิน", "หงส์ฟีนิกซ์ขาว"], "fe": ["🦢", "🦢", "🦢"], "lv": [{"burnLeaf": 6, "gold": 0.08, "bp": 2}, {"burnLeaf": 8, "gold": 0.12, "bp": 3}, {"burnLeaf": 10, "gold": 0.14, "bp": 3}]}, "เสือขาวเฝ้าดวง": {"role": "find", "fn": ["เสือขาวเฝ้าดวง", "เสือขาวลายดาว", "พยัคฆ์ขาวเทวะ"], "fe": ["🐯", "🐅", "🐅"], "lv": [{"dropX": 0.6, "pity": 2}, {"dropX": 0.85, "pity": 3}, {"dropX": 1.2, "pity": 4}]}, "สิงโตทอง": {"role": "star", "fn": ["สิงโตทอง", "สิงโตแผงตะวัน", "ราชสีห์จักรพรรดิทอง"], "fe": ["🦁", "🦁", "🦁"], "lv": [{"star": 3, "daily": 2}, {"star": 5, "daily": 3}, {"star": 7, "daily": 5}]}, "น้องหมีเด้ง": {"role": "time", "fn": ["ลูกช้างทอง", "ช้างทองถือพาน", "ช้างทองประจำหิ้ง"], "fe": ["🐘", "🐘", "🐘"], "lv": [{"cdr": 0.08, "cap": 1, "again": 0.05}, {"cdr": 0.15, "cap": 1, "again": 0.09}, {"cdr": 0.22, "cap": 1, "again": 0.15}]}, "มังกรทอง": {"role": "again", "fn": ["มังกรทอง", "มังกรทองเหินฟ้า", "จักรพรรดิมังกรทอง"], "fe": ["🐲", "🐉", "🐉"], "lv": [{"again": 0.33}, {"again": 0.42}, {"again": 0.52, "againCap": 0.55}]}, "นกยูงราชินี": {"role": "find", "fn": ["นกยูงราชินี", "นกยูงรำแพน", "เทพีนกยูงพันดาว"], "fe": ["🦚", "🦚", "🦚"]}, "ฟอร์จูนี่": {"role": "extra", "fn": ["ฟอร์จูนี่", "ฟอร์จูนี่ปีกแสง", "เทพธิดาฟอร์จูนี่"], "lv": [{"extra": 1}, {"extra": 1, "cdr": 0.15, "fa": 0.3}, {"extra": 1, "cdr": 0.3, "cap": 1, "fa": 0.6}]}};
 PETS.forEach(p=>Object.assign(p,PET_EXTRA[p.n]||{}));
-/* form names that match the illustrated art (internal pet key p.n stays the same so saves keep working) */
-const FN_ART={"ผีเสื้อราตรี":["หนอนจันทร์น้อย","ดักแด้พระจันทร์","ผีเสื้อจันทร์ราตรี"],"ยูนิคอร์นเมฆ":["ลูกม้ายูนิคอร์น","ยูนิคอร์นสายรุ้ง","เพกาซัสสายรุ้ง"],
- "สิงโตทอง":["ลูกสิงโตทอง","สิงโตหนุ่มแผงทอง","ราชสีห์แผงตะวัน"],"น้องหมีเด้ง":["น้องหมีเด้ง","หมีเด้งกอดดาว","หมีเด้งเมฆดาว"],
+/* form names that match the illustrated art (internal pet key p.n stays the same so saves keep working).
+   v102: 23 pets were re-drawn as auspicious animals; p.dn is the name players see, p.n is only the save key */
+const FN_ART={"ผีเสื้อราตรี":["นาคน้อยเกล็ดแก้ว","นาคราชเกล็ดมรกต","นาคราชบัวทอง"],"ยูนิคอร์นเมฆ":["ลูกนกฟีนิกซ์","ฟีนิกซ์ปีกรุ้ง","ฟีนิกซ์เทพคืนชีพ"],
+ "สิงโตทอง":["ลูกสิงโตทอง","สิงโตหนุ่มแผงทอง","ราชสีห์แผงตะวัน"],"น้องหมีเด้ง":["ลูกช้างทอง","ช้างทองถือพาน","ช้างทองประจำหิ้ง"],
  "นกยูงราชินี":["ลูกนกยูงทอง","นกยูงทองรำแพน","ราชินีนกยูงทอง"],"เสือขาวเฝ้าดวง":["ลูกเสือขาวลายฟ้า","เสือขาวผ้าพันคอฟ้า","เสือขาวผู้พิทักษ์ดวง"],
  "หงส์ขาว":["ลูกหงส์ดอกบัว","หงส์ขาวรำน้ำ","ราชินีหงส์มงกุฎฟ้า"],"มังกรทอง":["ลูกมังกรกอดมุก","มังกรทองปีกม่วง","จักรพรรดิมังกรถือมุก"],
  "ฟอร์จูนี่":["ฟอร์จูนี่กอดดาว","ฟอร์จูนี่คทาจันทร์","เทพธิดาฟอร์จูนี่"]};
-Object.assign(FN_ART,{"หอยทากใจเย็น": ["หอยทากใจเย็น", "หอยทากนาฬิกาทราย", "ราชันหอยทากกาลเวลา"], "เต่าน้อยมั่นคง": ["เต่าน้อยมั่นคง", "เต่าโล่ศิลา", "เต่าพิทักษ์พันปี"], "ลูกเจี๊ยบตัวจิ๋ว": ["ลูกเจี๊ยบตัวจิ๋ว", "ไก่น้อยเปลวทอง", "พญาไก่เพลิงทอง"], "แฮมสเตอร์แก้มป่อง": ["แฮมสเตอร์แก้มป่อง", "แฮมสเตอร์คลังดาว", "เจ้าสัวแฮมสเตอร์"], "กบน้อยนำโชค": ["กบน้อยนำโชค", "กบใบบัวสี่แฉก", "เจ้าชายกบโคลเวอร์"], "ผึ้งขยัน": ["ผึ้งขยัน", "ผึ้งเก็บเถ้าทอง", "ราชินีผึ้งเพลิง"], "เต่าทองจุดดาว": ["เต่าทองจุดดาว", "เต่าทองกล้องดาว", "เต่าทองนักดาราศาสตร์"], "เม่นขนนุ่ม": ["เม่นขนนุ่ม", "เม่นหนามตั๋วทอง", "เม่นราชาบัตรนำโชค"], "กระรอกเก็บโชค": ["กระรอกเก็บโชค", "กระรอกกล่องของขวัญ", "จอมกระรอกคลังของขวัญ"], "เพนกวินเดินเตาะแตะ": ["เพนกวินเดินเตาะแตะ", "เพนกวินรับอรุณ", "จักรพรรดิเพนกวินรุ่งอรุณ"], "หนอนน้อยรอบิน": ["หนอนน้อยรอบิน", "ดักแด้ใบไม้ไฟ", "ผีเสื้อเพลิงคืนชีพ"], "กระต่ายจันทร์": ["กระต่ายจันทร์", "กระต่ายกระโดดฟ้า", "เทพกระต่ายพระจันทร์"], "แพนด้าฟูฟู": ["แพนด้าฟูฟู", "แพนด้านักสำรวจ", "แพนด้ามหาปราชญ์ไผ่ทอง"], "แมวนำโชค": ["แมวนำโชค", "แมวกวักทองคำ", "เทพแมวกวักเก้าชีวิต"], "หมาน้อยซื่อสัตย์": ["หมาน้อยซื่อสัตย์", "หมาพิทักษ์", "อัศวินสุนัขโล่ทอง"], "โคอาล่าขี้เซา": ["โคอาล่าขี้เซา", "โคอาล่าหมอนเมฆ", "ราชาโคอาล่านิทรา"], "หมูนำทรัพย์": ["หมูนำทรัพย์", "หมูออมสินทอง", "เทพหมูมหาเศรษฐี"], "หมีน้ำผึ้ง": ["หมีน้ำผึ้ง", "หมีโหลน้ำผึ้งทอง", "ราชาหมีคลังน้ำผึ้ง"], "เป็ดน้อยลอยน้ำ": ["เป็ดน้อยลอยน้ำ", "เป็ดเปลวเทียน", "พญาเป็ดเพลิงทอง"], "แกะขนเมฆ": ["แกะขนเมฆ", "แกะเมฆสายฟ้า", "แกะเขาทองเหนือเมฆ"], "จิ้งจอกไพ่ทาโรต์": ["จิ้งจอกไพ่ทาโรต์", "จิ้งจอกสองหางพยากรณ์", "จิ้งจอกเก้าหางแห่งชะตา"], "นกฮูกดวงดาว": ["นกฮูกดวงดาว", "นกฮูกส่องจักรวาล", "มหาปราชญ์นกฮูกดาราจักร"], "โลมาสายรุ้ง": ["โลมาสายรุ้ง", "โลมาคลื่นรุ้ง", "เทพโลมาประตูรุ้ง"], "ปลาหมึกแปดโชค": ["ปลาหมึกแปดโชค", "ปลาหมึกแปดเปลว", "ราชันหมึกเพลิงแปดทิศ"], "นกแก้วช่างพูด": ["นกแก้วช่างพูด", "นกแก้วพรายของขวัญ", "นกแก้วทูตสวรรค์"], "หมาป่าเดือนเพ็ญ": ["หมาป่าเดือนเพ็ญ", "หมาป่าหอนรุ่งอรุณ", "ราชาหมาป่าจันทรา"], "วาฬฝันหวาน": ["วาฬฝันหวาน", "วาฬนาฬิกาฝัน", "วาฬจักรวาลนิรันดร์"]});
+Object.assign(FN_ART,{"หอยทากใจเย็น": ["ลูกปลาคาร์ฟ", "ปลาคาร์ฟแดงทอง", "มังกรคาร์ฟข้ามประตู"], "เต่าน้อยมั่นคง": ["เต่าน้อยมั่นคง", "เต่าโล่ศิลา", "เต่าพิทักษ์พันปี"], "ลูกเจี๊ยบตัวจิ๋ว": ["ลูกไก่ทอง", "ไก่ทองขันรับโชค", "พญาไก่ฟ้าทอง"], "แฮมสเตอร์แก้มป่อง": ["คางคกน้อยคาบเหรียญ", "คางคกสามขาทอง", "เทพคางคกเงินทอง"], "กบน้อยนำโชค": ["ลูกปลาทอง", "ปลาทองหางพลิ้ว", "ราชาปลาทองหางทอง"], "ผึ้งขยัน": ["ค้างคาวน้อยนำโชค", "ค้างคาวทองห้าพร", "เทพค้างคาวหมื่นโชค"], "เต่าทองจุดดาว": ["ลูกนกสาลิกา", "สาลิกาลิ้นทอง", "พญาสาลิกาเมตตา"], "เม่นขนนุ่ม": ["หนูน้อยถุงทอง", "หนูทองแบกเหรียญ", "เทพหนูทรัพย์ล้น"], "กระรอกเก็บโชค": ["ลูกกวางดาวทอง", "กวางเขาทอง", "กวางเทพลาภยศ"], "เพนกวินเดินเตาะแตะ": ["ลูกนกกระเรียน", "กระเรียนรับอรุณ", "กระเรียนเทพพันปี"], "หนอนน้อยรอบิน": ["ลูกปลาตะเพียน", "ปลาตะเพียนทอง", "พญาตะเพียนเงินทอง"], "กระต่ายจันทร์": ["กระต่ายจันทร์", "กระต่ายกระโดดฟ้า", "เทพกระต่ายพระจันทร์"], "แพนด้าฟูฟู": ["ลูกกิเลน", "กิเลนเกล็ดหยก", "กิเลนเทพนำโชค"], "แมวนำโชค": ["แมวนำโชค", "แมวกวักทองคำ", "เทพแมวกวักเก้าชีวิต"], "หมาน้อยซื่อสัตย์": ["หมาน้อยซื่อสัตย์", "หมาพิทักษ์", "อัศวินสุนัขโล่ทอง"], "โคอาล่าขี้เซา": ["ลูกม้าทอง", "ม้าทองควบเมฆ", "ม้าเทพแปดทิศ"], "หมูนำทรัพย์": ["หมูนำทรัพย์", "หมูออมสินทอง", "เทพหมูมหาเศรษฐี"], "หมีน้ำผึ้ง": ["ลูกโคทอง", "โคทองพวงมาลัย", "พญาโคทองคำ"], "เป็ดน้อยลอยน้ำ": ["เป็ดแมนดารินน้อย", "คู่เป็ดแมนดาริน", "เป็ดแมนดารินเทพสมพงศ์"], "แกะขนเมฆ": ["แกะขนเมฆ", "แกะเมฆสายฟ้า", "แกะเขาทองเหนือเมฆ"], "จิ้งจอกไพ่ทาโรต์": ["จิ้งจอกเงินน้อย", "จิ้งจอกห้าหาง", "จิ้งจอกเก้าหางเทพธิดา"], "นกฮูกดวงดาว": ["นกฮูกดวงดาว", "นกฮูกส่องจักรวาล", "มหาปราชญ์นกฮูกดาราจักร"], "โลมาสายรุ้ง": ["ลูกปลามังกร", "ปลามังกรทอง", "เทพปลามังกรเก้าเกล็ด"], "ปลาหมึกแปดโชค": ["ลูกปี่เซียะ", "ปี่เซียะหยกทอง", "ปี่เซียะเทพคลังทรัพย์"], "นกแก้วช่างพูด": ["ลูกนกการเวก", "การเวกปีกทอง", "พญานกการเวกเสียงทิพย์"], "หมาป่าเดือนเพ็ญ": ["ลูกช้างเผือก", "ช้างเผือกทรงเครื่อง", "พญาช้างเผือกงาทอง"], "วาฬฝันหวาน": ["ลูกเต่ามังกร", "เต่ามังกรเกล็ดทอง", "พญาเต่ามังกรหมื่นปี"]});
 PETS.forEach(p=>{if(FN_ART[p.n])p.fn=FN_ART[p.n]});
 
 const LOGO="logo.png";
@@ -1850,7 +1859,7 @@ const GOLD_P=.10,JAR=100,BASE_DROP=10,BURN_PTS=3,GOLD_X=5,JAR_ODDS=[[2,80],[3,15
   DAY=24*3600e3,BASE_WAIT=DAY,CDR_CAP=.50,AGAIN_CAP=.50,BURNFREE_CAP=.60,PITY=10,EXP=7*DAY,MAXLV=3,COST=10,INV_MAX=30,INV_WARN=25,LUCKY=22,TZ=7*3600e3;
 const LVM=[1,1.5,2];
 const LVPOW={"ดีมาก":.10,"ดี":.06,"ค่อยเป็นค่อยไป":.03};
-const BUFF=[{n:"โชคพบเพื่อน",d:s=>`โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
+const BUFF=[{n:"โชคพบสัตว์มงคล",d:s=>`โอกาสเจอสัตว์มงคลเพิ่มขึ้น ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคเวลา",d:s=>`เวลารอเขย่าฟรีลดลง ${Math.round(s*100)}% ทั้งวัน`},{n:"โชคซ้ำ",d:s=>`โอกาสได้เขย่าฟรีซ้ำ +${Math.round(s*100)}% ทั้งวัน`}];
 /* guided tutorial: a brand-new player's first draws are scripted so the lesson can show each system.
    only for accounts that started with the tutorial and have never paid money; the screen says these rounds are arranged */
 const TUT_CAT="แมวนำโชค",TUT_DUCK="เป็ดน้อยลอยน้ำ";
@@ -1859,7 +1868,7 @@ function tutSlip(kind){const ids=F.map((x,i)=>i).filter(i=>kind==="good"?(F[i][0
 function tutPet(n){const pi=PETS.findIndex(p=>p.n===n);S.rar[PETS[pi].t]++;S.petDrops++;return giveCopy(pi)}
 const REW=[{l:5},{l:5},{l:10},{l:10},{l:15},{l:20},{pet:"น้องหมีเด้ง"}],REW_NEW=[{l:100},{l:100},{l:150},{l:150},{l:200},{l:200},{pet:"น้องหมีเด้ง"}];
 const rewTable=()=>(S.dailyTot||0)<7?REW_NEW:REW; /* the first 7 check-ins of every player give the big welcome rewards */
-const LEAF_SHOP=[{id:"t",n:"ตั๋วสุ่มเพื่อน",cost:60},{id:"rt",n:"ตั๋วแรร์+",cost:250}];
+const LEAF_SHOP=[{id:"t",n:"เซียมเรียกผู้พิทักษ์",cost:60},{id:"rt",n:"เซียมเรียกแรร์+",cost:250}];
 const DEFAULT_PACKS=[{baht:49,stars:50},{baht:99,stars:110,tag:"คุ้มกว่า 10%"},{baht:199,stars:240,tag:"แถม 40 เหรียญทอง"},{baht:399,stars:520,tag:"แถม 120 เหรียญทอง"}];
 const NEED_T=[[1,6,12],[1,5,10],[1,4,8],[1,3,6],[1,3,5]],NEED_OLD=[[1,2,8],[1,2,6],[1,2,5],[1,2,4],[1,2,3]];
 const NEED=p=>NEED_T[p?p.t:2]||[1,2,3];
@@ -1880,11 +1889,11 @@ function norm(){if(!Array.isArray(S.shards))S.shards=[0,0,0,0,0];if(!Array.isArr
 function collScore(){let s=0;for(const p of PETS){const k=S.owned[p.n];if(k)s+=lvOf(k,p)}return s}
 const SHOW_MAX=1;
 const FRAMES=[{id:"none",n:"ไม่มีกรอบ"},{id:"gold",n:"ทองมงคล"},{id:"sakura",n:"ซากุระ"},{id:"star",n:"ดาวราตรี"}];
-function actProfile(avatar,frame,L){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้"}else avatar=-1;
+function actProfile(avatar,frame,L){avatar=+avatar;if(avatar>=0){const p=PETS[avatar];if(!p||!S.owned[p.n])throw "ยังไม่มีสัตว์มงคลตัวนี้"}else avatar=-1;
   if(!FRAMES.some(f=>f.id===frame))throw "ไม่มีกรอบนี้";S.avatar=avatar;S.frame=frame;L=Math.trunc(+L||0);S.avatarL=L>=1&&L<=3?L:0;return{avatar,frame,L:S.avatarL}}
 function avatarOut(){const a=S.avatar;return a!=null&&a>=0&&PETS[a]&&S.owned[PETS[a].n]?{pi:a,L:(()=>{const cur=lvOf(S.owned[PETS[a].n],PETS[a]),w=+S.avatarL||0;return w>=1&&w<=cur?w:cur})()}:{pi:-1,L:1}}
-function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกเพื่อนไม่ถูกต้อง";const out=[];
-  for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกเพื่อนไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีเพื่อนตัวนี้";if(!out.includes(pi))out.push(pi)}
+function actShowcase(pis){if(!Array.isArray(pis))throw "เลือกสัตว์มงคลไม่ถูกต้อง";const out=[];
+  for(const v of pis.slice(0,SHOW_MAX)){const pi=+v;if(!(pi>=0&&pi<PETS.length))throw "เลือกสัตว์มงคลไม่ถูกต้อง";if(!S.owned[PETS[pi].n])throw "ยังไม่มีสัตว์มงคลตัวนี้";if(!out.includes(pi))out.push(pi)}
   S.showcase=out;return{showcase:out}}
 function showcaseOut(){return(S.showcase||[]).filter(pi=>PETS[pi]&&S.owned[PETS[pi].n]).slice(0,SHOW_MAX).map(pi=>({pi,L:lvOf(S.owned[PETS[pi].n],PETS[pi])}))}
 function buffOf(f){return{type:f%3,s:LVPOW[F[f][0]]}}
@@ -1949,7 +1958,7 @@ function actBurnSlip(id){settlePending();const i=invIndex(id);const f=S.inv[i].f
 function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)throw "ยังไม่ได้เลือกใบ";const before=S.bp||0,fs=[];let pts=0,golds=0,lucky=0,jar=0,leaf=0,rainbows=0;
   for(const id of ids){const i=S.inv.findIndex(x=>x.id===id);if(i<0)continue;fs.push(S.inv[i].f);S.inv.splice(i,1);const r=burnReward();pts+=r.pts;leaf+=r.leaf;if(r.rainbow)rainbows++;if(r.gold)golds++;if(r.lucky)lucky++;jar+=r.jar}
   if(!fs.length)throw "ไม่พบใบที่เลือกในคลัง";return{n:fs.length,f:fs[0],pts,golds,lucky,leaf,rainbows,rainbow:rainbows>0,jar,before,gold:golds>0}}
-function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีตั๋วแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีตั๋วสุ่มเพื่อน";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
+function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีเซียมเรียกแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีเซียมเรียกผู้พิทักษ์";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
 /* v100 altar: pick a deity; change the water then light incense = the daily check-in; a private wish book */
 const DEITY_KEYS=["lakshmi","buddha","guanyin","vessavana"];
 function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
@@ -1974,9 +1983,9 @@ function actMus(op,arg){const today=dk(now());
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีไหสะสมบุญเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
   const pool=poolOf(t),pi=pool[Math.floor(rnd()*pool.length)];S.rar[t]++;return giveCopy(pi)}
-function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p.t!==t||p.sp)throw "เลือกเพื่อนไม่ถูกระดับ";
+function actExchange(t,pi){settlePending();t=+t;pi=+pi;const p=PETS[pi];if(!p||p.t!==t||p.sp)throw "เลือกสัตว์มงคลไม่ถูกระดับ";
   if((S.shards[t]||0)<SHARD_COST[t])throw "เศษไม่พอ";if((S.owned[p.n]||0)>=maxCopies(p))throw "ตัวนี้เก็บครบแล้ว";S.shards[t]-=SHARD_COST[t];return giveCopy(pi)}
-function actBuddy(pi){pi=+pi;const p=PETS[pi];if(!p||!S.owned[p.n])throw "ยังไม่มีเพื่อนตัวนี้";S.buddy=pi;return{pi}}
+function actBuddy(pi){pi=+pi;const p=PETS[pi];if(!p||!S.owned[p.n])throw "ยังไม่มีสัตว์มงคลตัวนี้";S.buddy=pi;return{pi}}
 function actDaily(){const st=streakState();if(st.claimed)throw "รับของวันนี้ไปแล้ว";S.streakN=st.next;S.streakDay=dk(now());const r=rewTable()[S.streakN-1];S.dailyTot=(S.dailyTot||0)+1;
   const dp=powers().daily||0;S.leaves=(S.leaves||0)+dp+(r.l||0);if(r.pet)giveCopy(PETS.findIndex(p=>p.n===r.pet));return{day:S.streakN,l:(r.l||0)+dp,bonus:dp,pet:r.pet||null}}
 function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "ไม่มีของชิ้นนี้";n=Math.max(1,Math.min(10,Math.floor(+n||1)));const cost=it.cost*n;if((S.leaves||0)<cost)throw "แต้มบุญไม่พอ";S.leaves-=cost;S.leafSpent=(S.leafSpent||0)+cost;if(id==="t")S.tickets=(S.tickets||0)+n;else S.rtickets=(S.rtickets||0)+n;return{id,n,leaves:S.leaves}}
@@ -2068,22 +2077,24 @@ const codeUse=c=>{const u=+c.used||0,m=+c.max_uses||0;return c.kind==="once"?(u?
 const n1=x=>String(Math.round(x*10)/10);
 function toast(msg){const el=$("toast");el.textContent=msg;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2600)}
 const formE=(p,L)=>p.fe&&p.fe[L-1]?p.fe[L-1]:p.e;
-const PET_IMG={"มังกรทอง": ["pet-assets/dragon_1.webp", "pet-assets/dragon_2.webp", "pet-assets/dragon_3.webp"], "นกยูงราชินี": ["pet-assets/peacock_1.webp", "pet-assets/peacock_2.webp", "pet-assets/peacock_3.webp"], "ฟอร์จูนี่": ["pet-assets/fortunie_1.webp", "pet-assets/fortunie_2.webp", "pet-assets/fortunie_3.webp"], "หงส์ขาว": ["pet-assets/swan_1.webp", "pet-assets/swan_2.webp", "pet-assets/swan_3.webp"], "ผีเสื้อราตรี": ["pet-assets/butterfly_1.webp", "pet-assets/butterfly_2.webp", "pet-assets/butterfly_3.webp"], "เสือขาวเฝ้าดวง": ["pet-assets/tiger_1.webp", "pet-assets/tiger_2.webp", "pet-assets/tiger_3.webp"], "ยูนิคอร์นเมฆ": ["pet-assets/unicorn_1.webp", "pet-assets/unicorn_2.webp", "pet-assets/unicorn_3.webp"], "สิงโตทอง": ["pet-assets/lion_1.webp", "pet-assets/lion_2.webp", "pet-assets/lion_3.webp"], "น้องหมีเด้ง": ["pet-assets/bear_1.webp", "pet-assets/bear_2.webp", "pet-assets/bear_3.webp"], "หอยทากใจเย็น": ["pet-assets/snail_1.webp", "pet-assets/snail_2.webp", "pet-assets/snail_3.webp"], "เต่าน้อยมั่นคง": ["pet-assets/turtle_1.webp", "pet-assets/turtle_2.webp", "pet-assets/turtle_3.webp"], "ลูกเจี๊ยบตัวจิ๋ว": ["pet-assets/chick_1.webp", "pet-assets/chick_2.webp", "pet-assets/chick_3.webp"], "แฮมสเตอร์แก้มป่อง": ["pet-assets/hamster_1.webp", "pet-assets/hamster_2.webp", "pet-assets/hamster_3.webp"], "กบน้อยนำโชค": ["pet-assets/frog_1.webp", "pet-assets/frog_2.webp", "pet-assets/frog_3.webp"], "ผึ้งขยัน": ["pet-assets/bee_1.webp", "pet-assets/bee_2.webp", "pet-assets/bee_3.webp"], "เต่าทองจุดดาว": ["pet-assets/ladybug_1.webp", "pet-assets/ladybug_2.webp", "pet-assets/ladybug_3.webp"], "เม่นขนนุ่ม": ["pet-assets/hedgehog_1.webp", "pet-assets/hedgehog_2.webp", "pet-assets/hedgehog_3.webp"], "กระรอกเก็บโชค": ["pet-assets/squirrel_1.webp", "pet-assets/squirrel_2.webp", "pet-assets/squirrel_3.webp"], "เพนกวินเดินเตาะแตะ": ["pet-assets/penguin_1.webp", "pet-assets/penguin_2.webp", "pet-assets/penguin_3.webp"], "หนอนน้อยรอบิน": ["pet-assets/caterpillar_1.webp", "pet-assets/caterpillar_2.webp", "pet-assets/caterpillar_3.webp"], "กระต่ายจันทร์": ["pet-assets/rabbit_1.webp", "pet-assets/rabbit_2.webp", "pet-assets/rabbit_3.webp"], "แพนด้าฟูฟู": ["pet-assets/panda_1.webp", "pet-assets/panda_2.webp", "pet-assets/panda_3.webp"], "แมวนำโชค": ["pet-assets/cat_1.webp", "pet-assets/cat_2.webp", "pet-assets/cat_3.webp"], "หมาน้อยซื่อสัตย์": ["pet-assets/dog_1.webp", "pet-assets/dog_2.webp", "pet-assets/dog_3.webp"], "โคอาล่าขี้เซา": ["pet-assets/koala_1.webp", "pet-assets/koala_2.webp", "pet-assets/koala_3.webp"], "หมูนำทรัพย์": ["pet-assets/pig_1.webp", "pet-assets/pig_2.webp", "pet-assets/pig_3.webp"], "หมีน้ำผึ้ง": ["pet-assets/honeybear_1.webp", "pet-assets/honeybear_2.webp", "pet-assets/honeybear_3.webp"], "เป็ดน้อยลอยน้ำ": ["pet-assets/duck_1.webp", "pet-assets/duck_2.webp", "pet-assets/duck_3.webp"], "แกะขนเมฆ": ["pet-assets/sheep_1.webp", "pet-assets/sheep_2.webp", "pet-assets/sheep_3.webp"], "จิ้งจอกไพ่ทาโรต์": ["pet-assets/fox_1.webp", "pet-assets/fox_2.webp", "pet-assets/fox_3.webp"], "นกฮูกดวงดาว": ["pet-assets/owl_1.webp", "pet-assets/owl_2.webp", "pet-assets/owl_3.webp"], "โลมาสายรุ้ง": ["pet-assets/dolphin_1.webp", "pet-assets/dolphin_2.webp", "pet-assets/dolphin_3.webp"], "ปลาหมึกแปดโชค": ["pet-assets/octopus_1.webp", "pet-assets/octopus_2.webp", "pet-assets/octopus_3.webp"], "นกแก้วช่างพูด": ["pet-assets/parrot_1.webp", "pet-assets/parrot_2.webp", "pet-assets/parrot_3.webp"], "หมาป่าเดือนเพ็ญ": ["pet-assets/wolf_1.webp", "pet-assets/wolf_2.webp", "pet-assets/wolf_3.webp"], "วาฬฝันหวาน": ["pet-assets/whale_1.webp", "pet-assets/whale_2.webp", "pet-assets/whale_3.webp"]};
+const PET_IMG={"มังกรทอง": ["pet-assets/dragon_1.webp", "pet-assets/dragon_2.webp", "pet-assets/dragon_3.webp"], "นกยูงราชินี": ["pet-assets/peacock_1.webp", "pet-assets/peacock_2.webp", "pet-assets/peacock_3.webp"], "ฟอร์จูนี่": ["pet-assets/fortunie_1.webp", "pet-assets/fortunie_2.webp", "pet-assets/fortunie_3.webp"], "หงส์ขาว": ["pet-assets/swan_1.webp", "pet-assets/swan_2.webp", "pet-assets/swan_3.webp"], "ผีเสื้อราตรี": ["pet-assets/naga_1.webp", "pet-assets/naga_2.webp", "pet-assets/naga_3.webp"], "เสือขาวเฝ้าดวง": ["pet-assets/tiger_1.webp", "pet-assets/tiger_2.webp", "pet-assets/tiger_3.webp"], "ยูนิคอร์นเมฆ": ["pet-assets/phoenix_1.webp", "pet-assets/phoenix_2.webp", "pet-assets/phoenix_3.webp"], "สิงโตทอง": ["pet-assets/lion_1.webp", "pet-assets/lion_2.webp", "pet-assets/lion_3.webp"], "น้องหมีเด้ง": ["pet-assets/goldelephant_1.webp", "pet-assets/goldelephant_2.webp", "pet-assets/goldelephant_3.webp"], "หอยทากใจเย็น": ["pet-assets/koi_1.webp", "pet-assets/koi_2.webp", "pet-assets/koi_3.webp"], "เต่าน้อยมั่นคง": ["pet-assets/turtle_1.webp", "pet-assets/turtle_2.webp", "pet-assets/turtle_3.webp"], "ลูกเจี๊ยบตัวจิ๋ว": ["pet-assets/goldchicken_1.webp", "pet-assets/goldchicken_2.webp", "pet-assets/goldchicken_3.webp"], "แฮมสเตอร์แก้มป่อง": ["pet-assets/toad_1.webp", "pet-assets/toad_2.webp", "pet-assets/toad_3.webp"], "กบน้อยนำโชค": ["pet-assets/goldfish_1.webp", "pet-assets/goldfish_2.webp", "pet-assets/goldfish_3.webp"], "ผึ้งขยัน": ["pet-assets/bat_1.webp", "pet-assets/bat_2.webp", "pet-assets/bat_3.webp"], "เต่าทองจุดดาว": ["pet-assets/myna_1.webp", "pet-assets/myna_2.webp", "pet-assets/myna_3.webp"], "เม่นขนนุ่ม": ["pet-assets/goldrat_1.webp", "pet-assets/goldrat_2.webp", "pet-assets/goldrat_3.webp"], "กระรอกเก็บโชค": ["pet-assets/deer_1.webp", "pet-assets/deer_2.webp", "pet-assets/deer_3.webp"], "เพนกวินเดินเตาะแตะ": ["pet-assets/crane_1.webp", "pet-assets/crane_2.webp", "pet-assets/crane_3.webp"], "หนอนน้อยรอบิน": ["pet-assets/taphien_1.webp", "pet-assets/taphien_2.webp", "pet-assets/taphien_3.webp"], "กระต่ายจันทร์": ["pet-assets/rabbit_1.webp", "pet-assets/rabbit_2.webp", "pet-assets/rabbit_3.webp"], "แพนด้าฟูฟู": ["pet-assets/qilin_1.webp", "pet-assets/qilin_2.webp", "pet-assets/qilin_3.webp"], "แมวนำโชค": ["pet-assets/cat_1.webp", "pet-assets/cat_2.webp", "pet-assets/cat_3.webp"], "หมาน้อยซื่อสัตย์": ["pet-assets/dog_1.webp", "pet-assets/dog_2.webp", "pet-assets/dog_3.webp"], "โคอาล่าขี้เซา": ["pet-assets/goldhorse_1.webp", "pet-assets/goldhorse_2.webp", "pet-assets/goldhorse_3.webp"], "หมูนำทรัพย์": ["pet-assets/pig_1.webp", "pet-assets/pig_2.webp", "pet-assets/pig_3.webp"], "หมีน้ำผึ้ง": ["pet-assets/goldox_1.webp", "pet-assets/goldox_2.webp", "pet-assets/goldox_3.webp"], "เป็ดน้อยลอยน้ำ": ["pet-assets/mandarin_1.webp", "pet-assets/mandarin_2.webp", "pet-assets/mandarin_3.webp"], "แกะขนเมฆ": ["pet-assets/sheep_1.webp", "pet-assets/sheep_2.webp", "pet-assets/sheep_3.webp"], "จิ้งจอกไพ่ทาโรต์": ["pet-assets/ninefox_1.webp", "pet-assets/ninefox_2.webp", "pet-assets/ninefox_3.webp"], "นกฮูกดวงดาว": ["pet-assets/owl_1.webp", "pet-assets/owl_2.webp", "pet-assets/owl_3.webp"], "โลมาสายรุ้ง": ["pet-assets/arowana_1.webp", "pet-assets/arowana_2.webp", "pet-assets/arowana_3.webp"], "ปลาหมึกแปดโชค": ["pet-assets/pixiu_1.webp", "pet-assets/pixiu_2.webp", "pet-assets/pixiu_3.webp"], "นกแก้วช่างพูด": ["pet-assets/karawek_1.webp", "pet-assets/karawek_2.webp", "pet-assets/karawek_3.webp"], "หมาป่าเดือนเพ็ญ": ["pet-assets/whiteelephant_1.webp", "pet-assets/whiteelephant_2.webp", "pet-assets/whiteelephant_3.webp"], "วาฬฝันหวาน": ["pet-assets/dragonturtle_1.webp", "pet-assets/dragonturtle_2.webp", "pet-assets/dragonturtle_3.webp"]};
 const PED_IMG=["pet-assets/ped_1.webp", "pet-assets/ped_2.webp", "pet-assets/ped_3.webp"];
 const PAY_QR="pay-qr.jpg"; /* PromptPay QR shown on the simple top-up screen (web) */
-const PET_GAP={"หอยทากใจเย็น": [0.043, 0.051, 0.035], "เต่าน้อยมั่นคง": [0.113, 0.086, 0.105], "ลูกเจี๊ยบตัวจิ๋ว": [0.035, 0.039, 0.043], "แฮมสเตอร์แก้มป่อง": [0.035, 0.035, 0.035], "กบน้อยนำโชค": [0.047, 0.035, 0.035], "ผึ้งขยัน": [0.066, 0.039, 0.043], "เต่าทองจุดดาว": [0.156, 0.051, 0.047], "เม่นขนนุ่ม": [0.035, 0.055, 0.035], "กระรอกเก็บโชค": [0.035, 0.035, 0.035], "เพนกวินเดินเตาะแตะ": [0.039, 0.039, 0.039], "หนอนน้อยรอบิน": [0.176, 0.039, 0.055], "กระต่ายจันทร์": [0.035, 0.035, 0.035], "แพนด้าฟูฟู": [0.039, 0.035, 0.039], "แมวนำโชค": [0.035, 0.035, 0.035], "หมาน้อยซื่อสัตย์": [0.035, 0.035, 0.035], "โคอาล่าขี้เซา": [0.109, 0.039, 0.047], "หมูนำทรัพย์": [0.035, 0.035, 0.035], "หมีน้ำผึ้ง": [0.035, 0.035, 0.035], "เป็ดน้อยลอยน้ำ": [0.035, 0.035, 0.043], "แกะขนเมฆ": [0.035, 0.086, 0.035], "จิ้งจอกไพ่ทาโรต์": [0.035, 0.055, 0.066], "นกฮูกดวงดาว": [0.043, 0.043, 0.066], "โลมาสายรุ้ง": [0.039, 0.035, 0.035], "ปลาหมึกแปดโชค": [0.109, 0.094, 0.074], "นกแก้วช่างพูด": [0.039, 0.043, 0.047], "หมาป่าเดือนเพ็ญ": [0.035, 0.035, 0.035], "วาฬฝันหวาน": [0.176, 0.191, 0.152], "ผีเสื้อราตรี": [0.129, 0.039, 0.121], "ยูนิคอร์นเมฆ": [0.035, 0.039, 0.059], "หงส์ขาว": [0.078, 0.035, 0.078], "เสือขาวเฝ้าดวง": [0.094, 0.059, 0.094], "สิงโตทอง": [0.09, 0.09, 0.066], "น้องหมีเด้ง": [0.203, 0.035, 0.105], "มังกรทอง": [0.039, 0.039, 0.055], "นกยูงราชินี": [0.039, 0.035, 0.094], "ฟอร์จูนี่": [0.035, 0.035, 0.039]}; /* share of each art image left empty under the feet, so pets can stand on things */ /* podium pedestal art: [gold, silver, bronze] */
+const PET_GAP={"หอยทากใจเย็น": [0.043, 0.035, 0.035], "เต่าน้อยมั่นคง": [0.113, 0.086, 0.105], "ลูกเจี๊ยบตัวจิ๋ว": [0.035, 0.035, 0.035], "แฮมสเตอร์แก้มป่อง": [0.082, 0.086, 0.062], "กบน้อยนำโชค": [0.047, 0.047, 0.039], "ผึ้งขยัน": [0.066, 0.078, 0.074], "เต่าทองจุดดาว": [0.035, 0.035, 0.07], "เม่นขนนุ่ม": [0.035, 0.035, 0.035], "กระรอกเก็บโชค": [0.035, 0.035, 0.035], "เพนกวินเดินเตาะแตะ": [0.035, 0.035, 0.035], "หนอนน้อยรอบิน": [0.098, 0.07, 0.043], "กระต่ายจันทร์": [0.035, 0.035, 0.035], "แพนด้าฟูฟู": [0.035, 0.035, 0.035], "แมวนำโชค": [0.035, 0.035, 0.035], "หมาน้อยซื่อสัตย์": [0.035, 0.035, 0.035], "โคอาล่าขี้เซา": [0.035, 0.035, 0.035], "หมูนำทรัพย์": [0.035, 0.035, 0.035], "หมีน้ำผึ้ง": [0.035, 0.035, 0.035], "เป็ดน้อยลอยน้ำ": [0.035, 0.113, 0.133], "แกะขนเมฆ": [0.035, 0.086, 0.035], "จิ้งจอกไพ่ทาโรต์": [0.035, 0.043, 0.078], "นกฮูกดวงดาว": [0.043, 0.043, 0.066], "โลมาสายรุ้ง": [0.043, 0.047, 0.043], "ปลาหมึกแปดโชค": [0.035, 0.051, 0.051], "นกแก้วช่างพูด": [0.062, 0.102, 0.039], "หมาป่าเดือนเพ็ญ": [0.051, 0.051, 0.039], "วาฬฝันหวาน": [0.035, 0.055, 0.047], "ผีเสื้อราตรี": [0.035, 0.035, 0.035], "ยูนิคอร์นเมฆ": [0.035, 0.039, 0.043], "หงส์ขาว": [0.078, 0.035, 0.078], "เสือขาวเฝ้าดวง": [0.094, 0.059, 0.094], "สิงโตทอง": [0.09, 0.09, 0.066], "น้องหมีเด้ง": [0.062, 0.035, 0.035], "มังกรทอง": [0.039, 0.039, 0.055], "นกยูงราชินี": [0.039, 0.035, 0.094], "ฟอร์จูนี่": [0.035, 0.035, 0.039]}; /* share of each art image left empty under the feet, so pets can stand on things */ /* podium pedestal art: [gold, silver, bronze] */
 const petImg=(p,L)=>{const s=PET_IMG[p.n];return s&&s[L-1]||""};
 const petFace=(p,L)=>{L=L||lvOf(S.owned[p.n]||1,p);const e=formE(p,L),src=petImg(p,L);
   if(src)return `<img class="pimg" src="${src}" alt="" draggable="false" onerror="this.outerHTML='${e}'">`;
   return p.img?`<img src="${LOGO}" alt="">`:(p.purple?`<span class="purple">${e}</span>`:e)};
-const formName=(p,L)=>p.fn?p.fn[(L||lvOf(S.owned[p.n]||1,p))-1]:p.n;
-const ROLE={time:["⏳","พลังเวลา"],pity:["🛡️","พลังการันตี"],gold:["🔥","พลังเผาเคราะห์"],star:["🪷","พลังสะสมบุญ"],leaf:["🌸","พลังร้ายกลายดี"],again:["🍀","พลังโชคซ้ำ"],bp:["🪔","พลังเติมไห"],find:["🔭","พลังตามหาเพื่อน"],ticket:["🎟️","พลังตั๋วนำโชค"],daily:["🎁","พลังของขวัญ"],dawn:["🌅","พลังรับอรุณ"],burnfree:["🕯️","พลังคืนชีพ"],extra:["✨","พลังพรพิเศษ"]};
+const petName=p=>p?(p.dn||p.n):""; /* v102: p.n is the save key, p.dn the name players see */
+const petByKey=k=>PETS.find(p=>p.n===k);
+const formName=(p,L)=>p.fn?p.fn[(L||lvOf(S.owned[p.n]||1,p))-1]:petName(p);
+const ROLE={time:["⏳","พลังเวลา"],pity:["🛡️","พลังการันตี"],gold:["🔥","พลังเผาเคราะห์"],star:["🪷","พลังสะสมบุญ"],leaf:["🌸","พลังร้ายกลายดี"],again:["🍀","พลังโชคซ้ำ"],bp:["🪔","พลังเติมไห"],find:["🔭","พลังตามหาสัตว์มงคล"],ticket:["🎋","พลังเซียมนำโชค"],daily:["🎁","พลังของขวัญ"],dawn:["🌅","พลังรับอรุณ"],burnfree:["🕯️","พลังคืนชีพ"],extra:["✨","พลังพรพิเศษ"]};
 const pct=x=>Math.round(x*100);
 function skillText(a){if(!a)return"";const o=[];
-  if(a.baseMul)o.push(`โอกาสเจอเพื่อนพื้นฐาน x${a.baseMul}`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
+  if(a.baseMul)o.push(`โอกาสเจอสัตว์มงคลพื้นฐาน x${a.baseMul}`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.cdr)o.push(`เวลารอ −${pct(a.cdr)}%`);if(a.cap)o.push(`เก็บสิทธิ์ฟรีได้ +${a.cap}`);if(a.again)o.push(`${pct(a.again)}% ได้เขย่าซ้ำ`);
   if(a.fa)o.push(`เขย่าแรกของวัน ${pct(a.fa)}% แถมฟรี`);if(a.star)o.push(`+${a.star} แต้มบุญต่อการเขย่า`);if(a.daily)o.push(`เช็กอิน +${a.daily} แต้มบุญ`);
-  if(a.dropX)o.push(`เจอเพื่อนง่ายขึ้น ${pct(a.dropX)}%`);if(a.pity)o.push(`การันตีทุก ${PITY-a.pity} ครั้ง`);if(a.tg)o.push(`ใบดีมาก ${pct(a.tg)}% ได้ตั๋ว`);
+  if(a.dropX)o.push(`เจอสัตว์มงคลง่ายขึ้น ${pct(a.dropX)}%`);if(a.pity)o.push(`การันตีทุก ${PITY-a.pity} ครั้ง`);if(a.tg)o.push(`ใบดีมาก ${pct(a.tg)}% ได้เซียมเรียก`);
   if(a.gold)o.push(`ไฟทองรวม ${pct(GOLD_P+a.gold)}% (ปกติ ${pct(GOLD_P)}%)`);if(a.bp)o.push(`เผาได้ ${BURN_PTS+a.bp} แต้ม/ใบ (ปกติ ${BURN_PTS})`);if(a.rainbow)o.push(`${n1(a.rainbow*100)}% ไฟรุ้ง +${JAR} แต้มไห`);if(a.burnFree)o.push(`เผาแล้ว ${pct(a.burnFree)}% ได้เขย่าฟรี`);if(a.burnLeaf)o.push(`เผาแล้วได้ +${a.burnLeaf} แต้มบุญ`);
   if(a.againCap)o.push(`เพดานเขย่าซ้ำ ${pct(a.againCap)}%`);return o.join(" · ")}
 let WID=0;
@@ -2101,7 +2112,7 @@ function formHTML(p,L,size,locked){const r=RAR[p.t],role=ROLE[p.role]||["✦",""
   if(!locked){if(L===3&&p.t>=3&&!petImg(p,L))h+=`<span class="f-halo"></span>`}
   return h+`</div>`}
 function petDesc(p,k,lvl){if(p.lv)return skillText(p.lv[(lvl||lvOf(k,p))-1]);const a=p.ab,m=LVM[(lvl||lvOf(k,p))-1],o=[];
-  if(a.cdr)o.push(`เวลารอลดลง ${n1(a.cdr*m*100)}%`);if(a.drop)o.push(`โอกาสเจอเพื่อน +${n1(a.drop*m)}%`);if(a.again)o.push(`${n1(a.again*m*100)}% ได้เขย่าฟรีซ้ำ`);
+  if(a.cdr)o.push(`เวลารอลดลง ${n1(a.cdr*m*100)}%`);if(a.drop)o.push(`โอกาสเจอสัตว์มงคล +${n1(a.drop*m)}%`);if(a.again)o.push(`${n1(a.again*m*100)}% ได้เขย่าฟรีซ้ำ`);
   if(a.cap)o.push(`เก็บสิทธิ์ฟรีเพิ่ม ${a.cap}`);if(a.star)o.push(`+${Math.round(a.star*m)} แต้มบุญต่อครั้ง`);if(a.extra)o.push(`เขย่าฟรีเพิ่มวันละ ${a.extra}`);
   if(a.baseMul)o.push(`โอกาสพื้นฐาน x${n1(a.baseMul+(m-1))}`);if(a.burnFree)o.push(`เผาแล้ว ${n1(Math.min(.6,a.burnFree*m)*100)}% ได้เขย่าฟรี`);if(a.burnLeaf)o.push(`เผาแล้วได้ +${a.burnLeaf} แต้มบุญ`);return o.join(" · ")}
 /* collection score (Lv.1 = 1 point, Lv.2 = 2, Lv.3 = 3), 3-slot showcase, avatar pet + frame */
@@ -2187,7 +2198,7 @@ function fx(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.l
 const SS_ART={"altar_bg": "siamsi-art/altar_bg.webp", "altar_cloth30": "siamsi-art/altar_cloth30.webp", "altar_glow7": "siamsi-art/altar_glow7.webp", "altar_shelf": "siamsi-art/altar_shelf.webp", "bell": "siamsi-art/bell.webp", "bg_night": "siamsi-art/bg_night.webp", "bg_temple": "siamsi-art/bg_temple.webp", "bgm_bowl": "siamsi-art/bgm_bowl.webp", "bgm_china": "siamsi-art/bgm_china.webp", "bgm_rain": "siamsi-art/bgm_rain.webp", "bgm_stream": "siamsi-art/bgm_stream.webp", "bgm_wind": "siamsi-art/bgm_wind.webp", "bowl": "siamsi-art/bowl.webp", "bowl_mallet": "siamsi-art/bowl_mallet.webp", "candle": "siamsi-art/candle.webp", "candle_lotus": "siamsi-art/candle_lotus.webp", "cloth_gold": "siamsi-art/cloth_gold.webp", "cloth_pink": "siamsi-art/cloth_pink.webp", "cup": "siamsi-art/cup.webp", "deity_buddha": "siamsi-art/deity_buddha.webp", "deity_guanyin": "siamsi-art/deity_guanyin.webp", "deity_lakshmi": "siamsi-art/deity_lakshmi.webp", "deity_vessavana": "siamsi-art/deity_vessavana.webp", "flower_vase": "siamsi-art/flower_vase.webp", "garland_jasmine": "siamsi-art/garland_jasmine.webp", "glass_clear": "siamsi-art/glass_clear.webp", "glass_cloudy": "siamsi-art/glass_cloudy.webp", "glass_crystal": "siamsi-art/glass_crystal.webp", "glass_crystal_cloudy": "siamsi-art/glass_crystal_cloudy.webp", "gong": "siamsi-art/gong.webp", "icon_coin": "siamsi-art/icon_coin.webp", "icon_merit": "siamsi-art/icon_merit.webp", "icon_summon": "siamsi-art/icon_summon.webp", "incense_dragon_half": "siamsi-art/incense_dragon_half.webp", "incense_dragon_lit": "siamsi-art/incense_dragon_lit.webp", "incense_dragon_out": "siamsi-art/incense_dragon_out.webp", "incense_dragon_unlit": "siamsi-art/incense_dragon_unlit.webp", "incense_gold_half": "siamsi-art/incense_gold_half.webp", "incense_gold_lit": "siamsi-art/incense_gold_lit.webp", "incense_gold_out": "siamsi-art/incense_gold_out.webp", "incense_gold_unlit": "siamsi-art/incense_gold_unlit.webp", "incense_half": "siamsi-art/incense_half.webp", "incense_lit": "siamsi-art/incense_lit.webp", "incense_out": "siamsi-art/incense_out.webp", "incense_unlit": "siamsi-art/incense_unlit.webp", "jar0": "siamsi-art/jar0.webp", "jar1": "siamsi-art/jar1.webp", "lantern": "siamsi-art/lantern.webp", "p_gold": "siamsi-art/p_gold.webp", "p_good": "siamsi-art/p_good.webp", "p_good_b": "siamsi-art/p_good_b.webp", "p_good_m": "siamsi-art/p_good_m.webp", "p_good_t": "siamsi-art/p_good_t.webp", "p_grad": "siamsi-art/p_grad.webp", "p_grad_b": "siamsi-art/p_grad_b.webp", "p_grad_m": "siamsi-art/p_grad_m.webp", "p_grad_t": "siamsi-art/p_grad_t.webp", "p_vgood": "siamsi-art/p_vgood.webp", "p_vgood_b": "siamsi-art/p_vgood_b.webp", "p_vgood_m": "siamsi-art/p_vgood_m.webp", "p_vgood_t": "siamsi-art/p_vgood_t.webp", "share_fortune": "siamsi-art/share_fortune.webp", "share_pet": "siamsi-art/share_pet.webp", "share_wish": "siamsi-art/share_wish.webp", "shelf_cloud": "siamsi-art/shelf_cloud.webp", "shelf_jade": "siamsi-art/shelf_jade.webp", "shelf_redgold": "siamsi-art/shelf_redgold.webp", "stick": "siamsi-art/stick.webp", "sticks": "siamsi-art/sticks.webp", "wall_fri": "siamsi-art/wall_fri.webp", "wall_mon": "siamsi-art/wall_mon.webp", "wall_sat": "siamsi-art/wall_sat.webp", "wall_sun": "siamsi-art/wall_sun.webp", "wall_thu": "siamsi-art/wall_thu.webp", "wall_tue": "siamsi-art/wall_tue.webp", "wall_wed": "siamsi-art/wall_wed.webp"},SS_IMG={},PAPER_K={"ค่อยเป็นค่อยไป":"grad","ดี":"good","ดีมาก":"vgood"};
 (function(){for(const k in SS_ART){if(!SS_ART[k]||/_[tmb]$/.test(k))continue;const im=new Image();im.decoding="async";im.src=SS_ART[k];SS_IMG[k]=im}
   document.querySelectorAll("img[data-art]").forEach(i=>{const s=SS_ART[i.dataset.art];if(s)i.src=s;else i.hidden=true});
-  const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(SS_ART.altar_bg)R.style.setProperty("--altar-bg",`url("${SS_ART.altar_bg}")`);if(SS_ART.icon_merit)R.style.setProperty("--ico-merit",`url("${SS_ART.icon_merit}")`);if(SS_ART.icon_coin)R.style.setProperty("--ico-coin",`url("${SS_ART.icon_coin}")`);if(!SS_ART.icon_merit||!SS_ART.icon_coin)R.classList.add("no-ico");if(!SS_ART.cup)R.classList.add("no-cupart");
+  const R=document.documentElement;if(SS_ART.bg)R.style.setProperty("--ss-bg",`url("${SS_ART.bg}")`);if(SS_ART.altar_bg)R.style.setProperty("--altar-bg",`url("${SS_ART.altar_bg}")`);if(SS_ART.icon_merit)R.style.setProperty("--ico-merit",`url("${SS_ART.icon_merit}")`);if(SS_ART.icon_coin)R.style.setProperty("--ico-coin",`url("${SS_ART.icon_coin}")`);if(SS_ART.icon_summon){R.style.setProperty("--ico-sum",`url("${SS_ART.icon_summon}")`);R.classList.add("has-sum")}if(!SS_ART.icon_merit||!SS_ART.icon_coin)R.classList.add("no-ico");if(!SS_ART.cup)R.classList.add("no-cupart");
   let css="";for(const k of ["grad","good","vgood"])if(SS_ART["p_"+k+"_t"])css+=`.ssp-${k}{--pt:url("${SS_ART["p_"+k+"_t"]}");--pm:url("${SS_ART["p_"+k+"_m"]}");--pb:url("${SS_ART["p_"+k+"_b"]}")}`;
   if(css){const st=document.createElement("style");st.textContent=css;document.head.appendChild(st)}})();
 const paperK=lvn=>{const k=PAPER_K[lvn];return k&&SS_ART["p_"+k+"_t"]?k:""};
@@ -2244,7 +2255,7 @@ async function finishShake(){motionOff();
 function openReveal(){const L=LV[F[cur.f][0]],R=$("reveal");
   R.style.setProperty("--glow",L.glow);R.classList.remove("lit");R.hidden=false;showStep("stepStick");$("bigNo").textContent=th(cur.f+1);
   const fr=$("front");fr.style.setProperty("--tier-bg",L.bg);fr.style.setProperty("--tier-c",L.c);
-  fr.innerHTML=`<span class="tier" style="background:${L.c}">${F[cur.f][0]}</span><span class="big-no">ใบที่ ${th(cur.f+1)}</span><span class="pn" style="padding:0 12px;text-wrap:balance">${F[cur.f][1]}</span>${cur.ticket?`<span class="abil">ใบนำโชค! ได้ตั๋วสุ่มเพื่อน 1 ใบ</span>`:""}${tutTag()}`;
+  fr.innerHTML=`<span class="tier" style="background:${L.c}">${F[cur.f][0]}</span><span class="big-no">ใบที่ ${th(cur.f+1)}</span><span class="pn" style="padding:0 12px;text-wrap:balance">${F[cur.f][1]}</span>${cur.ticket?`<span class="abil">ใบนำโชค! ได้เซียมเรียกผู้พิทักษ์ 1 ใบ</span>`:""}${tutTag()}`;
   $("flip").classList.remove("open");$("doneBtn").hidden=true;$("tapHint").hidden=false;$("openBtn").focus()}
 function showStep(id){["stepStick","stepCard","stepPet","stepSlip"].forEach(k=>$(k).hidden=k!==id)}
 $("openBtn").addEventListener("click",()=>{showStep("stepCard");$("flip").focus()});
@@ -2254,15 +2265,15 @@ function flipCard(){const fl=$("flip");if(fl.classList.contains("open"))return;f
 $("flip").addEventListener("click",flipCard);
 $("flip").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flipCard()}});
 $("doneBtn").addEventListener("click",()=>{if(cur.pet!==null)showEgg();else showSlip()});
-function showEgg(){const R=$("reveal");$("petLbl").textContent=GIFT?"🎁 ของขวัญครบ 7 วัน!":"มีเพื่อนตัวน้อยตามมาด้วย!";R.classList.remove("lit");R.style.setProperty("--glow","#f0d28a");showStep("stepPet");
+function showEgg(){const R=$("reveal");$("petLbl").textContent=GIFT?"🎁 ของขวัญครบ 7 วัน!":"มีสัตว์มงคลตามมาด้วย!";R.classList.remove("lit");R.style.setProperty("--glow","#f0d28a");showStep("stepPet");
   $("egg").hidden=false;$("petCard").hidden=true;$("petDone").hidden=true;$("eggHint").hidden=false;$("egg").focus();chime([784,988],.1);
-  $("petDone").textContent=ticketMode?"รับเพื่อน":"ไปอ่านใบเซียมซี"}
+  $("petDone").textContent=ticketMode?"รับสัตว์มงคล":"ไปอ่านใบเซียมซี"}
 $("egg").addEventListener("click",()=>{const p=PETS[cur.pet],r=RAR[p.t],R=$("reveal");$("egg").hidden=true;$("eggHint").hidden=true;
   R.style.setProperty("--glow",r.glow);R.classList.add("lit");const pc=$("petCard");pc.style.setProperty("--tier-bg",r.bg);pc.style.setProperty("--tier-c",r.c);
   const k=S.owned[p.n];let evo=k>1&&lvOf(k,p)>lvOf(k-1,p);
   /* if the evolution scene ever fails, fall back to the normal pet card so the player is never stuck */
   if(evo){try{pc.hidden=true;evolveFx(p,lvOf(k-1,p),lvOf(k,p),()=>{pc.hidden=false;$("petDone").hidden=false;$("petDone").focus()})}catch(err){evo=false;$("evoFx").hidden=true}}
-  pc.innerHTML=`<span class="tier" style="background:${r.c}">${r.name}</span><div class="e">${formHTML(p,lvOf(k,p),petImg(p,lvOf(k,p))?136:112)}</div><span class="pn">${formName(p,lvOf(k,p))}</span><span class="abil">${petDesc(p,k)}</span><small>${k===1?(S.buddy===cur.pet?"เพื่อนใหม่! เป็นคู่หูของคุณแล้ว":"เพื่อนใหม่! เข้าสมุดสะสมแล้ว"):lvOf(k,p)>lvOf(k-1,p)?`เลเวลอัปเป็น Lv.${lvOf(k,p)}!`:k<=maxCopies(p)?`เก็บเพิ่มได้ ${k}/${NEED(p)[lvOf(k,p)]} ตัว สู่ Lv.${lvOf(k,p)+1}`:`เลเวลสูงสุดแล้ว ได้เศษ${RAR[p.t].name} +${SHARD_GET[p.t]} เศษ`}</small>`;
+  pc.innerHTML=`<span class="tier" style="background:${r.c}">${r.name}</span><div class="e">${formHTML(p,lvOf(k,p),petImg(p,lvOf(k,p))?136:112)}</div><span class="pn">${formName(p,lvOf(k,p))}</span><span class="abil">${petDesc(p,k)}</span><small>${k===1?(S.buddy===cur.pet?"สัตว์มงคลใหม่! เป็นคู่หูของคุณแล้ว":"สัตว์มงคลใหม่! เข้าสมุดสะสมแล้ว"):lvOf(k,p)>lvOf(k-1,p)?`เลเวลอัปเป็น Lv.${lvOf(k,p)}!`:k<=maxCopies(p)?`เก็บเพิ่มได้ ${k}/${NEED(p)[lvOf(k,p)]} ตัว สู่ Lv.${lvOf(k,p)+1}`:`เลเวลสูงสุดแล้ว ได้เศษ${RAR[p.t].name} +${SHARD_GET[p.t]} เศษ`}</small>`;
   if(!evo){pc.hidden=false;if(FX_STYLE()==="brass"||p.t>=3)burst(FX_STYLE()==="brass"?p.t+1:1,r.glow);pullFx(p,lvOf(k,p))}
   if(!evo){$("petDone").hidden=false;$("petDone").focus()}});
 $("petDone").addEventListener("click",()=>{if(PREVIEW){ticketMode=false;closeReveal();return}if(ticketMode){ticketMode=false;const back=EGG_BACK||"pets";EGG_BACK=null;closeReveal();showTab(back);return}showSlip()});
@@ -2292,17 +2303,17 @@ function doBurnReward(r){r=r||{};const rainbow=!!r.rainbow,gold=!!r.gold,pts=r.p
   const w=HEAL[Math.floor(rnd()*HEAL.length)];
   const nudge=jar?" ไหสะสมบุญเต็มแล้ว ไปเปิดที่คลังได้เลยค่ะ":canDraw()?" ลองเขย่าใบใหม่ไหมคะ":(canUseToday()&&S.inv.length?" ลองเลือกใบดี ๆ ในคลังมาเป็นดวงวันนี้ไหมคะ":"");
   sayLock=Date.now()+9000;$("bubble").innerHTML=`<b>${rainbow?"🌈 ไฟรุ้ง!":gold?"ไฟทอง!":"ปล่อยวางแล้ว"}</b> ${w}${nudge}`;
-  toast(jar?`${rainbow?"🌈 แจ็กพ็อตไฟรุ้ง +"+JAR+" แต้ม · ":""}ไหสะสมบุญเต็ม! เปิดสุ่มเพื่อนแรร์ขึ้นไปได้ที่คลัง${leaf?` · +${leaf} แต้มบุญ`:""}`:`+${pts} แต้มเผา${gold?" (ไฟทอง x"+GOLD_X+")":""}${leaf?` · +${leaf} แต้มบุญ`:""} · ไห ${S.bp}/${JAR}`)}
+  toast(jar?`${rainbow?"🌈 แจ็กพ็อตไฟรุ้ง +"+JAR+" แต้ม · ":""}ไหสะสมบุญเต็ม! เปิดสุ่มสัตว์มงคลแรร์ขึ้นไปได้ที่คลัง${leaf?` · +${leaf} แต้มบุญ`:""}`:`+${pts} แต้มเผา${gold?" (ไฟทอง x"+GOLD_X+")":""}${leaf?` · +${leaf} แต้มบุญ`:""} · ไห ${S.bp}/${JAR}`)}
 function closeReveal(){GIFT=false;$("reveal").hidden=true;$("stage").classList.remove("out");busy=false;if(typeof clearPullFx==="function")clearPullFx();
   if(PREVIEW){S=JSON.parse(PREVIEW);PREVIEW=null;cur=null;render();return}
-  if(cur&&(cur.tg||cur.fa)){const p=buddyPet();setTimeout(()=>{if(cur.tg){toast((p?formName(p)+" ":"")+"แถมตั๋วสุ่มเพื่อนจากใบดีมาก!");buddyCheer("ตั๋วนำโชค!")}if(cur.fa){toast((p?formName(p)+" ":"")+"แถมเขย่าฟรีรับเช้าวันใหม่!");buddyCheer("แถมให้อีกครั้ง!")}},400)}
+  if(cur&&(cur.tg||cur.fa)){const p=buddyPet();setTimeout(()=>{if(cur.tg){toast((p?formName(p)+" ":"")+"แถมเซียมเรียกผู้พิทักษ์จากใบดีมาก!");buddyCheer("เซียมนำโชค!")}if(cur.fa){toast((p?formName(p)+" ":"")+"แถมเขย่าฟรีรับเช้าวันใหม่!");buddyCheer("แถมให้อีกครั้ง!")}},400)}
   if(cur&&cur.fate==="pending"){cur.fate="kept";api("decide",{fate:"keep"}).then(render).catch(()=>{})}
   if(cur){const lv=F[cur.f][0];sayLock=Date.now()+8000;$("bubble").innerHTML=`<b>${lv}</b> ${LV[lv].say}${cur.again?" <b>ได้เขย่าฟรีอีกครั้ง!</b>":""}`}
   render()}
 async function eggFrom(action,params,hint){if(busy)return;busy=true;let g;try{g=await api(action,params)}catch(e){busy=false;if(e!=="locked")toast(e);render();return}
   cur=Object.assign({},cur||{f:LUCKY},{pet:g.pi,isNew:g.isNew,fate:"done"});ticketMode=true;$("reveal").hidden=false;showEgg();$("eggHint").textContent=hint;render()}
 function openJar(){eggFrom("jar",{},"แตะไข่จากไหสะสมบุญ")}
-function useTicket(rare){rare=rare===true;eggFrom("ticket",rare?{rare:true}:{},rare?"แตะไข่ทองจากตั๋วแรร์+":"แตะไข่เพื่อเปิด")}
+function useTicket(rare){rare=rare===true;eggFrom("ticket",rare?{rare:true}:{},rare?"แตะไข่ทองจากเซียมเรียกแรร์+":"แตะไข่เพื่อเปิด")}
 
 /* ---------- evolution: charge, boom, reveal, reward ---------- */
 function evoRiser(sec){const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();o.type="sawtooth";o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(980,t+sec);
@@ -2436,7 +2447,7 @@ function burnEnd(gold,bb,bud,close,M){if(bb.hidden)walkIn(bb,bud);const RBW=BURN
   $("burnCap").textContent=RBW?"🌈 ไฟรุ้ง แจ็กพ็อต 🌈":gold?"✦ ไฟทอง ✦":"ปล่อยวางแล้ว";
   end.innerHTML=`<div class="be-card${RBW?" rainbow":gold?" gold":""}"><span class="be-k">${M&&M.n>1?`เผา ${M.n} ใบ${M.rainbows?` · ไฟรุ้ง ${M.rainbows} ใบ`:""}${GF?` · ไฟทอง ${GF} ใบ`:""}`:RBW?"แจ็กพ็อตไฟรุ้ง · ได้ "+JAR+" แต้มไห":gold?"รางวัลไฟทอง · แต้ม x"+GOLD_X:"ได้จากการเผา"}</span>
     <div class="be-row"><span class="be-item"><span class="flame-ic" aria-hidden="true">🔥</span><b>+${PTS}</b> แต้มเผา</span>${LF?`<span class="be-item"><b>+${LF}</b> แต้มบุญ</span>`:""}${false?`<span class="be-item"><b>+${LK}</b> คู่หูแถมเขย่า</span>`:""}</div>
-    ${SS_ART.jar0?`<img class="be-jar" src="${ASH>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="${ASH>=JAR?"ไหสะสมบุญเต็มแล้ว":"ไหสะสมบุญ"}">`:""}<div class="jbar"><i style="width:${ASH/JAR*100}%"></i></div><small>${M&&M.jar?`ไหเต็ม ${M.jar} ไห! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง · ตอนนี้ ${S.bp||0}/${JAR}`:`ไหสะสมบุญ ${ASH}/${JAR}${TOT>=JAR?" · เต็มแล้ว! เปิดสุ่มเพื่อนแรร์ขึ้นไปที่คลัง":""}`}</small>
+    ${SS_ART.jar0?`<img class="be-jar" src="${ASH>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="${ASH>=JAR?"ไหสะสมบุญเต็มแล้ว":"ไหสะสมบุญ"}">`:""}<div class="jbar"><i style="width:${ASH/JAR*100}%"></i></div><small>${M&&M.jar?`ไหเต็ม ${M.jar} ไห! เปิดสุ่มสัตว์มงคลแรร์ขึ้นไปที่คลัง · ตอนนี้ ${S.bp||0}/${JAR}`:`ไหสะสมบุญ ${ASH}/${JAR}${TOT>=JAR?" · เต็มแล้ว! เปิดสุ่มสัตว์มงคลแรร์ขึ้นไปที่คลัง":""}`}</small>
     <button class="go" id="beOk" type="button">${gold?"รับของ":"ไปต่อ"}</button></div>`;
   end.hidden=false;const ok=$("beOk");ok.focus();let done=false;const fin=()=>{if(done)return;done=true;clearTimeout(t);close()};ok.addEventListener("click",fin);const t=0}
 function burnAnim(f,done,goldIn,M){
@@ -2542,7 +2553,7 @@ function renderFortuneFloat(){const b=activeBuff(),el=$("fortuneFloat");if(!b){e
 $("fortuneFloat").addEventListener("click",()=>{const b=activeBuff();if(b)showToday(b.f)});
 
 /* ---------- buddy ---------- */
-function renderBuddy(){const p=buddyPet(),el=$("buddy");if(!p){el.hidden=true;return}el.hidden=false;{const L=lvOf(S.owned[p.n],p);$("buddyFace").innerHTML=formHTML(p,L,petImg(p,L)?60:78)}el.setAttribute("aria-label","คู่หู "+p.n)}
+function renderBuddy(){const p=buddyPet(),el=$("buddy");if(!p){el.hidden=true;return}el.hidden=false;{const L=lvOf(S.owned[p.n],p);$("buddyFace").innerHTML=formHTML(p,L,petImg(p,L)?60:78)}el.setAttribute("aria-label","คู่หู "+petName(p))}
 function petPlay(el,sayEl,p){el.classList.remove("hop","spin");void el.offsetWidth;el.classList.add(rnd()<.3?"spin":"hop");
   sayEl.textContent=PET_LINES[Math.floor(rnd()*PET_LINES.length)];sayEl.hidden=false;clearTimeout(sayEl.h);sayEl.h=setTimeout(()=>sayEl.hidden=true,1400);
   chime([880+rnd()*300,1175],.06);burst(0,RAR[p.t].glow)}
@@ -2555,16 +2566,16 @@ function hostSay(){if(Date.now()<sayLock)return;const st=streakState(),h=new Dat
   if(invFull())m=`<b>คลังเต็มแล้ว ${S.inv.length}/${INV_MAX} ใบ</b> เผาหรือใช้ใบในคลังก่อน ถึงจะเขย่าใบใหม่ได้นะคะ`;
   else if(!st.claimed)m=`<b>${greet}</b> วันนี้ยังไม่ได้ไหว้พระ ไปที่เมนู<b>หิ้งพระ</b> เปลี่ยนน้ำ จุดธูป รับของขวัญเช็กอินได้เลย`;
   else if(soon)m=`<b>ใกล้หมดอายุ</b> ใบที่ ${th(soon.f+1)} ในคลังจะหมดอายุใน ${fmt(soon.at+EXP-now())}`;
-  else if(S.rtickets)m=`<b>มีตั๋วแรร์+ ${S.rtickets} ใบ</b> สุ่มได้แรร์ เอพิก หรือตำนาน ไปเปิดที่คลังได้เลยค่ะ`;
-  else if(S.tickets)m=`<b>มีตั๋วสุ่มเพื่อน ${S.tickets} ใบ</b> ไปเปิดที่คลังได้เลยค่ะ`;
+  else if(S.rtickets)m=`<b>มีเซียมเรียกแรร์+ ${S.rtickets} ใบ</b> สุ่มได้แรร์ เอพิก หรือตำนาน ไปเปิดที่คลังได้เลยค่ะ`;
+  else if(S.tickets)m=`<b>มีเซียมเรียกผู้พิทักษ์ ${S.tickets} ใบ</b> ไปเปิดที่คลังได้เลยค่ะ`;
   else if(canDraw())m=`<b>${greet}</b> ตั้งคำถามในใจหนึ่งข้อ แล้วกดค้างเพื่อเขย่าเซียมซีนะคะ`;
   else if(!activeBuff()&&S.inv.length&&canUseToday())m=`<b>ยังไม่ได้เลือกดวงวันนี้</b> ไปเลือกใบในคลังได้เลยค่ะ`;
-  else m=`<b>วันนี้เขย่าแล้ว</b> ไปเล่นกับเพื่อนได้ แล้วพรุ่งนี้มาใหม่นะคะ`;
+  else m=`<b>วันนี้เขย่าแล้ว</b> ไปเล่นกับสัตว์มงคลได้ แล้วพรุ่งนี้มาใหม่นะคะ`;
   $("bubble").innerHTML=m}
 function lastHTML(r){const [lv,verse]=F[r.f],L=LV[lv],p=r.pet!==null&&r.pet!=null?PETS[r.pet]:null,n=r.f+1;
   const fate={used:"ใช้เป็นดวงวันนี้แล้ว",kept:"เก็บอยู่ในคลัง",burned:"ปล่อยวางแล้ว",pending:"",done:""}[r.fate]||"";
   return `<article class="today" style="--tier-bg:${L.bg};--tier-c:${L.c}">
-   ${p?`<div class="pet-band" style="--tier-bg:${RAR[p.t].bg};--tier-c:${RAR[p.t].c}"><div class="pet">${petFace(p)}</div><div class="meta"><span class="tier">${RAR[p.t].name}</span><span class="pet-name">${p.n} · Lv.${lvOf(S.owned[p.n],p)}</span><small>${petDesc(p,S.owned[p.n])}</small></div></div>`:""}
+   ${p?`<div class="pet-band" style="--tier-bg:${RAR[p.t].bg};--tier-c:${RAR[p.t].c}"><div class="pet">${petFace(p)}</div><div class="meta"><span class="tier">${RAR[p.t].name}</span><span class="pet-name">${petName(p)} · Lv.${lvOf(S.owned[p.n],p)}</span><small>${petDesc(p,S.owned[p.n])}</small></div></div>`:""}
    <div class="slip"><div class="row"><span class="no">ใบที่<b>${th(n)}</b></span><span class="tier" style="background:${L.c}">${lv}</span></div>
    <p class="verse">${verse}</p>${fate?`<span class="small" style="text-align:left;color:#6b5a85">${fate}</span>`:""}
    <div class="cta"><a class="line-link" href="https://line.me/R/oaMessage/%40fortuniehoro/?${encodeURIComponent("เซียมซี"+n)}" target="_blank" rel="noopener">ให้แม่หมอดูใบนี้ละเอียด</a>
@@ -2572,10 +2583,10 @@ function lastHTML(r){const [lv,verse]=F[r.f],L=LV[lv],p=r.pet!==null&&r.pet!=nul
    <button class="share" id="shareBtn" type="button">สร้างการ์ดลงสตอรี</button></div></article>`}
 function renderChips(){let c="";const b=activeBuff();
   if(!b&&S.inv.length&&canUseToday())c+=`<button type="button" data-go="inv">ยังไม่ได้เลือกดวงวันนี้ <b>เลือกใบ</b></button>`;
-  if(S.tickets)c+=`<button type="button" data-go="inv">ตั๋วสุ่มเพื่อน <b>${S.tickets} ใบ</b></button>`;
-  if(S.rtickets)c+=`<button type="button" data-go="inv">ตั๋วแรร์+ <b>${S.rtickets} ใบ</b></button>`;
+  if(S.tickets)c+=`<button type="button" data-go="inv">เซียมเรียกผู้พิทักษ์ <b>${S.tickets} ใบ</b></button>`;
+  if(S.rtickets)c+=`<button type="button" data-go="inv">เซียมเรียกแรร์+ <b>${S.rtickets} ใบ</b></button>`;
   if(!buddyPet()&&PETS.some(p=>S.owned[p.n]))c+=`<button type="button" data-go="pets">ยังไม่มีคู่หู <b>เลือกเลย</b></button>`;
-  c+=`<span class="pity">${S.petDrops===0?"เขย่าครั้งแรกได้เพื่อนแน่นอน":`อีก ${Math.max(1,PITY-powers().pity-(S.pity||0))} ครั้ง การันตีเจอเพื่อน`}</span>`;
+  c+=`<span class="pity">${S.petDrops===0?"เขย่าครั้งแรกได้สัตว์มงคลแน่นอน":`อีก ${Math.max(1,PITY-powers().pity-(S.pity||0))} ครั้ง การันตีเจอสัตว์มงคล`}</span>`;
   $("chips").innerHTML=c}
 $("chips").addEventListener("click",e=>{const b=e.target.closest("button[data-go]");if(b)showTab(b.dataset.go)});
 
@@ -2583,9 +2594,9 @@ $("chips").addEventListener("click",e=>{const b=e.target.closest("button[data-go
 function renderInv(){const b=activeBuff(),ready=canUseToday();let h="";
   if(b)h=`<div class="active-buff" style="--tier-c:${LV[F[b.f][0]].c}"><span class="tier" style="background:${LV[F[b.f][0]].c}">ดวงวันนี้ · ใบที่ ${th(b.f+1)}</span><b>${BUFF[b.type].n}</b><span>${BUFF[b.type].d(b.s)}</span><small>เหลือเวลา ${fmt(S.active.until-now())}</small></div>`;
   else h=`<div class="active-buff"><b>${ready?"วันนี้ยังไม่ได้ใช้โชค":"รอใช้ใบถัดไป"}</b><span>${ready?"เลือกใบแล้วกด \"ใช้วันนี้\" โชคจะมีผล 24 ชั่วโมง":"ใช้ใบถัดไปได้ใน "+fmt(S.useReadyAt-now())}</span></div>`;
-  h+=`<div class="jar">${SS_ART.jar0?`<img class="jar-img" src="${S.jarT||(S.bp||0)>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="">`:""}<div class="row"><b>ไหสะสมบุญ</b><span>${S.bp||0}/${JAR} แต้ม</span></div><div class="jbar"><i style="width:${(S.bp||0)/JAR*100}%"></i></div><small>เผา 1 ใบ = ${BURN_PTS} แต้ม · ไฟทอง x${GOLD_X} · ครบ ${JAR} สุ่มเพื่อนแรร์ขึ้นไป (แรร์ 80% เอพิก 15% ตำนาน 5%)</small>${S.jarT?`<button class="ticket jar-open" id="jarBtn" type="button">เปิดไหสะสมบุญ · มี ${S.jarT} ไห</button>`:""}</div>`;
-  if(S.rtickets)h+=`<button class="ticket rare" id="rticketBtn" type="button">✨ ใช้ตั๋วแรร์+ · มี ${S.rtickets} ใบ<small>สุ่มเฉพาะ แรร์ ${RATE_R[2]}% · เอพิก ${RATE_R[3]}% · ตำนาน ${RATE_R[4]}%</small></button>`;
-  if(S.tickets)h+=`<button class="ticket" id="ticketBtn" type="button">ใช้ตั๋วสุ่มเพื่อน · มี ${S.tickets} ใบ</button>`;
+  h+=`<div class="jar">${SS_ART.jar0?`<img class="jar-img" src="${S.jarT||(S.bp||0)>=JAR?SS_ART.jar1:SS_ART.jar0}" alt="">`:""}<div class="row"><b>ไหสะสมบุญ</b><span>${S.bp||0}/${JAR} แต้ม</span></div><div class="jbar"><i style="width:${(S.bp||0)/JAR*100}%"></i></div><small>เผา 1 ใบ = ${BURN_PTS} แต้ม · ไฟทอง x${GOLD_X} · ครบ ${JAR} สุ่มสัตว์มงคลแรร์ขึ้นไป (แรร์ 80% เอพิก 15% ตำนาน 5%)</small>${S.jarT?`<button class="ticket jar-open" id="jarBtn" type="button">เปิดไหสะสมบุญ · มี ${S.jarT} ไห</button>`:""}</div>`;
+  if(S.rtickets)h+=`<button class="ticket rare" id="rticketBtn" type="button"><span><i class="ico-sum" aria-hidden="true"></i>ใช้เซียมเรียกแรร์+ · มี ${S.rtickets} ใบ</span><small>สุ่มเฉพาะ แรร์ ${RATE_R[2]}% · เอพิก ${RATE_R[3]}% · ตำนาน ${RATE_R[4]}%</small></button>`;
+  if(S.tickets)h+=`<button class="ticket" id="ticketBtn" type="button"><i class="ico-sum" aria-hidden="true"></i>ใช้เซียมเรียกผู้พิทักษ์ · มี ${S.tickets} ใบ</button>`;
   if(S.inv.length>=INV_WARN)h+=`<div class="inv-warn${S.inv.length>=INV_MAX?" full":""}"><b>${S.inv.length>=INV_MAX?"คลังเต็มแล้ว":"คลังใกล้เต็ม"} ${S.inv.length}/${INV_MAX} ใบ</b><span>${S.inv.length>=INV_MAX?"เขย่าใบใหม่ไม่ได้จนกว่าจะเคลียร์คลัง เผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ":"ครบ "+INV_MAX+" ใบแล้วจะเขย่าใบใหม่ไม่ได้ ลองเผาหลายใบทีเดียวหรือใช้ใบดี ๆ ก่อนนะคะ"}</span>${burnSel?"":`<button class="burn" type="button" data-sel="on">🔥 เลือกเผาเคราะห์หลายใบ</button>`}</div>`;
   if(S.inv.length>1&&!(S.inv.length>=INV_WARN&&!burnSel))h+=burnSel?`<div class="sel-tools"><button class="mini" type="button" data-sel="all">เลือกทั้งหมด</button><button class="mini" type="button" data-sel="low">เลือกใบค่อยเป็นค่อยไป</button><button class="mini" type="button" data-sel="soon">ใบใกล้หมดอายุ</button><button class="ghost" type="button" data-sel="off">ยกเลิก</button></div>`
     :`<button class="mini sel-start" type="button" data-sel="on">🔥 เลือกเผาเคราะห์หลายใบ</button>`;
@@ -2619,18 +2630,18 @@ const bigPet=(p,L)=>{const src=petImg(p,L),g=(PET_GAP[p.n]||[])[L-1]||0;return s
 const tierChip=(p,L)=>`<span class="rk-chip" style="--tc:${RAR[p.t].c}">${RAR[p.t].name} · Lv.${L}</span>`;
 function renderMyProfile(){const sc=myShowcase(),score=collScore(),av=myAvatar();const nm=typeof PROFILE!=="undefined"&&PROFILE?PROFILE.name:(S.uname||"คุณ");
   const pi=sc[0];let show;
-  if(pi==null)show=`<button class="pc-slot one empty rk-empty" type="button" data-slot="0"><span>＋</span><div><b>เลือกเพื่อนโชว์</b><small>เพื่อนตัวนี้จะยืนบนแท่นในหน้าอันดับ</small></div></button>`;
+  if(pi==null)show=`<button class="pc-slot one empty rk-empty" type="button" data-slot="0"><span>＋</span><div><b>เลือกสัตว์มงคลโชว์</b><small>สัตว์มงคลตัวนี้จะยืนบนแท่นในหน้าอันดับ</small></div></button>`;
   else{const p=PETS[pi],L=lvOf(S.owned[p.n],p);
-    show=`<div class="rk-show" style="--tc:${RAR[p.t].c};--tg:${RAR[p.t].glow}"><button class="pc-slot rk-stage" type="button" data-slot="0" aria-label="เปลี่ยนเพื่อนที่โชว์"><span class="rk-disc"></span>${bigPet(p,L)}</button>
-      <div class="rk-info"><span class="rk-lbl">เพื่อนที่โชว์</span><b>${formName(p,L)}</b>${tierChip(p,L)}</div>
+    show=`<div class="rk-show" style="--tc:${RAR[p.t].c};--tg:${RAR[p.t].glow}"><button class="pc-slot rk-stage" type="button" data-slot="0" aria-label="เปลี่ยนสัตว์มงคลที่โชว์"><span class="rk-disc"></span>${bigPet(p,L)}</button>
+      <div class="rk-info"><span class="rk-lbl">สัตว์มงคลที่โชว์</span><b>${formName(p,L)}</b>${tierChip(p,L)}</div>
       <button class="rk-btn" type="button" data-slot="0" id="mpSwap">เปลี่ยนตัว</button></div>`}
   $("myProfile").innerHTML=`<div class="mp-top">${avatarHTML(av,myAvL(),myFrame(),84)}<div class="mp-who"><b>${esc(nm)}</b><span class="rk-lbl">คะแนนนักสะสม</span><b class="pc-score">${score}<small> / ${MAX_SCORE()}</small></b></div><button class="rk-btn" id="mpEdit" type="button">แก้ไขโปรไฟล์</button></div>
    <div class="rk-sep"></div>${show}
-   <p class="note">เพื่อน Lv.1 = 1 คะแนน · Lv.2 = 2 · Lv.3 = 3 รวมทุกตัว</p>`}
+   <p class="note">สัตว์มงคล Lv.1 = 1 คะแนน · Lv.2 = 2 · Lv.3 = 3 รวมทุกตัว</p>`}
 function openShowPick(slot){const sc=myShowcase(),own=PETS.map((p,i)=>i).filter(i=>S.owned[PETS[i].n]).sort((a,b)=>PETS[b].t-PETS[a].t||lvOf(S.owned[PETS[b].n],PETS[b])-lvOf(S.owned[PETS[a].n],PETS[a]));
-  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกเพื่อนที่จะโชว์</h2><button class="ghost" data-close type="button">ปิด</button></div>
-   ${own.length?`<div class="pick-grid">${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${sc.includes(pi)?" on":""}" type="button" data-pi="${pi}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),56)}<small>${formName(p)}</small></button>`}).join("")}</div>`:`<div class="placeholder">ยังไม่มีเพื่อน ลองเขย่าเซียมซีก่อนนะคะ</div>`}
-   ${sc[slot]!=null?`<button class="ghost" type="button" id="pickClear">ไม่โชว์เพื่อน</button>`:""}`;
+  $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">เลือกสัตว์มงคลที่จะโชว์</h2><button class="ghost" data-close type="button">ปิด</button></div>
+   ${own.length?`<div class="pick-grid">${own.map(pi=>{const p=PETS[pi];return `<button class="pick-pet${sc.includes(pi)?" on":""}" type="button" data-pi="${pi}" style="--tier-c:${RAR[p.t].c}">${formHTML(p,lvOf(S.owned[p.n],p),56)}<small>${formName(p)}</small></button>`}).join("")}</div>`:`<div class="placeholder">ยังไม่มีสัตว์มงคล ลองเขย่าเซียมซีก่อนนะคะ</div>`}
+   ${sc[slot]!=null?`<button class="ghost" type="button" id="pickClear">ไม่โชว์สัตว์มงคล</button>`:""}`;
   $("petModal").hidden=false;
   $("petPop").querySelectorAll(".pick-pet").forEach(b=>b.addEventListener("click",()=>{$("petModal").hidden=true;saveShowcase([+b.dataset.pi])}));
   const cl=$("pickClear");if(cl)cl.addEventListener("click",()=>{const arr=myShowcase();arr.splice(slot,1);$("petModal").hidden=true;saveShowcase(arr)})}
@@ -2650,7 +2661,7 @@ function openProfileEdit(){let av=myAvatar(),al=av>=0?myAvL():1,fr=myFrame();con
   draw();$("petModal").hidden=false}
 function lbRowHTML(r,i,unit){const sp=(r.showcase||[]).filter(x=>PETS[x.pi])[0],p=sp&&PETS[sp.pi];
   return `<div class="lb-row rk-row${r.me?" me":""}"${r.code?` data-code="${esc(r.code)}"`:""}><span class="lb-rank">${i+1}</span>${avatarHTML(r.avatar,r.avL,r.frame,40)}<div class="lb-who"><b>${esc(r.name)}</b><small>${esc(r.code||"")}</small></div>
-    ${p?`<span class="rk-rpet">${bigPet(p,sp.L)}</span><div class="rk-rinfo"><b>${esc(formName(p,sp.L))}</b>${tierChip(p,sp.L)}</div>`:`<span class="rk-rpet"></span><div class="rk-rinfo"><small>ยังไม่เลือกเพื่อนโชว์</small></div>`}
+    ${p?`<span class="rk-rpet">${bigPet(p,sp.L)}</span><div class="rk-rinfo"><b>${esc(formName(p,sp.L))}</b>${tierChip(p,sp.L)}</div>`:`<span class="rk-rpet"></span><div class="rk-rinfo"><small>ยังไม่เลือกสัตว์มงคลโชว์</small></div>`}
     <span class="lb-score"><b>${r.score.toLocaleString()}</b><small>${unit||"คะแนน"}</small></span></div>`}
 /* top 3 on a podium: 2nd · 1st · 3rd, each showcase pet standing on its pedestal */
 const pedHTML=i=>PED_IMG[i]?`<div class="rk-ped img"><img src="${PED_IMG[i]}" alt="อันดับ ${i+1}"></div>`:`<div class="rk-ped"><span>${i+1}</span></div>`;
@@ -2673,11 +2684,11 @@ async function openProfileOf(code){let r;try{r=await api("profile_of",{code})}ca
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${esc(r.name)}</h2><button class="ghost" data-close type="button">ปิด</button></div>
    <div class="pe-preview">${avatarHTML(r.avatar,r.avL,r.frame,104)}</div>
    <p class="lb-me-note">${esc(r.code)} · คะแนนนักสะสม <b>${r.score}</b> · ป๊อป <b>${(r.pops||0).toLocaleString()}</b></p>
-   <div class="prof-pets">${pets.length?pets.slice(0,1).map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,120)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกเพื่อนโชว์</div>`}</div>`;
+   <div class="prof-pets">${pets.length?pets.slice(0,1).map(x=>{const p=PETS[x.pi];return `<div class="pc-slot" style="--tier-c:${RAR[p.t].c}">${formHTML(p,x.L,120)}<small>${esc(formName(p,x.L))}</small><small>${RAR[p.t].name} · Lv.${x.L}</small></div>`}).join(""):`<div class="placeholder">ยังไม่ได้เลือกสัตว์มงคลโชว์</div>`}</div>`;
   $("petModal").hidden=false}
 
 
-/* ---------- ป๊อปเพื่อน: tap your pet for points, separate ranking ---------- */
+/* ---------- ป๊อปสัตว์มงคล: tap your pet for points, separate ranking ---------- */
 let rkMode="pop";try{rkMode=localStorage.getItem("ftnRk")==="collect"?"collect":"pop"}catch(e){}
 let POP_PEND=0,popTimer=0,popTs=[],popBoardAt=0; /* taps go to the server every 6 s, the board refreshes at most every 30 s (keeps server calls low) */
 function popPetIdx(){const sc=myShowcase()[0];if(sc!=null)return sc;return S.buddy!=null&&PETS[S.buddy]&&S.owned[PETS[S.buddy].n]?S.buddy:null}
@@ -2687,11 +2698,11 @@ function setRkMode(m){rkMode=m==="pop"?"pop":"collect";try{localStorage.setItem(
 $("rkSeg").addEventListener("click",e=>{const b=e.target.closest("[data-rk]");if(b)setRkMode(b.dataset.rk)});
 function popCountNow(){return popMine()+POP_PEND}
 function renderPop(){const pi=popPetIdx(),st=$("popStage");
-  if(pi==null){st.innerHTML=`<div class="placeholder">ยังไม่มีเพื่อนให้ป๊อป ลองเขย่าเซียมซีหาเพื่อนก่อนนะคะ</div>`;return}
+  if(pi==null){st.innerHTML=`<div class="placeholder">ยังไม่มีสัตว์มงคลให้ป๊อป ลองเขย่าเซียมซีหาสัตว์มงคลก่อนนะคะ</div>`;return}
   const p=PETS[pi],L=lvOf(S.owned[p.n],p);
   st.innerHTML=`<div class="pop-count"><span class="rk-lbl">ป๊อปของฉัน</span><b id="popNum">${popCountNow().toLocaleString()}</b></div>
     <button class="pop-btn" id="popBtn" type="button" style="--tg:${RAR[p.t].glow}" aria-label="แตะ ${esc(formName(p,L))} เพื่อป๊อป"><span class="pop-glow"></span>${bigPet(p,L)}</button>
-    <p class="small pop-hint">แตะ ${esc(formName(p,L))} รัว ๆ เพื่อเก็บแต้มป๊อป · เปลี่ยนตัวได้ที่ "เพื่อนที่โชว์"</p>`;
+    <p class="small pop-hint">แตะ ${esc(formName(p,L))} รัว ๆ เพื่อเก็บแต้มป๊อป · เปลี่ยนตัวได้ที่ "สัตว์มงคลที่โชว์"</p>`;
   $("popBtn").addEventListener("pointerdown",popTap)}
 function popSound(){const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(880+Math.random()*120,t);o.frequency.exponentialRampToValueAtTime(320,t+.07);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+.09);o.connect(g).connect(a.destination);o.start(t);o.stop(t+.1)}
 function popTap(e){e.preventDefault();const now=performance.now();popTs=popTs.filter(t=>now-t<1000);if(popTs.length>=20)return;popTs.push(now);
@@ -2714,26 +2725,26 @@ document.addEventListener("click",e=>{const sl=e.target.closest("#myProfile .pc-
   const row=e.target.closest(".lb-row[data-code],.pd[data-code]");if(row&&typeof openProfileOf==="function")openProfileOf(row.dataset.code)});
 function renderPets(){const got=PETS.filter(p=>S.owned[p.n]).length;$("progress").textContent=got+" / "+PETS.length;
   const bp=buddyPet();
-  $("buddyCard").innerHTML=bp?`<div class="expcard"><div class="pet">${formHTML(bp,lvOf(S.owned[bp.n],bp),76)}</div><div class="meta"><span class="small" style="text-align:left">คู่หูตอนนี้ · ${(ROLE[bp.role]||["",""])[1]}</span><b>${formName(bp)} · Lv.${lvOf(S.owned[bp.n],bp)}</b><span class="small" style="text-align:left;color:var(--lav-soft)">${petDesc(bp,S.owned[bp.n])}</span></div></div>`:`<div class="placeholder">ยังไม่มีคู่หู เขย่าเซียมซีเพื่อหาเพื่อนตัวแรก แล้วกดเพื่อนในสมุดเพื่อตั้งเป็นคู่หู</div>`;
-  $("shardBox").innerHTML=`<div class="row"><h2>เศษเพื่อน</h2></div><div class="shards">${RAR.map((r,t)=>{const have=S.shards[t]||0,cost=SHARD_COST[t];return `<button type="button" class="shard" data-t="${t}" style="--tier-c:${r.c}" ${have>=cost?"":"aria-disabled=\"true\""}><span class="sh-n">${have}/${cost}</span><span class="sh-k">เศษ${r.name}</span>${have>=cost?`<b>แลกได้!</b>`:""}</button>`}).join("")}</div><p class="note">ได้เพื่อนซ้ำเกินเลเวลสูงสุด จะได้เศษตามระดับ (ธรรมดา หายาก แรร์ 1 เศษ · เอพิก ตำนาน 2 เศษ) เก็บครบแล้วแลกเพื่อนระดับเดียวกันได้ เลือกตัวเองได้เลย</p>`;
-  $("book").innerHTML=PETS.map((p,pi)=>{const k=S.owned[p.n]||0,r=RAR[p.t];return `<div class="slot${k?"":" locked"}${S.buddy===pi&&k?" is-buddy":""}" role="button" tabindex="0" data-pi="${pi}" aria-label="${k?p.n:"เพื่อนที่ยังไม่พบ"}" style="--tier-c:${r.c}">${k?`<span class="cnt">Lv.${lvOf(k,p)}</span>`:""}${S.buddy===pi&&k?`<span class="bud">คู่หู</span>`:""}<div class="e">${k?formHTML(p,lvOf(k,p),66):petFace(p,1)}</div><span class="nm">${k?formName(p):"???"}</span><span class="ab">${k?petDesc(p,k):r.name}</span><i></i></div>`}).join("")}
+  $("buddyCard").innerHTML=bp?`<div class="expcard"><div class="pet">${formHTML(bp,lvOf(S.owned[bp.n],bp),76)}</div><div class="meta"><span class="small" style="text-align:left">คู่หูตอนนี้ · ${(ROLE[bp.role]||["",""])[1]}</span><b>${formName(bp)} · Lv.${lvOf(S.owned[bp.n],bp)}</b><span class="small" style="text-align:left;color:var(--lav-soft)">${petDesc(bp,S.owned[bp.n])}</span></div></div>`:`<div class="placeholder">ยังไม่มีคู่หู เขย่าเซียมซีเพื่อหาสัตว์มงคลตัวแรก แล้วกดสัตว์มงคลในสมุดเพื่อตั้งเป็นคู่หู</div>`;
+  $("shardBox").innerHTML=`<div class="row"><h2>เศษสัตว์มงคล</h2></div><div class="shards">${RAR.map((r,t)=>{const have=S.shards[t]||0,cost=SHARD_COST[t];return `<button type="button" class="shard" data-t="${t}" style="--tier-c:${r.c}" ${have>=cost?"":"aria-disabled=\"true\""}><span class="sh-n">${have}/${cost}</span><span class="sh-k">เศษ${r.name}</span>${have>=cost?`<b>แลกได้!</b>`:""}</button>`}).join("")}</div><p class="note">ได้สัตว์มงคลซ้ำเกินเลเวลสูงสุด จะได้เศษตามระดับ (ธรรมดา หายาก แรร์ 1 เศษ · เอพิก ตำนาน 2 เศษ) เก็บครบแล้วแลกสัตว์มงคลระดับเดียวกันได้ เลือกตัวเองได้เลย</p>`;
+  $("book").innerHTML=PETS.map((p,pi)=>{const k=S.owned[p.n]||0,r=RAR[p.t];return `<div class="slot${k?"":" locked"}${S.buddy===pi&&k?" is-buddy":""}" role="button" tabindex="0" data-pi="${pi}" aria-label="${k?petName(p):"สัตว์มงคลที่ยังไม่พบ"}" style="--tier-c:${r.c}">${k?`<span class="cnt">Lv.${lvOf(k,p)}</span>`:""}${S.buddy===pi&&k?`<span class="bud">คู่หู</span>`:""}<div class="e">${k?formHTML(p,lvOf(k,p),66):petFace(p,1)}</div><span class="nm">${k?formName(p):"???"}</span><span class="ab">${k?petDesc(p,k):r.name}</span><i></i></div>`}).join("")}
 function openPet(pi){const p=PETS[pi],k=S.owned[p.n]||0,r=RAR[p.t];
   if(!k)$("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">???</h2><button class="ghost" data-close type="button">ปิด</button></div>
     <div class="pet-stage locked-stage" style="--tier-c:${r.c};--tier-bg:${r.bg}"><div class="pet-big">${petFace(p)}</div></div>
-    <span class="tier" style="align-self:center;background:${r.c}">${r.name}</span><p class="small">${p.sp?"รับได้จากเช็กอินครบ 7 วัน":"ยังไม่พบเพื่อนตัวนี้ ลองเขย่าต่อหรือใช้ตั๋วสุ่มเพื่อนนะคะ"}</p>`;
+    <span class="tier" style="align-self:center;background:${r.c}">${r.name}</span><p class="small">${p.sp?"รับได้จากเช็กอินครบ 7 วัน":"ยังไม่พบสัตว์มงคลตัวนี้ ลองเขย่าต่อหรือใช้เซียมเรียกผู้พิทักษ์นะคะ"}</p>`;
   else{const L=lvOf(k,p),next=L<MAXLV?petDesc(p,0,L+1):"",isB=S.buddy===pi;
     $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">${formName(p,L)}</h2><button class="ghost" data-close type="button">ปิด</button></div>
-    <div class="pet-stage" style="--tier-c:${r.c};--tier-bg:${r.bg}"><span class="bubble-mini" id="petSay" hidden></span><button class="pet-big" id="petBig" type="button" aria-label="เล่นกับ ${p.n}">${formHTML(p,L,150)}</button><span class="shadow"></span></div>
+    <div class="pet-stage" style="--tier-c:${r.c};--tier-bg:${r.bg}"><span class="bubble-mini" id="petSay" hidden></span><button class="pet-big" id="petBig" type="button" aria-label="เล่นกับ ${petName(p)}">${formHTML(p,L,150)}</button><span class="shadow"></span></div>
     <p class="small" style="margin:-4px 0 0">แตะเพื่อเล่นด้วย · ${(ROLE[p.role]||["",""])[1]}</p>
     <div class="forms3">${[1,2,3].map(x=>`<div class="f3${x<=L?"":" off"}">${formHTML(p,x,64,x>L)}<b>ร่าง ${x}</b><span>${x<=L?formName(p,x):x===L+1?"อีก "+toNext(k,p)+" ตัว":"ยังไม่ปลด"}</span></div>`).join("")}</div>
     <div class="row" style="justify-content:center"><span class="tier" style="background:${r.c}">${r.name}${p.sp?" · พิเศษ":""}</span><span class="tier" style="background:#ffffff22">Lv.${L}/${MAXLV}</span><span class="tier" style="background:#ffffff22">ได้มาแล้ว ${k} ตัว</span></div>
     <button class="primary" id="setBuddy" type="button" ${isB?"disabled":""}>${isB?"เป็นคู่หูอยู่แล้ว":"ตั้งเป็นคู่หู"}</button>
-    <button class="ghost" id="petStory" type="button">📸 การ์ดเพื่อนลงสตอรี</button>
+    <button class="ghost" id="petStory" type="button">📸 การ์ดสัตว์มงคลลงสตอรี</button>
     <div class="row" style="flex-wrap:nowrap"><button class="ghost" id="showMe" type="button">${myShowcase().includes(pi)?"เอาออกจากโปรไฟล์":"⭐ โชว์ในโปรไฟล์"}</button><button class="ghost" id="avMe" type="button" ${myAvatar()===pi?"disabled":""}>${myAvatar()===pi?"เป็นรูปโปรไฟล์แล้ว":"🖼️ ตั้งเป็นรูปโปรไฟล์"}</button></div>
-    <div class="pet-info"><b>พลัง</b><span>${petDesc(p,k)}</span>${next?`<b>Lv.${L+1}</b><span>${next} · เก็บอีก ${toNext(k,p)} ตัวเพื่ออัป (มีแล้ว ${k}/${NEED(p)[L]})</span>`:`<b>เลเวลสูงสุด</b><span>ได้ซ้ำจะได้เศษ${r.name} +${SHARD_GET[p.t]} เศษ ใช้แลกเพื่อนระดับเดียวกันแบบเลือกเองได้</span>`}
-    <b>วิธีได้</b><span>${p.sp?"เช็กอินครบ 7 วัน":"เขย่าเซียมซีหรือใช้ตั๋วสุ่มเพื่อน · โอกาสระดับนี้ "+r.share+"% เมื่อเจอเพื่อน"+(RATE_R[p.t]?" · ตั๋วแรร์+ "+RATE_R[p.t]+"%":"")}</span></div>`;
+    <div class="pet-info"><b>พลัง</b><span>${petDesc(p,k)}</span>${next?`<b>Lv.${L+1}</b><span>${next} · เก็บอีก ${toNext(k,p)} ตัวเพื่ออัป (มีแล้ว ${k}/${NEED(p)[L]})</span>`:`<b>เลเวลสูงสุด</b><span>ได้ซ้ำจะได้เศษ${r.name} +${SHARD_GET[p.t]} เศษ ใช้แลกสัตว์มงคลระดับเดียวกันแบบเลือกเองได้</span>`}
+    <b>วิธีได้</b><span>${p.sp?"เช็กอินครบ 7 วัน":"เขย่าเซียมซีหรือใช้เซียมเรียกผู้พิทักษ์ · โอกาสระดับนี้ "+r.share+"% เมื่อเจอสัตว์มงคล"+(RATE_R[p.t]?" · เซียมเรียกแรร์+ "+RATE_R[p.t]+"%":"")}</span></div>`;
     $("petBig").addEventListener("click",()=>petPlay($("petBig"),$("petSay"),p));
-    $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(p.n+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})});
+    $("setBuddy").addEventListener("click",()=>{$("setBuddy").disabled=true;api("buddy",{pi}).then(()=>{render();$("petModal").hidden=true;toast(petName(p)+" เป็นคู่หูของคุณแล้ว");chime([659,880])}).catch(e=>{if(e!=="locked")toast(e);$("setBuddy").disabled=false})});
     const am=$("avMe");if(am)am.addEventListener("click",()=>{$("petModal").hidden=true;saveProfile(pi,myFrame())});
     const ps=$("petStory");if(ps)ps.addEventListener("click",()=>{$("petModal").hidden=true;openStory("pet",{pi,L})});
     const sb=$("showMe");if(sb)sb.addEventListener("click",()=>{saveShowcase(myShowcase().includes(pi)?[]:[pi]);$("petModal").hidden=true})}
@@ -2746,23 +2757,23 @@ $("shardBox").addEventListener("click",e=>{const b=e.target.closest(".shard");if
   if((S.shards[t]||0)<cost){toast(`ต้องมีเศษ${RAR[t].name} ${cost} เศษ (มี ${S.shards[t]||0})`);return}openShardPick(t)});
 function openShardPick(t){const r=RAR[t],list=PETS.map((p,i)=>[p,i]).filter(([p])=>p.t===t&&!p.sp);
   $("petPop").innerHTML=`<div class="pop-head"><h2 id="petTitle">แลกเศษ${r.name}</h2><button class="ghost" data-close type="button">ปิด</button></div>
-   <p class="small" style="text-align:left;margin:0">ใช้ ${SHARD_COST[t]} เศษ เลือกเพื่อน 1 ตัว (มี ${S.shards[t]} เศษ) ตัวที่ Lv.3 แล้วจะแลกไม่ได้</p>
-   <div class="book pick">${list.map(([p,i])=>{const k=S.owned[p.n]||0,full=k>=maxCopies(p);return `<button type="button" class="slot${full?" locked":""}" data-pick="${i}" ${full?"disabled":""} style="--tier-c:${r.c}"><div class="e">${petFace(p)}</div><span class="nm">${p.n}</span><span class="ab">${k?"Lv."+lvOf(k,p)+" · มี "+k+"/"+maxCopies(p):"ยังไม่มี"}</span></button>`}).join("")}</div>`;
+   <p class="small" style="text-align:left;margin:0">ใช้ ${SHARD_COST[t]} เศษ เลือกสัตว์มงคล 1 ตัว (มี ${S.shards[t]} เศษ) ตัวที่ Lv.3 แล้วจะแลกไม่ได้</p>
+   <div class="book pick">${list.map(([p,i])=>{const k=S.owned[p.n]||0,full=k>=maxCopies(p);return `<button type="button" class="slot${full?" locked":""}" data-pick="${i}" ${full?"disabled":""} style="--tier-c:${r.c}"><div class="e">${petFace(p)}</div><span class="nm">${petName(p)}</span><span class="ab">${k?"Lv."+lvOf(k,p)+" · มี "+k+"/"+maxCopies(p):"ยังไม่มี"}</span></button>`}).join("")}</div>`;
   $("petModal").hidden=false;$("petPop").querySelector("[data-close]").focus();
   $("petPop").querySelector(".pick").addEventListener("click",e=>{const b=e.target.closest("[data-pick]");if(!b||b.disabled)return;if((S.shards[t]||0)<SHARD_COST[t])return;
-    $("petModal").hidden=true;eggFrom("exchange",{t,pi:+b.dataset.pick},"แตะไข่เพื่อรับเพื่อนที่เลือก")})}
+    $("petModal").hidden=true;eggFrom("exchange",{t,pi:+b.dataset.pick},"แตะไข่เพื่อรับสัตว์มงคลที่เลือก")})}
 /* ---------- daily check-in ---------- */
 /* day-7 gift: open the full pet reveal (egg, card, glow, sound) instead of only a toast */
 let GIFT=false;
 function giftReveal(pi,isNew){if(busy)return setTimeout(()=>giftReveal(pi,isNew),600);GIFT=true;$("dailyModal").hidden=true;cur={f:LUCKY,fate:"done",pet:pi,isNew};ticketMode=true;busy=true;$("reveal").hidden=false;showEgg();$("eggHint").textContent="ของขวัญครบ 7 วัน แตะไข่เพื่อเปิด"}
 async function claimStreak(){const st=streakState();if(st.claimed)return;$("dailyClaim").disabled=true;let r;try{r=await api("daily")}catch(e){if(e!=="locked")toast(e);render();return}
   chime([659,784,988,1319]);burst(2,"#f0d28a");sayLock=Date.now()+6000;
-  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.l+" แต้มบุญ"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
+  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?petName(petByKey(r.pet)):" "+r.l+" แต้มบุญ"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;render();
   if(r.pet){const bi=PETS.findIndex(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bi>=0)setTimeout(()=>giftReveal(bi,k<=1),450)}}
 function renderDaily(){const st=streakState(),doneN=st.claimed?S.streakN:st.next-1;
-  $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"ไหว้พระที่หิ้งทุกวัน (เปลี่ยนน้ำ + จุดธูป) ครบ 7 วัน รับน้องหมีเด้ง เพื่อนพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
+  $("dailySub").textContent=st.claimed?`รับของวันที่ ${S.streakN} แล้ว กลับมาพรุ่งนี้เพื่อรับวันที่ ${S.streakN%7+1}`:"ไหว้พระที่หิ้งทุกวัน (เปลี่ยนน้ำ + จุดธูป) ครบ 7 วัน รับ"+petName(petByKey(rewTable()[6].pet))+" สัตว์มงคลพิเศษระดับแรร์ ขาดวันไหนจะเริ่มนับใหม่";
   $("days").innerHTML=rewTable().map((r,i)=>{const d=i+1,state=d<=doneN?"done":(!st.claimed&&d===st.next?"now":"");
-    return `<div class="day ${state}${r.pet?" big":""}"><span class="dn">วันที่ ${d}</span>${r.pet?`<span class="rw"><span class="purple">🐻</span></span><span class="rl">น้องหมีเด้ง</span>`:`<span class="rw"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span><span class="rl">${r.l} แต้มบุญ</span>`}${state==="done"?`<i class="ok">รับแล้ว</i>`:""}</div>`}).join("");
+    return `<div class="day ${state}${r.pet?" big":""}"><span class="dn">วันที่ ${d}</span>${r.pet?`<span class="rw">${(()=>{const gp=petByKey(r.pet),src=gp?petImg(gp,1):"";return src?`<img class="day-pet" src="${src}" alt="">`:`<span class="purple">${gp?gp.e:"🐘"}</span>`})()}</span><span class="rl">${petName(petByKey(r.pet))}</span>`:`<span class="rw"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span><span class="rl">${r.l} แต้มบุญ</span>`}${state==="done"?`<i class="ok">รับแล้ว</i>`:""}</div>`}).join("");
   $("dailyClaim").disabled=st.claimed;$("dailyClaim").textContent=st.claimed?"รับแล้ว กลับมาพรุ่งนี้นะคะ":`🙏 ไปไหว้พระ รับรางวัลวันที่ ${st.next}`;$("giftDot").hidden=st.claimed}
 function openDaily(){renderDaily();$("dailyModal").hidden=false;($("dailyClaim").disabled?$("dailyClose"):$("dailyClaim")).focus()}
 function autoDaily(){if(!ONLINE)return;const st=streakState(),d=dk(now());if(!st.claimed&&PREF.popDay!==d&&$("reveal").hidden&&$("loginScreen").hidden){PREF.popDay=d;savePref();setTimeout(openDaily,600)}}
@@ -2781,7 +2792,7 @@ function makeShare(){const r=S.last;if(!r)return;const W=1080,H=1920,c=document.
     x.fillStyle=L.c;rr(390,top+185,300,64,32);x.fillStyle="#fff";x.font="600 38px "+fam;x.fillText(lvn,540,top+230);
     x.fillStyle="#3f2560";x.font="500 66px "+fam;let y=wrapText(x,verse,540,top+340,800,80);x.fillStyle="#5c4a75";x.font="400 42px "+fam;y=wrapText(x,o,540,y+20,780,58);
     x.fillStyle="#8a4fc2";x.font="500 42px "+fam;wrapText(x,"ทำแบบนี้: "+a,540,y+30,780,58);
-    if(p){if(p.img&&ok)x.drawImage(img,465,1695,150,150);else if(!p.img){x.font="140px serif";x.fillText(p.e,540,1830)}x.fillStyle="#fbeec2";x.font="500 40px "+fam;x.fillText("เพื่อนวันนี้: "+p.n,540,1880)}
+    if(p){if(p.img&&ok)x.drawImage(img,465,1695,150,150);else if(!p.img){x.font="140px serif";x.fillText(p.e,540,1830)}x.fillStyle="#fbeec2";x.font="500 40px "+fam;x.fillText("สัตว์มงคลวันนี้: "+petName(p),540,1880)}
     else{x.fillStyle="#d9c3f3";x.font="400 40px "+fam;x.fillText("มาเขย่าเซียมซีด้วยกันที่ LINE @fortuniehoro",540,1800)}
     x.fillStyle="#bfaedb";x.font="400 28px "+fam;x.fillText("คำทำนายเพื่อเป็นแนวทางและกำลังใจ",540,1910);
     $("shareImg").src=c.toDataURL("image/png");$("shareModal").hidden=false;$("shareClose").focus()}}
@@ -2794,7 +2805,7 @@ const TOPUP_MIN=50;
 function starsFor(baht){baht=Math.floor(+baht||0);if(baht<TOPUP_MIN)return 0;const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);if(!ps.length)return 0;
   let t=ps[0];for(const p of ps)if(p.baht<=baht)t=p;return Math.floor(baht*t.stars/t.baht)}
 /* simple top-up: header + rates, card 1 = transfer, card 2 (#confirm) = attach slip. UI only: rates, account and checks come from the server */
-function firstCardHTML(on){return firstOK()?`<section class="ps-first${on?" on":""}" id="psFirst"><span class="pf-gift" aria-hidden="true">🎁</span><div class="pf-t"><b>แพ็กแรก ${FIRST_PACK.baht} บาท · ครั้งเดียว</b><span>ได้ ${FIRST_PACK.stars} เหรียญทอง + ตั๋วแรร์+ ${FIRST_PACK.rt} ใบ + เทียนบัวทองสำหรับหิ้ง</span></div><button class="mini" type="button" id="psFirstBtn" aria-pressed="${!!on}">${on?"เลือกแล้ว ✓":"เลือก"}</button></section>`:""}
+function firstCardHTML(on){return firstOK()?`<section class="ps-first${on?" on":""}" id="psFirst"><span class="pf-gift" aria-hidden="true">🎁</span><div class="pf-t"><b>แพ็กแรก ${FIRST_PACK.baht} บาท · ครั้งเดียว</b><span>ได้ ${FIRST_PACK.stars} เหรียญทอง + เซียมเรียกแรร์+ ${FIRST_PACK.rt} ใบ + เทียนบัวทองสำหรับหิ้ง</span></div><button class="mini" type="button" id="psFirstBtn" aria-pressed="${!!on}">${on?"เลือกแล้ว ✓":"เลือก"}</button></section>`:""}
 function renderPaySimple(){if(!firstOK())FIRST_SEL=false;chosen={simple:true,first:FIRST_SEL};const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);
   const rate=p=>Math.round(p.stars/p.baht*100)/100,base=ps[0],bonus=base&&ps.find(p=>rate(p)>rate(base)),hrs=CFG.slipMaxH||24;
   const sheet=document.querySelector("#scrim .sheet");if(sheet)sheet.classList.add("ps-mode");$("sheetTitle").textContent="เติมเหรียญทอง";$("shopNote").hidden=true;
@@ -2841,7 +2852,7 @@ function renderMyReqs(){
   $("myReqs").innerHTML=MYREQ.length?`<b class="small" style="text-align:left">คำขอเติมเหรียญทองของคุณ</b>`+MYREQ.slice(0,6).map(r=>`<div class="req"><span>${r.baht} บาท · ${r.stars} เหรียญทอง</span><span class="st ${r.status}">${{pending:"รอตรวจ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"}[r.status]||r.status}</span>${r.reason?`<span class="small" style="text-align:left;width:100%">${esc(r.reason)}</span>`:""}</div>`).join(""):""}
 $("packs").addEventListener("input",e=>{if(e.target.id!=="anyBaht")return;const v=Math.floor(+e.target.value||0);$("anyStars").textContent=v>=TOPUP_MIN?`ได้ ${starsFor(v)} เหรียญทอง`:`ขั้นต่ำ ${TOPUP_MIN} บาท`});
 $("packs").addEventListener("click",e=>{if(e.target.closest("#psFirstBtn")){if(chosen&&chosen.simple){FIRST_SEL=!FIRST_SEL;renderPaySimple();syncPaySimple();return}
-    FIRST_SEL=true;chosen={baht:FIRST_PACK.baht,stars:FIRST_PACK.stars,first:true};if(typeof chosenI!=="undefined")chosenI=-1;renderShop();$("confirm").hidden=false;$("payMsg").textContent="";$("confirmText").textContent=`แพ็กแรก ${FIRST_PACK.stars} เหรียญทอง + ตั๋วแรร์+ ${FIRST_PACK.rt} ใบ + เทียนบัวทอง ราคา ${FIRST_PACK.baht} บาท`;return}
+    FIRST_SEL=true;chosen={baht:FIRST_PACK.baht,stars:FIRST_PACK.stars,first:true};if(typeof chosenI!=="undefined")chosenI=-1;renderShop();$("confirm").hidden=false;$("payMsg").textContent="";$("confirmText").textContent=`แพ็กแรก ${FIRST_PACK.stars} เหรียญทอง + เซียมเรียกแรร์+ ${FIRST_PACK.rt} ใบ + เทียนบัวทอง ราคา ${FIRST_PACK.baht} บาท`;return}
   const dz=e.target.closest(".ps-disc");if(dz){const box=$(dz.getAttribute("aria-controls")),open=dz.getAttribute("aria-expanded")!=="true";dz.setAttribute("aria-expanded",open);box.hidden=!open;return}
   if(e.target.closest("#psCopy")){const t=String(CFG.payNo||"").replace(/\s+/g,""),done=()=>{$("psCopied").textContent="คัดลอกแล้ว";clearTimeout(window._psc);window._psc=setTimeout(()=>{const x=$("psCopied");if(x)x.textContent=""},2200)};
     (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done).catch(()=>{$("psCopied").textContent="คัดลอกไม่ได้ กดค้างที่เลขบัญชีเพื่อคัดลอกเอง"});return}
@@ -2868,7 +2879,7 @@ $("confirmBtn").addEventListener("click",async()=>{if(!chosen)return;const msg=$
 async function shrink(file){const url=URL.createObjectURL(file);try{const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะคะ");i.src=url});
   const s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.85)}finally{URL.revokeObjectURL(url)}}
 async function redeem(){const v=$("codeIn").value.trim().toUpperCase(),msg=$("codeMsg");if(!v){msg.textContent="ใส่โค้ดก่อนนะคะ";return}
-  try{const c=await api("redeem",{code:v});render();msg.textContent=`รับ${c.s?" "+c.s+" เหรียญทอง":""}${c.l?" "+c.l+" แต้มบุญ":""}${c.t?" ตั๋ว "+c.t+" ใบ":""}${c.rt?" ตั๋วแรร์+ "+c.rt+" ใบ":""} แล้ว`;chime([659,784,1047]);$("codeIn").value=""}catch(e){msg.textContent=e==="locked"?"":e}}
+  try{const c=await api("redeem",{code:v});render();msg.textContent=`รับ${c.s?" "+c.s+" เหรียญทอง":""}${c.l?" "+c.l+" แต้มบุญ":""}${c.t?" เซียมเรียก "+c.t+" ใบ":""}${c.rt?" เซียมเรียกแรร์+ "+c.rt+" ใบ":""} แล้ว`;chime([659,784,1047]);$("codeIn").value=""}catch(e){msg.textContent=e==="locked"?"":e}}
 $("codeBtn").addEventListener("click",redeem);$("codeIn").addEventListener("keydown",e=>{if(e.key==="Enter")redeem()});
 function openSheet(){$("scrim").hidden=false;$("confirm").hidden=!chosen;renderShop();$("closeSheet").focus()}
 function closeSheet(){$("scrim").hidden=true}
@@ -2943,11 +2954,11 @@ function renderPlayers(){const el=$("playerList");if(!el)return;const today=dk(D
     if(plQ){const hay=[p.name,p.code,p.email,p.phone,p.login].join(" ").toLowerCase();if(!hay.includes(plQ))return false}return true});
   const key={seen:p=>tsOf(p.last_seen),paid:p=>+p.topBaht||0,stars:p=>+p.stars||0}[plSortBy];L.sort((a,b)=>key(b)-key(a));
   $("plCount").textContent=`แสดง ${L.length} จาก ${ADM.players.length} คน`;
-  el.innerHTML=L.length?L.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b>${p.is_admin?` <span class="tier" style="background:var(--lav)">แอดมิน</span>`:""}${p.staff?` <span class="tier" style="background:#7fd3ff;color:#123">สตาฟ</span>`:""}${p.banned?` <span class="tier" style="background:#c0505a">ระงับ</span>`:""}${p.approved===false&&!p.banned?` <span class="tier" style="background:#e7b85a;color:#321">รออนุมัติ</span>`:""}<span class="small" style="text-align:left;display:block">เหรียญทอง ${+p.stars||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท · เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}</span></div><button class="mini" type="button" data-adm="pl">จัดการ</button></div>`).join(""):`<div class="placeholder">${ADM.players.length?"ไม่พบผู้เล่นที่ตรงกับที่ค้นหา":"ยังไม่มีผู้เล่น"}</div>`}
-function codeLine(c){return `<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" เหรียญทอง ":""}${c.l?+c.l+" แต้มบุญ ":""}${c.t?+c.t+" ตั๋ว ":""}${c.rt?+c.rt+" ตั๋วแรร์+ ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div>${isOwn()?`<button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button>`:""}</div>`}
+  el.innerHTML=L.length?L.map(p=>`<div class="adm-card row-card" data-uid="${esc(p.id)}"><div><b>${esc(p.name)} · ${esc(p.code)}</b>${p.is_admin?` <span class="tier" style="background:var(--lav)">แอดมิน</span>`:""}${p.staff?` <span class="tier" style="background:#7fd3ff;color:#123">สตาฟ</span>`:""}${p.banned?` <span class="tier" style="background:#c0505a">ระงับ</span>`:""}${p.approved===false&&!p.banned?` <span class="tier" style="background:#e7b85a;color:#321">รออนุมัติ</span>`:""}<span class="small" style="text-align:left;display:block">เหรียญทอง ${+p.stars||0} · สัตว์มงคล ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท · เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}</span></div><button class="mini" type="button" data-adm="pl">จัดการ</button></div>`).join(""):`<div class="placeholder">${ADM.players.length?"ไม่พบผู้เล่นที่ตรงกับที่ค้นหา":"ยังไม่มีผู้เล่น"}</div>`}
+function codeLine(c){return `<div class="adm-card row-card" data-code="${esc(c.code)}"><div><b>${esc(c.code)}</b> <span class="tier code-kind ${c.kind==="once"?"once":""}">${codeKind(c)}</span><span class="small" style="text-align:left;display:block">${c.s?+c.s+" เหรียญทอง ":""}${c.l?+c.l+" แต้มบุญ ":""}${c.t?+c.t+" เซียมเรียก ":""}${c.rt?+c.rt+" เซียมเรียกแรร์+ ":""}${c.note?"· "+esc(c.note):""}${c.off?" · ปิดแล้ว":""}</span><span class="small" style="text-align:left;display:block;color:var(--muted)">${codeUse(c)} · ${codeExp(c)}</span></div>${isOwn()?`<button class="mini" type="button" data-adm="${c.off?"on":"off"}">${c.off?"เปิด":"ปิดโค้ด"}</button>`:""}</div>`}
 function renderCodes(){const el=$("codeList");const single=ADM.codes.filter(c=>!c.batch),B={};ADM.codes.filter(c=>c.batch).forEach(c=>(B[c.batch]=B[c.batch]||[]).push(c));
   const bh=Object.entries(B).map(([id,cs])=>{const used=cs.filter(c=>+c.used>0).length,off=cs.every(c=>c.off),c0=cs[0];
-    return `<div class="adm-card batch" data-batch="${esc(id)}"><div><b>ชุด ${esc(c0.prefix||id)}</b> <span class="tier code-kind once">ไม่ซ้ำ ${cs.length} โค้ด</span><span class="small" style="text-align:left;display:block">${c0.s?+c0.s+" เหรียญทอง ":""}${c0.l?+c0.l+" แต้มบุญ ":""}${c0.t?+c0.t+" ตั๋ว ":""}${c0.rt?+c0.rt+" ตั๋วแรร์+ ":""}${c0.note?"· "+esc(c0.note):""} · ใช้แล้ว ${used}/${cs.length}${off?" · ปิดทั้งชุดแล้ว":""} · ${codeExp(c0)}</span></div>
+    return `<div class="adm-card batch" data-batch="${esc(id)}"><div><b>ชุด ${esc(c0.prefix||id)}</b> <span class="tier code-kind once">ไม่ซ้ำ ${cs.length} โค้ด</span><span class="small" style="text-align:left;display:block">${c0.s?+c0.s+" เหรียญทอง ":""}${c0.l?+c0.l+" แต้มบุญ ":""}${c0.t?+c0.t+" เซียมเรียก ":""}${c0.rt?+c0.rt+" เซียมเรียกแรร์+ ":""}${c0.note?"· "+esc(c0.note):""} · ใช้แล้ว ${used}/${cs.length}${off?" · ปิดทั้งชุดแล้ว":""} · ${codeExp(c0)}</span></div>
       <div class="row" style="justify-content:flex-start"><button class="mini" type="button" data-bc="show">ดูโค้ด</button>${isOwn()&&!off?`<button class="mini" type="button" data-bc="off">ปิดทั้งชุด</button>`:""}</div><textarea class="bview" rows="5" readonly hidden>${cs.map(c=>c.code+(+c.used?" (ใช้แล้ว)":"")).join("\n")}</textarea></div>`}).join("");
   el.innerHTML=(bh+single.map(codeLine).join(""))||`<div class="placeholder">ยังไม่มีโค้ด</div>`}
 function renderAdmin(){if(!AROLE())return;const pend=ADM.pending,hist=ADM.history,waiting=ADM.players.filter(p=>p.approved===false&&!p.banned),n=pend.length+waiting.length;
@@ -2976,12 +2987,12 @@ $("codeList").addEventListener("click",async e=>{const b=e.target.closest("[data
   if(b.dataset.bc==="show"){const t=card.querySelector(".bview");t.hidden=!t.hidden;b.textContent=t.hidden?"ดูโค้ด":"ซ่อน";return}
   if(b.dataset.bc==="off"&&isOwn()){b.disabled=true;try{await api("adm_batch_off",{batch:card.dataset.batch});toast("ปิดทั้งชุดแล้ว");await loadAdmin()}catch(err){if(err!=="locked")toast(err);b.disabled=false}}});
 /* log (owner) */
-const LOG_TXT={topup_ok:["topup","อนุมัติเติมเหรียญทอง",d=>`${d.baht} บาท → ${d.stars} เหรียญทอง${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมเหรียญทอง",d=>`${d.baht} บาท${d.auto?" · 🤖 อัตโนมัติ":""}${d.reason?" · "+d.reason:""}`],give:["player","ส่ง/หักของ",d=>[d.s?"เหรียญทอง "+(d.s>0?"+":"")+d.s:"",d.t?"ตั๋ว "+(d.t>0?"+":"")+d.t:"",d.rt?"ตั๋วแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
+const LOG_TXT={topup_ok:["topup","อนุมัติเติมเหรียญทอง",d=>`${d.baht} บาท → ${d.stars} เหรียญทอง${d.auto?" · 🤖 อัตโนมัติ":""}`],topup_no:["topup","ไม่อนุมัติเติมเหรียญทอง",d=>`${d.baht} บาท${d.auto?" · 🤖 อัตโนมัติ":""}${d.reason?" · "+d.reason:""}`],give:["player","ส่ง/หักของ",d=>[d.s?"เหรียญทอง "+(d.s>0?"+":"")+d.s:"",d.t?"เซียมเรียก "+(d.t>0?"+":"")+d.t:"",d.rt?"เซียมเรียกแรร์+ "+(d.rt>0?"+":"")+d.rt:"",d.note?"· "+d.note:""].filter(Boolean).join(" ")],
   approve:["player","อนุมัติสมัคร",()=>""],deny:["player","ไม่อนุมัติสมัคร",()=>""],ban:["player","ระงับบัญชี",d=>d.reason?"เหตุผล: "+d.reason:""],unban:["player","ปลดระงับ",()=>""],reset:["player","ล้างข้อมูลเกม",()=>""],setpass:["player","ตั้งรหัสผ่านใหม่",()=>""],
   admin:["player","เปลี่ยนสิทธิ์แอดมิน",d=>d.on?"ให้สิทธิ์":"ปลดสิทธิ์"],staff_on:["player","ตั้งเป็นสตาฟ",()=>""],staff_off:["player","ปลดสิทธิ์สตาฟ",()=>""],rename:["player","เปลี่ยนชื่อ",d=>`จาก ${d.from||"-"} เป็น ${d.to||"-"}`],
-  mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" เหรียญทอง":"",d.l?d.l+" แต้มบุญ":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],
+  mass_give:["player","แจกของหลายคน",d=>`${({all:"ทุกคน",d7:"เล่นใน 7 วัน",today:"เล่นวันนี้",paid:"เคยเติมเงิน"})[d.seg]||d.seg} · ${d.n} คน · ${[d.s?d.s+" เหรียญทอง":"",d.l?d.l+" แต้มบุญ":"",d.t?d.t+" เซียมเรียก":"",d.rt?d.rt+" เซียมเรียกแรร์+":""].filter(Boolean).join(" ")}${d.note?" · "+d.note:""}`],
   cfg:["cfg","แก้ตั้งค่า",d=>{const o=[];if((d.diff||[]).includes("rates")){const r=d.rates||{},q=d.old_rates||{};o.push(`เรทปกติ ${(q.n||RATE_N0).join("/")} → ${(r.n||[]).join("/")}`,`เรทแรร์+ ${(q.r||RATE_R0).slice(2).join("/")} → ${(r.r||[]).slice(2).join("/")}`)}if((d.diff||[]).includes("packs"))o.push("แพ็กเหรียญทอง "+(d.packs||[]).map(p=>p.baht+"฿="+p.stars).join(", "));if((d.diff||[]).includes("ann"))o.push(d.ann?"ประกาศ: "+d.ann:"ลบประกาศ");if((d.diff||[]).includes("maint"))o.push(d.maint?"เปิดโหมดปิดปรับปรุง":"ปิดโหมดปิดปรับปรุง");return o.join(" · ")}],
-  code_new:["code","สร้างโค้ด",d=>`${d.code} · ${[d.s?d.s+" เหรียญทอง":"",d.l?d.l+" แต้มบุญ":"",d.t?d.t+" ตั๋ว":"",d.rt?d.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")}`],code_on:["code","เปิดโค้ด",d=>d.code],code_off:["code","ปิดโค้ด",d=>d.code],code_batch:["code","สร้างชุดโค้ด",d=>`${d.prefix} · ${d.n} โค้ด`],batch_off:["code","ปิดโค้ดทั้งชุด",()=>""],sms_test:["cfg","ทดสอบ SMS",()=>""]};
+  code_new:["code","สร้างโค้ด",d=>`${d.code} · ${[d.s?d.s+" เหรียญทอง":"",d.l?d.l+" แต้มบุญ":"",d.t?d.t+" เซียมเรียก":"",d.rt?d.rt+" เซียมเรียกแรร์+":""].filter(Boolean).join(" ")}`],code_on:["code","เปิดโค้ด",d=>d.code],code_off:["code","ปิดโค้ด",d=>d.code],code_batch:["code","สร้างชุดโค้ด",d=>`${d.prefix} · ${d.n} โค้ด`],batch_off:["code","ปิดโค้ดทั้งชุด",()=>""],sms_test:["cfg","ทดสอบ SMS",()=>""]};
 const LOG_IC={topup:"💳",player:"👤",cfg:"⚙️",code:"🎁"};
 async function loadLogs(){if(!isOwn())return;try{const r=await api("adm_logs");LOGS=r.events||[];renderLogs();renderCfgHist()}catch(e){}}
 function renderLogs(){const el=$("logList");const L=LOGS.map(x=>{const m=LOG_TXT[x.kind]||["cfg",x.kind,()=>""];return{cat:m[0],act:m[1],detail:m[2](x.data||{}),who:x.user_id&&x.user_id!==x.actor?plLabel(x.user_id):"",by:plLabel(x.actor),at:tsOf(x.at)}}).filter(x=>logF==="all"||x.cat===logF);
@@ -3006,8 +3017,8 @@ $("bcCopy").addEventListener("click",async()=>{const t=$("bcText");try{await nav
 function mgVals(){return{seg:$("mgSeg").value,s:Math.max(0,parseInt($("mgStars").value)||0),l:Math.max(0,parseInt($("mgLeaves").value)||0),t:Math.max(0,parseInt($("mgTickets").value)||0),rt:Math.max(0,parseInt($("mgRTickets").value)||0),note:$("mgNote").value.trim()}}
 function mgPreview(){const v=mgVals(),today=dk(Date.now()),d7=Date.now()-7*DAY;const n=ADM.players.filter(p=>!p.banned&&p.approved!==false&&(v.seg==="all"||(v.seg==="d7"&&tsOf(p.last_seen)>=d7)||(v.seg==="today"&&p.last_seen&&dk(tsOf(p.last_seen))===today)||(v.seg==="paid"&&+p.topBaht>0))).length;$("mgCount").textContent=`จะได้รับประมาณ ${n} คน (ไม่รวมบัญชีที่ถูกระงับหรือรออนุมัติ)`;$("mgYes").hidden=true}
 ["mgStars","mgLeaves","mgTickets","mgRTickets"].forEach(i=>$(i).addEventListener("input",mgPreview));$("mgSeg").addEventListener("change",mgPreview);
-$("mgBtn").addEventListener("click",async()=>{if(!isOwn())return;const v=mgVals();if(!v.s&&!v.l&&!v.t&&!v.rt){$("mgMsg").textContent="ใส่เหรียญทอง แต้มบุญ หรือตั๋วที่จะแจก (แจกได้อย่างเดียว หักไม่ได้)";return}
-  try{const r=await api("adm_mass",Object.assign({preview:1},v));if(!r.n){$("mgMsg").textContent="ไม่มีผู้เล่นในกลุ่มนี้";return}$("mgMsg").textContent=`แจก ${[v.s?v.s+" เหรียญทอง":"",v.l?v.l+" แต้มบุญ":"",v.t?v.t+" ตั๋ว":"",v.rt?v.rt+" ตั๋วแรร์+":""].filter(Boolean).join(" ")} ให้ ${r.n} คน กดยืนยันอีกครั้ง`;$("mgYes").hidden=false}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
+$("mgBtn").addEventListener("click",async()=>{if(!isOwn())return;const v=mgVals();if(!v.s&&!v.l&&!v.t&&!v.rt){$("mgMsg").textContent="ใส่เหรียญทอง แต้มบุญ หรือเซียมเรียกที่จะแจก (แจกได้อย่างเดียว หักไม่ได้)";return}
+  try{const r=await api("adm_mass",Object.assign({preview:1},v));if(!r.n){$("mgMsg").textContent="ไม่มีผู้เล่นในกลุ่มนี้";return}$("mgMsg").textContent=`แจก ${[v.s?v.s+" เหรียญทอง":"",v.l?v.l+" แต้มบุญ":"",v.t?v.t+" เซียมเรียก":"",v.rt?v.rt+" เซียมเรียกแรร์+":""].filter(Boolean).join(" ")} ให้ ${r.n} คน กดยืนยันอีกครั้ง`;$("mgYes").hidden=false}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
 $("mgYes").addEventListener("click",async()=>{if(!isOwn())return;const b=$("mgYes");b.hidden=true;$("mgMsg").textContent="กำลังแจก…";try{const r=await api("adm_mass",mgVals());$("mgMsg").textContent=`แจกแล้ว ${r.n} คน ผู้เล่นจะเห็นเมื่อเปิดเกม`;toast("แจกของแล้ว");await loadAdmin()}catch(e){$("mgMsg").textContent=e==="locked"?"":e}});
 /* player control */
 let plUid=null;
@@ -3018,7 +3029,7 @@ async function renderTimeline(uid){const el=$("plTime");el.innerHTML=`<div class
   ev.sort((a,b)=>b.at-a.at);el.innerHTML=ev.length?ev.slice(0,50).map(x=>`<div class="tl-row"><span class="tl-ic">${x.ic}</span><span class="tl-t">${esc(x.t)}</span><span class="tl-at">${ago(x.at)}</span></div>`).join(""):`<div class="placeholder">ยังไม่มีความเคลื่อนไหว</div>`}catch(e){el.innerHTML=`<div class="placeholder">โหลดไม่สำเร็จ</div>`}}
 function openPl(uid){plUid=uid;const p=PLOF(uid);
   $("plTitle").textContent=p.name||"ผู้เล่น";
-  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b>${p.approved===false?" · <b>รออนุมัติ</b>":""}</span>${p.email||p.phone?`<span>${esc(p.email||"-")} · ${esc(p.phone||"-")}</span>`:""}<span>เหรียญทอง ${+p.stars||0} · แต้มบุญ ${+p.leaves||0} · ตั๋ว ${+p.tickets||0} · ตั๋วแรร์+ ${+p.rtickets||0} · เพื่อน ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
+  $("plInfo").innerHTML=`<span>ไอดี <b>${esc(p.login)}</b> · รหัส <b>${esc(p.code||"-")}</b>${p.approved===false?" · <b>รออนุมัติ</b>":""}</span>${p.email||p.phone?`<span>${esc(p.email||"-")} · ${esc(p.phone||"-")}</span>`:""}<span>เหรียญทอง ${+p.stars||0} · แต้มบุญ ${+p.leaves||0} · เซียมเรียก ${+p.tickets||0} · เซียมเรียกแรร์+ ${+p.rtickets||0} · สัตว์มงคล ${+p.pets||0}/${PETS.length} · เติมรวม ${+p.topBaht||0} บาท</span><span>เห็นล่าสุด ${p.last_seen?ago(tsOf(p.last_seen)):"-"}${p.banned?` · <b style="color:#ff9a9a">ระงับอยู่</b>${p.ban_reason?" ("+esc(p.ban_reason)+")":""}`:""}</span>`;
   $("plName").value=p.name||"";$("plBanReason").value=p.ban_reason||"";["plStars","plLeaves","plTickets","plRTickets","plNote","plPass"].forEach(i=>$(i).value="");$("plMsg").textContent="";$("plResetYes").hidden=true;
   $("plAdmin").textContent=p.is_admin?"ปลดสิทธิ์แอดมิน":"ให้สิทธิ์แอดมิน";$("plStaff").textContent=p.staff?"ปลดออกจากสตาฟ":"ตั้งเป็นสตาฟ";$("plStaff").disabled=!!p.is_admin;
   const rs=ADM.pending.concat(ADM.history).filter(r=>r.user_id===uid).slice(0,8);
@@ -3027,7 +3038,7 @@ function openPl(uid){plUid=uid;const p=PLOF(uid);
 function plMsg(t){$("plMsg").textContent=t}
 async function plDo(action,params,ok){if(!isOwn())return;try{await api(action,Object.assign({uid:plUid},params));plMsg(ok);toast(ok);await loadAdmin();const keep=plUid;if(!$("plModal").hidden){openPl(keep);plMsg(ok)}}catch(e){plMsg(e==="locked"?"":e)}}
 $("plClose").addEventListener("click",()=>{$("plModal").hidden=true});
-$("plGive").addEventListener("click",()=>{const s=parseInt($("plStars").value)||0,l=parseInt($("plLeaves").value)||0,t=parseInt($("plTickets").value)||0,rt=Math.max(-20,Math.min(20,parseInt($("plRTickets").value)||0));if(!s&&!l&&!t&&!rt){plMsg("ใส่จำนวนเหรียญทอง แต้มบุญ หรือตั๋วก่อน");return}
+$("plGive").addEventListener("click",()=>{const s=parseInt($("plStars").value)||0,l=parseInt($("plLeaves").value)||0,t=parseInt($("plTickets").value)||0,rt=Math.max(-20,Math.min(20,parseInt($("plRTickets").value)||0));if(!s&&!l&&!t&&!rt){plMsg("ใส่จำนวนเหรียญทอง แต้มบุญ หรือเซียมเรียกก่อน");return}
   plDo("adm_give",{s,l,t,rt,note:$("plNote").value.trim()},(s<0||l<0||t<0||rt<0?"หัก":"ส่ง")+"ของแล้ว")});
 $("plRename").addEventListener("click",()=>{const v=$("plName").value.trim();if(!v){plMsg("ใส่ชื่อก่อน");return}plDo("adm_rename",{name:v},"เปลี่ยนชื่อแล้ว")});
 $("plBan").addEventListener("click",()=>{const why=$("plBanReason").value.trim();if(!why){plMsg("ใส่เหตุผลก่อนระงับบัญชี");$("plBanReason").focus();return}plDo("adm_ban",{ban:true,reason:why},"ระงับบัญชีแล้ว")});
@@ -3035,7 +3046,7 @@ $("plUnban").addEventListener("click",()=>plDo("adm_ban",{ban:false,reason:""},"
 $("plSetPass").addEventListener("click",()=>{const v=$("plPass").value;if(v.length<6){plMsg("รหัสผ่านต้องยาว 6 ตัวขึ้นไป");return}plDo("adm_pass",{password:v},"ตั้งรหัสผ่านใหม่แล้ว บอกผู้เล่นทางไลน์ได้เลย")});
 $("plAdmin").addEventListener("click",()=>{const p=PLOF(plUid);plDo("adm_admin",{on:!p.is_admin},p.is_admin?"ปลดสิทธิ์แอดมินแล้ว":"ให้สิทธิ์แอดมินแล้ว")});
 $("plStaff").addEventListener("click",()=>{const p=PLOF(plUid);plDo("adm_staff",{on:!p.staff},p.staff?"ปลดสิทธิ์สตาฟแล้ว":"ตั้งเป็นสตาฟแล้ว")});
-$("plReset").addEventListener("click",()=>{$("plResetYes").hidden=false;plMsg("ล้างแล้วย้อนคืนไม่ได้ เหรียญทอง เพื่อน และคลังจะหายหมด")});
+$("plReset").addEventListener("click",()=>{$("plResetYes").hidden=false;plMsg("ล้างแล้วย้อนคืนไม่ได้ เหรียญทอง สัตว์มงคล และคลังจะหายหมด")});
 $("plResetYes").addEventListener("click",()=>{$("plResetYes").hidden=true;plDo("adm_reset",{},"ล้างเกมของผู้เล่นแล้ว")});
 /* game settings */
 let cfgFilled=false;
@@ -3063,7 +3074,7 @@ $("cfSave").addEventListener("click",async()=>{if(!isOwn())return;const packs=[.
   let special;if($("cfSpecial")&&$("cfSpecial").value.trim()!==specialText(CFG.special).trim()){special=specialRead();const bad=special.find(x=>x.bad);if(bad){cfMsgAll("วันพิเศษเขียนไม่ถูกแบบ: "+bad.bad+" (ตัวอย่าง 2026-12-31 วันส่งท้ายปี 30)");return}}
   try{await api("adm_cfg",{rates,...(special?{special}:{}),pay:$("cfPay").value.trim(),ann:$("cfAnn").value.trim(),maint:$("cfMaint").checked,approval:$("cfApproval").checked,sms:$("cfSms").checked,...($("cfSlipAuto")?{slipAuto:$("cfSlipAuto").checked,slipName:$("cfSlipName").value.trim(),slipTail:"",payBank:$("cfPayBank").value.trim(),payNo:$("cfPayNo").value.trim(),slipHours:parseInt($("cfSlipHours").value)||24}:{}),packs});await api("me");render();fillCfg(true);loadLogs();cfMsgAll("บันทึกแล้ว ผู้เล่นเห็นทันที");toast("บันทึกการตั้งค่าแล้ว")}catch(e){cfMsgAll(e==="locked"?"":e)}});
 $("ncBtn").addEventListener("click",async()=>{if(!isOwn())return;const code=$("ncCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,""),s=Math.max(0,parseInt($("ncStars").value)||0),l=Math.max(0,parseInt($("ncLeaves").value)||0),t=Math.max(0,parseInt($("ncTickets").value)||0),rt=Math.max(0,Math.min(20,parseInt($("ncRTickets").value)||0)),msg=$("ncMsg");
-  if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!l&&!t&&!rt){msg.textContent="ใส่เหรียญทอง แต้มบุญ หรือตั๋วอย่างน้อย 1 อย่าง";return}
+  if(!code){msg.textContent="ใส่โค้ดก่อน (ตัวอักษรอังกฤษ ตัวเลข - _)";return}if(!s&&!l&&!t&&!rt){msg.textContent="ใส่เหรียญทอง แต้มบุญ หรือเซียมเรียกอย่างน้อย 1 อย่าง";return}
   const kind=$("ncKind").value==="once"?"once":"each",max=kind==="once"?1:Math.max(0,parseInt($("ncMax").value)||0),days=Math.max(0,parseInt($("ncDays").value)||0);
   try{await api("adm_code",{code,s,l,t,rt,note:$("ncNote").value.trim(),kind,max,days});msg.textContent=`สร้างโค้ด ${code} แล้ว · ${codeKind({kind})}${kind==="each"&&max?" สูงสุด "+max+" คน":""}${days?" · ใช้ได้ "+days+" วัน":""}`;["ncCode","ncStars","ncLeaves","ncTickets","ncRTickets","ncNote","ncMax","ncDays"].forEach(i=>$(i).value="");$("ncKind").value="each";syncNcKind();loadAdmin()}catch(e){msg.textContent=e==="locked"?"":e}});
 function syncNcKind(){$("ncMax").hidden=$("ncKind").value==="once"}
@@ -3079,9 +3090,9 @@ function renderInfo(){const P=powers(),lvn={"ดีมาก":0,"ดี":0,"ค�
   $("slipOdds").innerHTML=Object.keys(lvn).map(k=>`<tr><td><span class="dot" style="background:${LV[k].c}"></span>${k}</td><td class="num">${lvn[k]} ใบ</td><td class="num">${(lvn[k]/44*100).toFixed(1)}%</td><td class="num">${S.lv[k]}</td></tr>`).join("");
   $("rareOdds").innerHTML=RAR.map((r,i)=>i<2?"":`<tr><td><span class="dot" style="background:${r.c}"></span>${r.name}</td><td class="num">${RATE_R[i]}%</td></tr>`).join("");
   $("petOdds").innerHTML=RAR.map(r=>`<tr><td><span class="dot" style="background:${r.c}"></span>${r.name}</td><td class="num">${r.share}%</td><td class="num">${n1(P.dropPct*r.share/100)}%</td></tr>`).join("");
-  $("dropNote").textContent=`ตอนนี้ทุกครั้งที่เขย่ามีโอกาส ${n1(P.dropPct)}% ที่จะเจอเพื่อน ไม่เจอติดกัน ${PITY} ครั้ง ครั้งถัดไปได้เพื่อนแน่นอน · เผาใบเซียมซีได้ ${BURN_PTS} แต้มเผา มีโอกาส ${Math.round(GOLD_P*100)}% เป็นไฟทอง แต้ม x${GOLD_X} · แต้มครบ ${JAR} เปิดไหสุ่มเพื่อน แรร์ 80% เอพิก 15% ตำนาน 5%`;
+  $("dropNote").textContent=`ตอนนี้ทุกครั้งที่เขย่ามีโอกาส ${n1(P.dropPct)}% ที่จะเจอสัตว์มงคล ไม่เจอติดกัน ${PITY} ครั้ง ครั้งถัดไปได้สัตว์มงคลแน่นอน · เผาใบเซียมซีได้ ${BURN_PTS} แต้มเผา มีโอกาส ${Math.round(GOLD_P*100)}% เป็นไฟทอง แต้ม x${GOLD_X} · แต้มครบ ${JAR} เปิดไหสุ่มสัตว์มงคล แรร์ 80% เอพิก 15% ตำนาน 5%`;
   $("testTools").hidden=!OWNER;
-  $("stats").innerHTML=[["เขย่าทั้งหมด",S.shakes],["เจอเพื่อน",S.petDrops],["สะสมได้",PETS.filter(p=>S.owned[p.n]).length+"/"+PETS.length],["เหรียญทองที่ใช้",S.spent],["เติม (บาท)",S.topBaht],["เผาไป",S.burned],["ไฟทอง",S.golds||0],["ไหที่เปิด",S.jars||0]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("")}
+  $("stats").innerHTML=[["เขย่าทั้งหมด",S.shakes],["เจอสัตว์มงคล",S.petDrops],["สะสมได้",PETS.filter(p=>S.owned[p.n]).length+"/"+PETS.length],["เหรียญทองที่ใช้",S.spent],["เติม (บาท)",S.topBaht],["เผาไป",S.burned],["ไฟทอง",S.golds||0],["ไหที่เปิด",S.jars||0]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("")}
 $("profileBox").addEventListener("click",e=>{if(e.target.closest("#logoutBtn"))logout()});
 $("pvRow").addEventListener("click",e=>{const b=e.target.closest("[data-pv]");if(b&&OWNER){showTab("home");previewPull(b.dataset.pv)}});
 $("soundBtn").addEventListener("click",()=>openMus());
@@ -3094,7 +3105,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;["scrim","dai
 /* ---------- leaf shop: leaves come from play, stars only from top-ups ---------- */
 const leafOdds=rare=>{const w=rare?RATE_R:RAR.map(r=>r.share),tot=w.reduce((a,b)=>a+b,0)||1;return RAR.map((r,i)=>w[i]>0?`${r.name} ${n1(w[i]/tot*100)}%`:"").filter(Boolean).join(" · ")};
 function renderLeafShop(){const have=S.leaves||0;$("leafHave").textContent=have;
-  $("leafItems").innerHTML=LEAF_SHOP.map(it=>{const ok=have>=it.cost,rare=it.id==="rt";return `<div class="leaf-item${rare?" rare":""}"><div class="li-main"><b>${it.n}</b><span class="small">${rare?"สุ่มเพื่อนระดับแรร์ขึ้นไป":"สุ่มเพื่อน 1 ตัว"} · โอกาส ${leafOdds(rare)}</span></div>
+  $("leafItems").innerHTML=LEAF_SHOP.map(it=>{const ok=have>=it.cost,rare=it.id==="rt";return `<div class="leaf-item${rare?" rare":""}"><div class="li-main"><b><i class="ico-sum" aria-hidden="true"></i>${it.n}</b><span class="small">${rare?"สุ่มสัตว์มงคลระดับแรร์ขึ้นไป":"สุ่มสัตว์มงคล 1 ตัว"} · โอกาส ${leafOdds(rare)}</span></div>
     <button class="li-buy" type="button" data-leaf="${it.id}" ${ok?"":"disabled"} aria-label="แลก ${it.n} ใช้ ${it.cost} แต้มบุญ"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5C4 11 9.5 4.5 20 4c.3 10.2-5.8 15.8-15.5 15.5z" fill="#9fd89a"/><path d="M5 19c3.5-4.5 7-7.5 11-10" stroke="#4f9a5a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><b>${it.cost}</b></button></div>`}).join("")}
 function openLeafShop(){$("leafMsg").textContent="";renderLeafShop();$("leafModal").hidden=false;$("leafClose").focus()}
 function leafBought(id){const rare=id==="rt",it=LEAF_SHOP.find(x=>x.id===id);chime([659,880,1175]);render();
@@ -3105,8 +3116,8 @@ $("leafBtn").addEventListener("click",openLeafShop);$("leafClose").addEventListe
 $("leafItems").addEventListener("click",e=>{const b=e.target.closest("button[data-leaf]");if(!b||b.disabled)return;b.disabled=true;buyLeaf(b.dataset.leaf)});
 
 /* v102: texts saved before the rename (pack tags, old gift messages) read with the new words; pet names stay as they are */
-const TT_KEEP=(()=>{const a=["\u0e14\u0e32\u0e27\u0e23\u0e32\u0e15\u0e23\u0e35"];try{PETS.forEach(p=>{a.push(p.n);if(p.fn)a.push(...p.fn)});if(typeof FN_ART!=="undefined")Object.values(FN_ART).forEach(v=>Array.isArray(v)&&a.push(...v));if(typeof PET_EXTRA!=="undefined")Object.values(PET_EXTRA).forEach(v=>v&&Array.isArray(v.fn)&&a.push(...v.fn))}catch(e){}return [...new Set(a.filter(Boolean))].sort((x,y)=>y.length-x.length)})();
-const TT_OLD=[["\u0e42\u0e2b\u0e25\u0e02\u0e35\u0e49\u0e40\u0e16\u0e49\u0e32","ไหสะสมบุญ"],["\u0e43\u0e1a\u0e44\u0e21\u0e49","แต้มบุญ"],["\u0e14\u0e32\u0e27","เหรียญทอง"]];
+const TT_KEEP=(()=>{const a=["\u0e14\u0e32\u0e27\u0e23\u0e32\u0e15\u0e23\u0e35"];try{PETS.forEach(p=>{a.push(p.n);if(p.dn)a.push(p.dn);if(p.fn)a.push(...p.fn)});if(typeof FN_ART!=="undefined")Object.values(FN_ART).forEach(v=>Array.isArray(v)&&a.push(...v));if(typeof PET_EXTRA!=="undefined")Object.values(PET_EXTRA).forEach(v=>v&&Array.isArray(v.fn)&&a.push(...v.fn))}catch(e){}return [...new Set(a.filter(Boolean))].sort((x,y)=>y.length-x.length)})();
+const TT_OLD=[["\u0e15\u0e31\u0e4b\u0e27\u0e2a\u0e38\u0e48\u0e21\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e19","เซียมเรียกผู้พิทักษ์"],["\u0e15\u0e31\u0e4b\u0e27\u0e41\u0e23\u0e23\u0e4c+","เซียมเรียกแรร์+"],["\u0e15\u0e31\u0e4b\u0e27","เซียมเรียก"],["\u0e42\u0e2b\u0e25\u0e02\u0e35\u0e49\u0e40\u0e16\u0e49\u0e32","ไหสะสมบุญ"],["\u0e43\u0e1a\u0e44\u0e21\u0e49","แต้มบุญ"],["\u0e14\u0e32\u0e27","เหรียญทอง"]];
 function TT(s){s=String(s==null?"":s);if(!TT_OLD.some(([o])=>s.includes(o)))return s;TT_KEEP.forEach((k,i)=>{if(s.includes(k))s=s.split(k).join("\u0001"+i+"\u0002")});
   TT_OLD.forEach(([o,n])=>{s=s.split(o).join(n)});return s.replace(/\u0001(\d+)\u0002/g,(_,i)=>TT_KEEP[+i])}
 function tutTag(){return S.tutF&&!(S.topBaht>0)&&(S.shakes||0)<=3?`<span class="tut-tag">🎓 ใบนี้เป็นเซียมซีระบบฝึกสอน</span>`:""}
@@ -3118,8 +3129,8 @@ function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.al
 /* the game rules for the altar; the web build swaps this for a server call with the same answers */
 async function altarAct(op,arg){const r=await api("altar",{op,arg:arg==null?"":String(arg)});if(r&&r.daily)showDailyWeb(r.daily);return r}
 function showDailyWeb(r){chime([659,784,988,1319]);burst(2,"#f0d28a");sayLock=Date.now()+6000;
-  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?"น้องหมีเด้ง":" "+r.l+" แต้มบุญ"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;
-  setTimeout(()=>toast(`เช็กอินวันที่ ${r.day}/7 · ${r.pet?"ได้น้องหมีเด้ง 🐻":"+"+r.l+" แต้มบุญ"}`),1400);
+  $("bubble").innerHTML=`<b>วันที่ ${r.day}/7</b> รับ${r.pet?petName(petByKey(r.pet)):" "+r.l+" แต้มบุญ"}แล้ว${r.bonus?" (คู่หูแถม "+r.bonus+")":""} ${r.day===7?"ครบ 7 วัน เก่งมากค่ะ":"พรุ่งนี้มาต่อนะคะ"}`;
+  setTimeout(()=>toast(`เช็กอินวันที่ ${r.day}/7 · ${r.pet?"ได้"+petName(petByKey(r.pet))+" "+((petByKey(r.pet)||{}).e||""):"+"+r.l+" แต้มบุญ"}`),1400);
   if(r.pet){const bi=PETS.findIndex(p=>p.n===r.pet),k=S.owned[r.pet]||0;if(bi>=0)setTimeout(()=>giftReveal(bi,k<=1),450)}}
 const altarArt=k=>SS_ART[k]||"";
 function altarIncenseState(){const A=altarS(),today=dk(now());if(A.i!==today)return A.tot?"out":"unlit";const h=(now()-A.iAt)/3600e3;return h<3?"lit":h<9?"half":"out"}
@@ -3194,7 +3205,7 @@ function rubVoice(a,f,parts){const g=a.createGain();g.gain.value=0;g.connect(a.d
   return{g,set(x){g.gain.setTargetAtTime(x,a.currentTime,.12)},stop(){g.gain.setTargetAtTime(0,a.currentTime,.4);setTimeout(()=>os.forEach(o=>{try{o.stop()}catch(e){}}),2500)}}}
 /* ---------- the ป๊อป stage becomes "เคาะมงคล": bowl, bell, gong, or tapping a friend like before ---------- */
 let INSTR=(()=>{try{return localStorage.getItem("ftn_instr")||"bowl"}catch(e){return "bowl"}})(),RUB=null;
-const INSTRS=[["bowl","🥣","ขันทิเบต"],["bell","🔔","ระฆัง"],["gong","🪘","ฆ้อง"],["pet","🐾","เพื่อน"]];
+const INSTRS=[["bowl","🥣","ขันทิเบต"],["bell","🔔","ระฆัง"],["gong","🪘","ฆ้อง"],["pet","🐾","สัตว์มงคล"]];
 function popAdd(x,y,host){const t=performance.now();popTs=popTs.filter(v=>t-v<1000);if(popTs.length>=20)return false;popTs.push(t);POP_PEND++;
   const n=$("popNum");if(n)n.textContent=popCountNow().toLocaleString();
   if(!reduce&&host){const r=host.getBoundingClientRect(),f=document.createElement("span");f.className="pop-plus";f.textContent="+1";f.style.left=(x-r.left)+"px";f.style.top=(y-r.top)+"px";host.appendChild(f);setTimeout(()=>f.remove(),700)}
@@ -3389,7 +3400,7 @@ async function storyCard(kind,o){const W=1080,H=1920,c=document.createElement("c
     if(y<pb-150){x.fillStyle="#8a4fc2";x.font="500 44px "+fam;y=wrapText(x,"ทำแบบนี้: "+a,cx,y+40,pw-120,62)}
     if(y<pb-90){x.fillStyle="#b39ad6";x.font="400 32px "+fam;x.fillText("✦ ✦ ✦",cx,Math.min(pb-60,y+80))}}
   if(kind==="pet"){const p=PETS[o.pi],L=o.L||lvOf(S.owned[p.n]||1,p),r=RAR[p.t],src=petImg(p,L);
-    x.fillStyle="#5b3d8c";x.font="500 50px "+fam;x.fillText(o.title||"เพื่อนคู่ใจของฉัน",cx,py+270);
+    x.fillStyle="#5b3d8c";x.font="500 50px "+fam;x.fillText(o.title||"สัตว์มงคลคู่ใจของฉัน",cx,py+270);
     const im=await imgLoad(src);if(im){const s=Math.min(560/im.width,560/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,cx-w/2,py+330+(560-h)/2,w,h)}else{x.font="300px serif";x.fillText(p.e,cx,py+720)}
     x.fillStyle="#3f2560";x.font="600 70px "+fam;x.fillText(formName(p,L),cx,py+975);
     x.fillStyle=r.c;rrect(x,cx-170,py+1010,340,66,33);x.fill();x.fillStyle="#fff";x.font="600 38px "+fam;x.fillText(r.name+" · Lv."+L,cx,py+1056);
@@ -3486,11 +3497,11 @@ function tutTick(){if(!tutReady())return;
     coach(hb,`ยินดีต้อนรับสู่<b>เซียมซีฮีลใจ</b>ค่ะ 🌙<br>มาลองเสี่ยงเซียมซีใบแรกกัน ${phoneLike()&&MO.ok!==false&&!S.noMotion?"แตะปุ่มแล้ว<b>เขย่ามือถือ</b> หรือ<b>กดค้าง</b>ไว้":"<b>กดค้าง</b>ปุ่มนี้ไว้"}จนหลอดเต็มนะคะ`,{tag});return}
   if(s===2||s===3){if(!rv){coachHide();return}
     const pc=$("petCard"),slip=!$("stepSlip").hidden;
-    if(slip){if(s<3){tutSet(3);return}coach(q('#slipActions [data-fate="use"]'),`📜 ใบแรกของคุณ ถ้า<b>ใช้เป็นดวงวันนี้</b> จะได้<b>โอกาสเจอเพื่อนเพิ่มขึ้น ${Math.round(LVPOW["ดีมาก"]*100)}%</b> ทั้งวันเลย<br>กด "ใช้เป็นดวงวันนี้" ได้เลยค่ะ`,{tag,top:true});return}
-    if(pc&&!pc.hidden){const p=PETS.findIndex(x=>x.n===TUT_CAT);coach(pc,`ว้าว โชคดีมาก! 🎉 ได้<b>คู่หู</b>ตั้งแต่ใบแรกเลย<br>รู้ไหมคะ ปกติการเขย่าแต่ละครั้งมีโอกาสเจอเพื่อนแค่ <b>${n1(BASE_DROP)}%</b> ใบแรกนี้ Fortunie จัด<b>${TUT_CAT}</b>มาเป็นของขวัญต้อนรับ เดี๋ยวพาไปสวมใส่คู่หูกันค่ะ`,{tag,top:true,arrow:false,ring:false});return}
+    if(slip){if(s<3){tutSet(3);return}coach(q('#slipActions [data-fate="use"]'),`📜 ใบแรกของคุณ ถ้า<b>ใช้เป็นดวงวันนี้</b> จะได้<b>โอกาสเจอสัตว์มงคลเพิ่มขึ้น ${Math.round(LVPOW["ดีมาก"]*100)}%</b> ทั้งวันเลย<br>กด "ใช้เป็นดวงวันนี้" ได้เลยค่ะ`,{tag,top:true});return}
+    if(pc&&!pc.hidden){const p=PETS.findIndex(x=>x.n===TUT_CAT);coach(pc,`ว้าว โชคดีมาก! 🎉 ได้<b>คู่หู</b>ตั้งแต่ใบแรกเลย<br>รู้ไหมคะ ปกติการเขย่าแต่ละครั้งมีโอกาสเจอสัตว์มงคลแค่ <b>${n1(BASE_DROP)}%</b> ใบแรกนี้ Fortunie จัด<b>${TUT_CAT}</b>มาเป็นของขวัญต้อนรับ เดี๋ยวพาไปสวมใส่คู่หูกันค่ะ`,{tag,top:true,arrow:false,ring:false});return}
     coach(null,"แตะเพื่อเปิดดูผลได้เลยค่ะ ✨",{tag,top:true});return}
   if(s===4){if(rv||!$("todayModal").hidden){coachHide();return}if(tab==="pets"){tutSet(5);return}
-    coach(q('#tabbar [data-tab="pets"]'),`ไป<b>สวมใส่คู่หู</b>ของคุณกันค่ะ 💜<br>แตะเมนู <b>"เพื่อน"</b> ด้านล่าง`,{tag});return}
+    coach(q('#tabbar [data-tab="pets"]'),`ไป<b>สวมใส่คู่หู</b>ของคุณกันค่ะ 💜<br>แตะเมนู <b>"สัตว์มงคล"</b> ด้านล่าง`,{tag});return}
   if(s===5){if(tab!=="pets"){showTab("pets");return}const p=PETS.find(x=>x.n===TUT_CAT);
     coach($("buddyCard"),`นี่คือคู่หูของคุณ <b>${TUT_CAT}</b> 🐱 สวมใส่อยู่แล้ว<br>ตัวนี้ใช้ดีมาก ทุกครั้งที่เขย่ามีโอกาส <b>${Math.round(((p.lv&&p.lv[0].again)||(p.ab&&p.ab.again)||0)*100)}%</b> ได้<b>เขย่าฟรีอีกครั้ง</b> คู่หูจะช่วยให้คุณได้โอกาสที่ดีขึ้นเสมอค่ะ`,{tag,arrow:false,next:()=>{showTab("home");tutSet(6)}});return}
   if(s===6){if(rv||busy||holding){coachHide();return}if(!home){showTab("home");return}
@@ -3511,20 +3522,20 @@ function tutTick(){if(!tutReady())return;
     if(A.w!==today){coach($("altarGlass"),`ขั้นแรก แตะ<b>แก้วน้ำ</b>เพื่อเปลี่ยนน้ำพระค่ะ 💧`,{tag,top:true});return}
     coach($("altarIncense"),`แล้วแตะ<b>กระถางธูป</b>เพื่อจุดธูปบูชา ครบ 2 ขั้นนับเป็นเช็กอินของวันนี้ค่ะ 🙏`,{tag,top:true});return}
   if(s===10){const lm=!$("leafModal").hidden;
-    if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้<b>${TUT_DUCK}</b> 🦆 ตัวนี้เก่งเรื่อง<b>เผาเคราะห์</b> เผาใบเซียมซีแล้วได้<b>แต้มเผาเพิ่ม</b>ค่ะ<br><small>(ตั๋วใบแรกนี้ Fortunie จัดเป็นเป็ดน้อยไว้สอน)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่เพื่อเปิดเลยค่ะ 🥚",{tag,top:true});return}
+    if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้<b>${petName(petByKey(TUT_DUCK))}</b> 🦆 ตัวนี้เก่งเรื่อง<b>เผาเคราะห์</b> เผาใบเซียมซีแล้วได้<b>แต้มเผาเพิ่ม</b>ค่ะ<br><small>(เซียมเรียกใบแรกนี้ Fortunie จัดเป็นเป็ดแมนดารินไว้สอน)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่เพื่อเปิดเลยค่ะ 🥚",{tag,top:true});return}
     if(S.tutDuck&&!lm){tutSet(11);return}
-    if(lm){const u=$("leafUse");if(u)coach(u,`กด<b>เปิดเลย</b>ค่ะ`,{tag,top:true});else coach(q('#leafItems [data-leaf="t"]'),`แลก<b>ตั๋วสุ่มเพื่อน</b> ใช้ ${LEAF_SHOP[0].cost} แต้มบุญ`,{tag,top:true});return}
-    coach($("leafBtn"),`🪷 Fortunie แจก<b>แต้มบุญ 60 แต้ม</b>ให้ทุกคนด้วยค่ะ แต้มบุญได้จากการเล่น เอาไปแลก<b>ตั๋วสุ่มเพื่อน</b>ได้<br>แตะที่ <b>🪷 แต้มบุญ</b> ด้านบนเพื่อเปิดร้าน`,{tag});return}
+    if(lm){const u=$("leafUse");if(u)coach(u,`กด<b>เปิดเลย</b>ค่ะ`,{tag,top:true});else coach(q('#leafItems [data-leaf="t"]'),`แลก<b>เซียมเรียกผู้พิทักษ์</b> ใช้ ${LEAF_SHOP[0].cost} แต้มบุญ`,{tag,top:true});return}
+    coach($("leafBtn"),`🪷 Fortunie แจก<b>แต้มบุญ 60 แต้ม</b>ให้ทุกคนด้วยค่ะ แต้มบุญได้จากการเล่น เอาไปแลก<b>เซียมเรียกผู้พิทักษ์</b>ได้<br>แตะที่ <b>🪷 แต้มบุญ</b> ด้านบนเพื่อเปิดร้าน`,{tag});return}
   if(s===11){const di=PETS.findIndex(p=>p.n===TUT_DUCK);if(S.buddy===di){if(!$("petModal").hidden)$("petModal").hidden=true;tutSet(12);return}if(rv)return;
-    if(!$("petModal").hidden){coach($("setBuddy"),`กด<b>ตั้งเป็นคู่หู</b>เพื่อสวมใส่${TUT_DUCK}ค่ะ`,{tag,top:true});return}if(tab!=="pets"){showTab("pets");return}
+    if(!$("petModal").hidden){coach($("setBuddy"),`กด<b>ตั้งเป็นคู่หู</b>เพื่อสวมใส่${petName(petByKey(TUT_DUCK))}ค่ะ`,{tag,top:true});return}if(tab!=="pets"){showTab("pets");return}
     const sl=q(`#book .slot[data-pi="${di}"]`);if(sl&&tutScrolled!==11){tutScrolled=11;sl.scrollIntoView({block:"center"})}
-    coach(sl,`ลอง<b>เปลี่ยนคู่หู</b>เป็น${TUT_DUCK}กันค่ะ แตะที่ตัวเป็ดเลย`,{tag});return}
+    coach(sl,`ลอง<b>เปลี่ยนคู่หู</b>เป็น${petName(petByKey(TUT_DUCK))}กันค่ะ แตะที่ตัวเป็ดเลย`,{tag});return}
   if(s===12){if(rv){coachHide();return}if(tab!=="inv"){coach(q('#tabbar [data-tab="inv"]'),`ตอนนี้เป็ดเป็นคู่หูแล้ว ไป<b>เผาเคราะห์</b>ใบที่ไม่ชอบกันค่ะ แตะเมนู <b>"คลัง"</b>`,{tag});return}
     const b=q(tutBadSel());if(!b){tutSet(13);return}if(tutScrolled!==12){tutScrolled=12;b.scrollIntoView({block:"center"})}
-    coach(b,`ใบ<b>ค่อยเป็นค่อยไป</b>ที่ได้ตอนใช้เหรียญทอง ไม่ค่อยดีใช่ไหมคะ กด<b>เผาเคราะห์</b>ใบนี้เลย ได้<b>แต้มเผา</b>เพิ่มเพราะพลังเป็ด 🔥 แต้มครบ ${JAR} เปิด<b>ไหสะสมบุญ</b>สุ่มเพื่อนแรร์ขึ้นไปได้ค่ะ`,{tag});return}
-  if(s===13){if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้เพื่อนจาก<b>ไหสะสมบุญ</b> 🎉 ไหจะให้เพื่อนระดับ<b>แรร์ขึ้นไป</b>เสมอ (ปกติ แรร์ 80% · เอพิก 15% · ตำนาน 5%)<br><small>(รอบสอน: ไหแรกนี้ Fortunie จัดเป็นระดับแรร์)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่จากไหสะสมบุญเลยค่ะ 🥚",{tag,top:true});return}
+    coach(b,`ใบ<b>ค่อยเป็นค่อยไป</b>ที่ได้ตอนใช้เหรียญทอง ไม่ค่อยดีใช่ไหมคะ กด<b>เผาเคราะห์</b>ใบนี้เลย ได้<b>แต้มเผา</b>เพิ่มเพราะพลังเป็ด 🔥 แต้มครบ ${JAR} เปิด<b>ไหสะสมบุญ</b>สุ่มสัตว์มงคลแรร์ขึ้นไปได้ค่ะ`,{tag});return}
+  if(s===13){if(rv){const pc=$("petCard");if(pc&&!pc.hidden)coach(pc,`ได้สัตว์มงคลจาก<b>ไหสะสมบุญ</b> 🎉 ไหจะให้สัตว์มงคลระดับ<b>แรร์ขึ้นไป</b>เสมอ (ปกติ แรร์ 80% · เอพิก 15% · ตำนาน 5%)<br><small>(รอบสอน: ไหแรกนี้ Fortunie จัดเป็นระดับแรร์)</small>`,{tag,top:true,ring:false,arrow:false});else coach(null,"แตะไข่จากไหสะสมบุญเลยค่ะ 🥚",{tag,top:true});return}
     if(!(S.jarT>0)){tutSet(14);return}if(tab!=="inv"){showTab("inv");return}const jb=$("jarBtn");if(jb&&tutScrolled!==13){tutScrolled=13;jb.scrollIntoView({block:"center"})}
-    coach(jb,`🌈 <b>แจ็กพ็อตไฟรุ้ง!</b> เป็ดน้อยมีโอกาส 1% ทุกครั้งที่เผา ได้ ${JAR} แต้มเต็มไหในทีเดียว<br><small>(รอบสอน: ครั้งนี้ Fortunie จัดให้)</small><br>ไหสะสมบุญเต็มแล้ว กด<b>เปิดไหสะสมบุญ</b>เลยค่ะ`,{tag});return}
+    coach(jb,`🌈 <b>แจ็กพ็อตไฟรุ้ง!</b> เป็ดแมนดารินมีโอกาส 1% ทุกครั้งที่เผา ได้ ${JAR} แต้มเต็มไหในทีเดียว<br><small>(รอบสอน: ครั้งนี้ Fortunie จัดให้)</small><br>ไหสะสมบุญเต็มแล้ว กด<b>เปิดไหสะสมบุญ</b>เลยค่ะ`,{tag});return}
   if(s>=14){if(rv||bf)return;if(!home){showTab("home");return}
     coach(null,`เก่งมาก! 🌟 ครบทุกบทเรียนแล้ว<br>ต่อจากนี้เล่นได้อิสระเลยค่ะ อย่าลืมกลับมาไหว้พระทุกวัน รับแต้มบุญกับของขวัญนะคะ${firstOK()?`<br><small>🎁 บัญชีใหม่มี<b>แพ็กแรก ${FIRST_PACK.baht} บาท</b> ซื้อได้ครั้งเดียว ดูได้ที่ร้านค้า</small>`:""}`,{tag:"จบบทเรียน",label:"เริ่มเล่นเลย",next:()=>{coachHide();tutSet(99,true);render()}});return}}
 let tutScrolled=0;
@@ -3534,7 +3545,7 @@ function tutBadSel(){const bad=S.inv.filter(it=>F[it.f][0]==="ค่อยเป
 function tutTip(id,target,html){if(tutForced()||!(S.tutS===99))return;S.tutTips=S.tutTips||{};if(S.tutTips[id])return;S.tutTips[id]=1;try{localStorage.setItem("ftn_tip_"+id,"1")}catch(e){}
   setTimeout(()=>{if(!target||target.offsetParent===null)return;coach(target,html,{label:"เข้าใจแล้ว",next:coachHide,arrow:false})},350)}
 (function(){const _st=showTab;showTab=function(t){_st.apply(this,arguments);
-    if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>สายกังวาน: ถูขันทิเบต ลูบฆ้อง ตีระฆัง หรือแตะคู่หู เก็บแต้มแข่งกัน · นักสะสม: วัดจากเพื่อนที่สะสมได้`);
+    if(t==="rank")tutTip("rank",$("rkSeg")||$("scr-rank"),`🏆 <b>อันดับ</b>มี 2 แบบ<br>สายกังวาน: ถูขันทิเบต ลูบฆ้อง ตีระฆัง หรือแตะคู่หู เก็บแต้มแข่งกัน · นักสะสม: วัดจากสัตว์มงคลที่สะสมได้`);
     setTimeout(tutTick,60)};
   const _cr=closeReveal;closeReveal=function(){_cr.apply(this,arguments);if(tutForced()){const s=tutStage();if(s===7)tutSet(8);else if(s===8)tutSet(9);else if(s===13&&!(S.jarT>0))tutSet(14)}setTimeout(tutTick,300)};
   const _od=openDaily;openDaily=function(){if(!$("reveal").hidden||($("burnFx")&&!$("burnFx").hidden))return;return _od.apply(this,arguments)};
