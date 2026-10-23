@@ -2038,13 +2038,15 @@ function actBurnMany(ids){settlePending();if(!Array.isArray(ids)||!ids.length)th
 function actTicket(rare){settlePending();if(rare){if(!(S.rtickets>0))throw "ไม่มีเซียมเรียกแรร์+";S.rtickets--;return Object.assign(rollPet(true),{rare:true})}if(S.tickets<1)throw "ไม่มีเซียมเรียกผู้พิทักษ์";S.tickets--;if(tutRig()&&!S.tutDuck){S.tutDuck=1;return Object.assign(tutPet(TUT_DUCK),{tut:true})}return rollPet()}
 /* v100 altar: pick a deity; change the water then light incense = the daily check-in; a private wish book */
 const DEITY_KEYS=["lakshmi","buddha","guanyin","vessavana"];
+/* v107 forgiving streak: missing one day keeps the streak, up to FZ_MAX times per month */
+var FZ_MAX=2;
 function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
 function actAltar(op,arg){const A=altarS(),today=dk(now());
   if(op==="pick"){if(!DEITY_KEYS.includes(arg))throw "ไม่พบองค์นี้";A.d=arg;return{ok:1}}
   if(op==="water"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";A.w=today;return{ok:1}}
   if(op==="incense"){if(!A.d)throw "เลือกองค์ที่จะบูชาก่อนนะคะ";if(A.w!==today)throw "เปลี่ยนน้ำพระก่อนนะคะ";if(A.i===today)throw "วันนี้จุดธูปแล้วค่ะ";
-    A.i=today;A.iAt=now();A.st=A.last===dk(now()-DAY)?A.st+1:1;A.last=today;A.tot++;if(A.st>=7)A.glow=1;if(A.st>=30)A.cloth=1;
-    const daily=streakState().claimed?null:actDaily(),bonus=altarBonus();return{st:A.st,tot:A.tot,daily,mem:bonus.mem,sp:bonus.sp}}
+    A.i=today;A.iAt=now();const mk=today.split("-").slice(0,2).join("-");if(A.fzM!==mk){A.fzM=mk;A.fz=0}let saved=0;if(A.last===dk(now()-DAY))A.st++;else if(A.st>0&&A.last===dk(now()-2*DAY)&&A.fz<FZ_MAX){A.fz++;A.st++;saved=1}else A.st=1;if(A.mk!==mk){A.mk=mk;A.mn=0}A.mn=(+A.mn||0)+1;A.last=today;A.tot++;if(A.st>=7)A.glow=1;if(A.st>=30)A.cloth=1;
+    const daily=streakState().claimed?null:actDaily(),bonus=altarBonus();return{st:A.st,tot:A.tot,daily,mem:bonus.mem,sp:bonus.sp,saved,mn:A.mn,fzLeft:FZ_MAX-A.fz}}
   if(op==="wish"){const t=String(arg||"").replace(/[\u0000-\u001f<>]/g,"").replace(/\s+/g," ").trim().slice(0,120);if(!t)throw "พิมพ์คำขอพรก่อนนะคะ";
     if(A.wish.filter(w=>!w.ok).length>=10)throw "จดคำขอพรได้สูงสุด 10 ข้อ ลองกดสมหวังหรือลบข้อเก่าก่อนนะคะ";A.wish.unshift({id:"w"+now().toString(36)+Math.floor(rnd()*1e4),t,at:now()});A.wish=A.wish.slice(0,30);return{ok:1}}
   if(op==="wish_ok"){const w=A.wish.find(x=>x.id===arg);if(!w||w.ok)throw "ไม่พบคำขอนี้";w.ok=now();let l=0;if(now()-w.at>=3*DAY&&A.wOk!==today){A.wOk=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
@@ -2889,6 +2891,8 @@ $("shareClose").addEventListener("click",()=>{$("shareModal").hidden=true});
 let chosen=null,chosenI=-1,slipFile=null;
 /* โอนกี่บาทได้กี่เหรียญทอง: rate of the biggest pack the amount reaches, minimum TOPUP_MIN baht (same rule on the server) */
 const TOPUP_MIN=50;
+/* v107: show roughly how many baht a coin price is, at the base top-up rate */
+function coinBaht(c){const ps=(typeof PACKS!=="undefined"&&Array.isArray(PACKS)?PACKS:[]).filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);if(!ps.length||!(c>0))return "";const b=c*ps[0].baht/ps[0].stars;return "≈"+(b<10?Math.round(b*10)/10:Math.round(b)).toLocaleString()+" บาท"}
 function starsFor(baht){baht=Math.floor(+baht||0);if(baht<TOPUP_MIN)return 0;const ps=PACKS.filter(p=>p.baht>0&&p.stars>0).slice().sort((a,b)=>a.baht-b.baht);if(!ps.length)return 0;
   let t=ps[0];for(const p of ps)if(p.baht<=baht)t=p;return Math.floor(baht*t.stars/t.baht)}
 /* simple top-up: header + rates, card 1 = transfer, card 2 (#confirm) = attach slip. UI only: rates, account and checks come from the server */
@@ -3212,6 +3216,8 @@ function tutTag(){return S.tutF&&!(S.topBaht>0)&&(S.shakes||0)<=3?`<span class="
 var DEITIES=[{k:"lakshmi",n:"พระแม่ลักษมี",d:"นับถือเรื่องความมั่งคั่ง ความงาม และความรัก"},{k:"buddha",n:"พระพุทธรูป",d:"เตือนใจให้สงบ มีสติ และใช้ปัญญา"},{k:"guanyin",n:"เจ้าแม่กวนอิม",d:"นับถือเรื่องความเมตตา และการปกป้องคุ้มครอง"},{k:"vessavana",n:"ท้าวเวสสุวรรณ",d:"นับถือเรื่องโชคลาภ และปัดเป่าสิ่งไม่ดี"}];
 var DAYCOL=[["อาทิตย์","แดง","#e0524f"],["จันทร์","เหลือง","#f2cf4a"],["อังคาร","ชมพู","#f19ac0"],["พุธ","เขียว","#5fbf73"],["พฤหัสบดี","ส้ม","#f0954a"],["ศุกร์","ฟ้า","#6cb4ef"],["เสาร์","ม่วง","#a27ad8"]];
 var ALTAR_PICKING=false,ALTAR_BUSY=false,TUT_ALTAR_T=0;
+/* v107 forgiving streak: missing one day keeps the streak, up to FZ_MAX times per month */
+var FZ_MAX=2;
 function altarS(){if(!S.altar||typeof S.altar!=="object")S.altar={};const A=S.altar;A.d=A.d||"";A.w=A.w||"";A.i=A.i||"";A.iAt=+A.iAt||0;A.st=+A.st||0;A.last=A.last||"";A.tot=+A.tot||0;if(!Array.isArray(A.wish))A.wish=[];return A}
 /* the game rules for the altar; the web build swaps this for a server call with the same answers */
 async function altarAct(op,arg){const r=await api("altar",{op,arg:arg==null?"":String(arg)});if(r&&r.daily)showDailyWeb(r.daily);return r}
@@ -3233,7 +3239,7 @@ function renderAltar(){const box=$("altarBox");if(!box)return;const A=altarS(),t
   $("altarStep").innerHTML=!water?`<b>1</b> แตะ<b>แก้วน้ำ</b>เพื่อเปลี่ยนน้ำพระ`:!lit?`<b>2</b> แตะ<b>กระถางธูป</b>เพื่อจุดธูปบูชา`:`🙏 ไหว้พระวันนี้แล้ว กลับมาพรุ่งนี้นะคะ`;
   $("altarStep").classList.toggle("done",lit);
   const b=activeBuff(),wl=A.wish.filter(w=>!w.ok).length;
-  $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
+  $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">เดือนนี้ไหว้แล้ว ${A.mk===dk(now()).split("-").slice(0,2).join("-")?(+A.mn||0):0} วัน · ขาดได้อีก ${FZ_MAX-(A.fzM===dk(now()).split("-").slice(0,2).join("-")?(+A.fz||0):0)} วันโดยไม่เสียสตรีค</span><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
     <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b><span class="small" style="text-align:left">สีประจำวันตามความเชื่อไทย ใส่หรือพกของสีนี้ไว้เป็นกำลังใจได้</span></div>
     <div class="altar-card wide"><span class="ak">คำอธิษฐานวันนี้</span>${b?`<b class="pray">${esc(F[b.f][6])}</b><span class="small" style="text-align:left">จากใบเซียมซีที่ใช้เป็นดวงวันนี้ ใบที่ ${th(b.f+1)}</span>`:`<span class="small" style="text-align:left">เขย่าเซียมซีแล้ว<b>ใช้เป็นดวงวันนี้</b> คำอธิษฐานประจำวันจะขึ้นตรงนี้</span>`}</div>
     <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button><button class="ghost" id="altarBowl" type="button">🥣 ถูขันทิเบต</button><button class="ghost" id="altarMed" type="button">🧘 นั่งสมาธิ 10 นาที</button><button class="ghost dec-open" id="altarDec" type="button">🛍️ แต่งหิ้ง · สมาชิก · วอลเปเปอร์</button></div>${altarExtraHTML()}
@@ -3259,7 +3265,7 @@ $("altarBox").addEventListener("click",async e=>{const t=e.target;
     const r=await altarDo("water");setTimeout(()=>g.classList.remove("pour"),900);if(r){burst(1,"#bfe6ff");setTimeout(tutTick,300)}return}
   if(t.closest("#altarIncense")){if(A.w!==today){toast("เปลี่ยนน้ำพระก่อนนะคะ 💧");const g=$("altarGlass");g.classList.remove("nudge");void g.offsetWidth;g.classList.add("nudge");return}
     if(A.i===today){toast("ธูปยังจุดอยู่ค่ะ 🙏");return}igniteSound();vib(20);
-    const r=await altarDo("incense");if(r){burst(2,"#f0d28a");toast(`ไหว้พระแล้ว 🙏 ต่อเนื่อง ${r.st} วัน`);if(r.mem||r.sp)setTimeout(()=>toast(`${r.sp?"🪷 "+r.sp.n+" +"+r.sp.l+" แต้มบุญ":""}${r.sp&&r.mem?" · ":""}${r.mem?"👑 สมาชิก +"+r.mem+" แต้มบุญ":""}`),r.daily?4200:1500);if(r.st===7||r.st===30)setTimeout(()=>toast(r.st===7?"✨ ครบ 7 วันติด หิ้งได้แสงทองแล้ว":"🎀 ครบ 30 วันติด หิ้งได้ผ้าแพรแล้ว"),2800);if(r.st===7&&!isMem())setTimeout(()=>toast(`👑 ไหว้ครบ 7 วันแล้ว ลองเป็นสมาชิกสายมู เขย่าฟรีเพิ่มทุกวัน`),6000);setTimeout(tutTick,600)}return}});
+    const r=await altarDo("incense");if(r){burst(2,"#f0d28a");toast(r.saved?`ไหว้พระแล้ว 🙏 ขาดไป 1 วันแต่สตรีคยังอยู่ ต่อเนื่อง ${r.st} วัน`:`ไหว้พระแล้ว 🙏 ต่อเนื่อง ${r.st} วัน`);if(r.mem||r.sp)setTimeout(()=>toast(`${r.sp?"🪷 "+r.sp.n+" +"+r.sp.l+" แต้มบุญ":""}${r.sp&&r.mem?" · ":""}${r.mem?"👑 สมาชิก +"+r.mem+" แต้มบุญ":""}`),r.daily?4200:1500);if(r.st===7||r.st===30)setTimeout(()=>toast(r.st===7?"✨ ครบ 7 วันติด หิ้งได้แสงทองแล้ว":"🎀 ครบ 30 วันติด หิ้งได้ผ้าแพรแล้ว"),2800);if(r.st===7&&!isMem())setTimeout(()=>toast(`👑 ไหว้ครบ 7 วันแล้ว ลองเป็นสมาชิกสายมู เขย่าฟรีเพิ่มทุกวัน`),6000);setTimeout(tutTick,600)}return}});
 /* wish book */
 function renderWish(){const A=altarS(),L=A.wish;
   $("wishList").innerHTML=L.length?L.map(w=>`<div class="wish${w.ok?" ok":""}" data-wid="${esc(w.id)}"><p>${esc(w.t)}</p><div class="row"><span class="small">${w.ok?"สมหวังแล้ว 🙏 · ":"จดไว้ "}${new Date(w.ok||w.at).toLocaleDateString("th-TH",{day:"numeric",month:"short"})}</span><span>${w.ok?"":`<button class="mini wish-ok" type="button">สมหวังแล้ว</button>`}<button class="mini wish-del" type="button" aria-label="ลบคำขอนี้">ลบ</button></span></div></div>`).join(""):`<div class="placeholder">ยังไม่มีคำขอพร ลองจดสิ่งที่อยากให้เกิดขึ้นดูนะคะ</div>`}
@@ -3419,7 +3425,7 @@ function altarExtraHTML(){const A=altarS(),today=isoDay(now()),sp=specialOf(toda
   const bd=+S.bday;h+=bd>=0&&bd<=6?`<div class="altar-card"><span class="ak">สีวันเกิดของคุณ (วัน${DAYCOL[bd][0]})</span><b><i class="daycol" style="background:${DAYCOL[bd][2]}"></i>สี${DAYCOL[bd][1]}</b><span class="small" style="text-align:left">${BDAY_WISH[bd]}</span><button class="mini" type="button" id="bdayEdit">เปลี่ยนวันเกิด</button></div>`
     :`<div class="altar-card"><span class="ak">สีวันเกิดของคุณ</span><span class="small" style="text-align:left">บอกวันที่คุณเกิด แล้วดูสีประจำตัวกับคำอวยพร</span><button class="mini" type="button" id="bdayEdit">ตั้งวันเกิด</button></div>`;
   h+=isMem()?`<div class="altar-card mem-card"><span class="ak">สมาชิกสายมู</span><b>👑 ถึง ${memUntil()}</b><span class="small" style="text-align:left">ไหว้พระรับเพิ่ม +${MEM_ALTAR} แต้มบุญ · เขย่าฟรีเพิ่มวันละ 1</span></div>`
-    :`<div class="altar-card mem-card"><span class="ak">${A.st>=7?"ไหว้ครบ 7 วันแล้ว เก่งมาก":"สมาชิกสายมู"}</span><b>👑 ${MEM_COST} เหรียญทอง / ${MEM_DAYS} วัน</b><span class="small" style="text-align:left">เขย่าฟรีเพิ่มวันละ 1 · เพลงครบ · ผ้าแพรทอง · วอลเปเปอร์ทุกวัน</span><button class="mini" type="button" id="memOpen">ดูสิทธิ์สมาชิก</button></div>`;
+    :`<div class="altar-card mem-card"><span class="ak">${A.st>=7?"ไหว้ครบ 7 วันแล้ว เก่งมาก":"สมาชิกสายมู"}</span><b>👑 ${MEM_COST} เหรียญทอง / ${MEM_DAYS} วัน</b><span class="small" style="text-align:left">${coinBaht(MEM_COST)}</span><span class="small" style="text-align:left">เขย่าฟรีเพิ่มวันละ 1 · เพลงครบ · ผ้าแพรทอง · วอลเปเปอร์ทุกวัน</span><button class="mini" type="button" id="memOpen">ดูสิทธิ์สมาชิก</button></div>`;
   h+=`<a class="altar-card wide line-cta" href="${LINE_OA}" target="_blank" rel="noopener"><span class="ak">อยากรู้ลึกกว่านี้?</span><b>🔮 ปรึกษาแม่หมอทาง LINE @fortuniehoro</b></a>`;
   return h}
 /* ---------- the decoration shop ---------- */
@@ -3429,7 +3435,7 @@ function renderDec(){decS();const tabs=[["mem","👑 สมาชิก"],["dec"
     body=`<div class="mem-box"><b class="mem-h">👑 สมาชิกสายมู</b><span class="mem-p"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${MEM_COST} เหรียญทอง / ${MEM_DAYS} วัน</span>
       <ul class="mem-list"><li>🎲 เขย่าเซียมซีฟรีเพิ่มวันละ 1 ครั้ง</li><li>🙏 ไหว้พระรับแต้มบุญเพิ่มวันละ +${MEM_ALTAR}</li><li>🎵 ปลดล็อกเพลงพื้นหลังทุกเพลง</li><li>🎀 ผ้าแพรทองสำหรับหิ้ง (ใช้ได้ตอนเป็นสมาชิก)</li><li>🖼️ ดาวน์โหลดวอลเปเปอร์มงคลได้ทุกวัน</li></ul>
       ${m?`<p class="mem-on">เป็นสมาชิกอยู่ ถึง ${memUntil()}</p>`:""}
-      ${DEC_ASK==="mem"?`<div class="row" style="flex-wrap:nowrap;gap:8px"><button class="primary" id="memYes" type="button">ยืนยัน ใช้ ${MEM_COST} เหรียญทอง</button><button class="ghost" type="button" data-ask="">ยกเลิก</button></div>`:`<button class="primary" type="button" data-ask="mem">${m?"ต่ออายุอีก "+MEM_DAYS+" วัน":"สมัครสมาชิก"}</button>`}
+      ${DEC_ASK==="mem"?`<div class="row" style="flex-wrap:nowrap;gap:8px"><button class="primary" id="memYes" type="button">ยืนยัน ใช้ ${MEM_COST} เหรียญทอง${coinBaht(MEM_COST)?" ("+coinBaht(MEM_COST)+")":""}</button><button class="ghost" type="button" data-ask="">ยกเลิก</button></div>`:`<button class="primary" type="button" data-ask="mem">${m?"ต่ออายุอีก "+MEM_DAYS+" วัน":"สมัครสมาชิก"}</button>`}
       <p class="note">จ่ายด้วยเหรียญทองครั้งเดียว ไม่ต่ออายุอัตโนมัติ ไม่ตัดเงินจากบัตร · ซื้อเพิ่มเมื่ออยากต่อ วันจะต่อจากวันหมดอายุเดิม</p></div>`}
   if(DEC_TAB==="dec")body=dressBody();
   if(DEC_TAB==="wall"){const td=WALLS[new Date(now()).getDay()],m=isMem();
@@ -3489,7 +3495,7 @@ function dressBar(){const slots=Object.keys(DEC_TRY),have=+S.stars||0;
   const total=(deal?deal.c:0)+rest.reduce((t,[,x])=>t+x.it.c,0),full=buy.reduce((t,[,x])=>t+x.it.c,0),sub=[`ลองอยู่ ${slots.length} ชิ้น`];
   if(buy.length)sub.push(`ต้องซื้อ ${buy.length} ชิ้น`);if(mem.length)sub.push(`สำหรับสมาชิก ${mem.length} ชิ้น`);
   const main=DRESS_BUSY?`<button class="primary" type="button" disabled>กำลังใช้ลุคใหม่…</button>`
-    :buy.length?(DRESS_ASK==="buy"?`<button class="primary" type="button" data-dgo="1">ยืนยัน ใช้ ${total} เหรียญทอง</button><button class="ghost" type="button" data-dask="">ยกเลิก</button>`
+    :buy.length?(DRESS_ASK==="buy"?`<button class="primary" type="button" data-dgo="1">ยืนยัน ใช้ ${total} เหรียญทอง${coinBaht(total)?" ("+coinBaht(total)+")":""}</button><button class="ghost" type="button" data-dask="">ยกเลิก</button>`
       :have<total?`<button class="primary" type="button" data-dtop="1">เหรียญทองไม่พอ · เติมเหรียญทอง</button>`
       :`<button class="primary" type="button" data-dask="buy">ซื้อและใช้ลุคนี้ · ${total}${total<full?` <s class="try-was">${full}</s>`:""}</button>`)
     :info.length>mem.length?`<button class="primary" type="button" data-dgo="1">ใช้ลุคนี้</button>`:`<button class="primary" type="button" data-memgo="1">👑 ดูสิทธิ์สมาชิก</button>`;
@@ -3738,7 +3744,7 @@ function render(){setTimeout(()=>{try{tutTick()}catch(e){}},0);prune();regen();c
   $("stars").textContent=S.stars;$("leaves").textContent=S.leaves||0;if(!$("leafModal").hidden)renderLeafShop();
   const free=S.charges+S.bonusFree,ready=paidPending||free>0;
   const full=invFull();hb.disabled=!ready||busy||full;hb.textContent=full?"คลังเต็ม · เคลียร์คลังก่อน":paidPending?"กดค้างเพื่อเขย่าใบเพิ่ม":(ready?"กดค้างเพื่อเขย่า":"รอสิทธิ์เขย่าฟรี");$("fullBox").hidden=!full;
-  syncHoldLabel();$("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;
+  syncHoldLabel();$("holdHint").hidden=!ready||full;$("extraBox").hidden=ready||full;{const cb=coinBaht(COST);$("extraBtn").textContent=`สิทธิ์ฟรีหมดแล้ว · เขย่าเพิ่ม ${COST} เหรียญทอง${cb?" ("+cb+")":""}`}
   $("chargeInfo").innerHTML=`สิทธิ์เขย่าฟรี <b>${S.charges}/${P.max}</b>${S.bonusFree?` + โบนัส <b>${S.bonusFree}</b>`:""}${S.charges<P.max&&S.regenAt?` · ได้สิทธิ์ถัดไปใน ${fmt(S.regenAt-now())}`:""}`;
   $("lastBox").innerHTML=S.last?lastHTML(S.last):`<div class="placeholder">ยังไม่ได้เขย่า ใบเซียมซีของคุณจะมาอยู่ตรงนี้</div>`;const sb=$("shareBtn");if(sb)sb.addEventListener("click",()=>{if(S.last)openStory("fortune",{f:S.last.f})});
   const canUse=canUseToday()&&S.inv.length>0,bi=$("badgeInv"),nearFull=S.inv.length>=INV_WARN,n=nearFull?"!":((S.tickets+(S.rtickets||0)+(S.jarT||0))||(canUse?"!":""));bi.hidden=!n;bi.textContent=n;bi.classList.toggle("warn",nearFull);
