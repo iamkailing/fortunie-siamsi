@@ -1160,6 +1160,39 @@ i.ico-sum{display:none}
 .day .rw img.day-pet{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 2px 4px #1a0b2e66)}
 .tabbar button[data-tab="pets"] span{white-space:nowrap;font-size:min(12px,2.9vw);letter-spacing:-.2px}
 
+/* v103 altar fit: the cloth hangs from the shelf's front edge (the deity and the offerings stand on the shelf top, not behind the cloth) */
+.a-cloth{left:1%;width:98%;bottom:8.6%;height:17.4%;object-fit:fill}
+.a-incense{left:74%}
+/* v103 try-on window */
+.try-pop{width:min(460px,94vw);max-height:92dvh;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.try-pop>*{flex:none}
+.try-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#00000033;border-radius:999px;padding:4px}
+.try-seg button{border:0;background:none;color:var(--muted);border-radius:999px;padding:8px 4px;font:inherit;font-size:14px}
+.try-seg button.on{background:var(--butter);color:var(--night);font-weight:600}
+.try-stage{border-radius:18px;overflow:hidden;background:#2a1846;border:1px solid var(--line)}
+.try-scene{padding:0}
+.try-deal{margin:0;text-align:left;color:var(--butter)}
+.try-was{opacity:.6;font-weight:400;margin-left:4px}
+.try-scene .a-glass img,.try-scene .a-incense img{width:100%;height:auto;display:block}
+.try-list{display:flex;flex-direction:column;gap:6px}
+.try-row{display:flex;align-items:center;gap:10px;background:#ffffff0c;border:1px solid var(--line);border-radius:14px;padding:8px}
+.try-row .dec-img{width:56px;height:48px;flex:none}
+.try-row .tr-t{display:flex;flex-direction:column;min-width:0;flex:1;text-align:left;gap:2px}
+.try-row .tr-t b{font-size:14px;font-weight:500;line-height:1.3}
+.try-row .dec-btns{justify-content:flex-end;flex:none;max-width:52%}
+.dec-trybar{width:100%;border:1px dashed var(--butter);background:#f0d28a14;color:var(--butter);border-radius:14px;padding:9px;font:inherit;font-size:14px}
+.dec-hint{margin:0;text-align:left}
+button.dec-img{border:0;padding:0;cursor:pointer;position:relative;font:inherit;color:inherit}
+button.dec-img::after{content:"👀 ลอง";position:absolute;right:4px;bottom:4px;font-size:10.5px;line-height:1.5;background:#1a0f2bcc;color:var(--butter);border-radius:999px;padding:0 6px}
+.dec-card.tried{border-color:var(--lav);box-shadow:0 0 0 2px #b98ae655}
+.dec-spark{position:absolute;pointer-events:none;border-radius:16px;z-index:6;box-shadow:0 0 0 2px #ffe9a8cc,0 0 24px 6px #ffe9a877;opacity:0;animation:dspark 2s ease-out both}
+.dec-spark::before,.dec-spark::after{content:"✦";position:absolute;color:#fff3c4;font-size:16px;font-style:normal;text-shadow:0 0 8px #ffd56a;opacity:0;animation:dstar 2s ease-out both;animation-delay:inherit}
+.dec-spark::before{left:-8px;top:-10px}.dec-spark::after{right:-8px;bottom:-8px}
+.dec-spark.wide{border-radius:20px}
+@keyframes dspark{0%{opacity:0;transform:scale(.92)}18%{opacity:1;transform:scale(1.03)}70%{opacity:.85}100%{opacity:0;transform:scale(1.06)}}
+@keyframes dstar{0%{opacity:0;transform:scale(.4) rotate(0)}30%{opacity:1;transform:scale(1.2) rotate(40deg)}100%{opacity:0;transform:scale(.6) rotate(90deg)}}
+@media (prefers-reduced-motion:reduce){.dec-spark{animation:none;opacity:1}.dec-spark::before,.dec-spark::after{animation:none;opacity:1}}
+
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
 .login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:8px;background:#ffffff0c;border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center}
@@ -1621,6 +1654,7 @@ i.ico-sum{display:none}
   <div class="leaf-how"><b>หาแต้มบุญได้จาก</b><span>เช็กอินรายวัน · ใบเซียมซีที่หมดอายุหรือคลังล้น · คู่หูพลังร้ายกลายดี · โค้ดของรางวัล</span><span>เหรียญทองได้จากการเติมเงินเท่านั้น ใช้เขย่าเพิ่มได้ทันที</span></div>
   <button class="ghost" id="leafClose" type="button">ปิด</button></div></div>
 <div class="scrim center" id="decModal" hidden><div class="pop dec-pop" role="dialog" aria-modal="true" aria-labelledby="decTitle" id="decPop"></div></div>
+<div class="scrim center" id="tryModal" hidden><div class="pop try-pop" role="dialog" aria-modal="true" aria-labelledby="tryTitle" id="tryPop"></div></div>
 <div class="scrim center" id="todayModal" hidden><div class="pop today-pop" role="dialog" aria-modal="true" aria-label="ดวงของคุณวันนี้" id="todayPop"></div></div>
 <div class="scrim center" id="petModal" hidden><div class="pop pet-pop" role="dialog" aria-modal="true" aria-labelledby="petTitle" id="petPop"></div></div>
 <div class="scrim center" id="shareModal" hidden>
@@ -3147,7 +3181,7 @@ function renderAltar(){const box=$("altarBox");if(!box)return;const A=altarS(),t
   $("altarStep").classList.toggle("done",lit);
   const b=activeBuff(),wl=A.wish.filter(w=>!w.ok).length;
   $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
-    <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b></div>
+    <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b><span class="small" style="text-align:left">สีประจำวันตามความเชื่อไทย ใส่หรือพกของสีนี้ไว้เป็นกำลังใจได้</span></div>
     <div class="altar-card wide"><span class="ak">คำอธิษฐานวันนี้</span>${b?`<b class="pray">${esc(F[b.f][6])}</b><span class="small" style="text-align:left">จากใบเซียมซีที่ใช้เป็นดวงวันนี้ ใบที่ ${th(b.f+1)}</span>`:`<span class="small" style="text-align:left">เขย่าเซียมซีแล้ว<b>ใช้เป็นดวงวันนี้</b> คำอธิษฐานประจำวันจะขึ้นตรงนี้</span>`}</div>
     <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button><button class="ghost" id="altarBowl" type="button">🥣 ถูขันทิเบต</button><button class="ghost" id="altarMed" type="button">🧘 นั่งสมาธิ 10 นาที</button><button class="ghost dec-open" id="altarDec" type="button">🛍️ แต่งหิ้ง · สมาชิก · วอลเปเปอร์</button></div>${altarExtraHTML()}
     <p class="note">เพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล</p>`}
@@ -3336,9 +3370,10 @@ function altarExtraHTML(){const A=altarS(),today=isoDay(now()),sp=specialOf(toda
   return h}
 /* ---------- the decoration shop ---------- */
 function decCard(it,slot){const id=it?it.id:"",on=decOn(slot)===id||(!id&&!decOn(slot)),own=!it||decHas(id),ask=DEC_ASK===id&&!!it;
-  const img=it?decThumb(id):"",nm=it?it.n:(slot==="garland"||slot==="lantern"||slot==="cloth"?"ไม่ใส่":"แบบเริ่มต้น");
+  const img=it?decThumb(id):(DEC_DEF[slot]?altarArt(DEC_DEF[slot]):""),nm=it?it.n:(slot==="garland"||slot==="lantern"||slot==="cloth"?"ไม่ใส่":"แบบเริ่มต้น");
   const btn=on?`<button class="mini" type="button" disabled>ใช้อยู่</button>`:own?`<button class="mini" type="button" data-wear="${slot}:${id}">ใช้</button>`:it.mem?`<button class="mini" type="button" data-memgo="1">👑 สมาชิก</button>`:ask?`<button class="mini dec-yes" type="button" data-buy="${id}">ยืนยัน ใช้ ${it.c}</button><button class="mini" type="button" data-ask="">ยกเลิก</button>`:`<button class="mini dec-buy" type="button" data-ask="${id}"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${it.c}</button>`;
-  return `<div class="dec-card${on?" on":""}"><span class="dec-img">${img?`<img src="${img}" alt="" loading="lazy">`:`<span class="dec-none">${slot==="shelf"||slot==="candle"||slot==="glass"||slot==="incense"||slot==="bg"?"✨":"—"}</span>`}</span><b>${nm}</b>${it&&it.mem?`<span class="small">ฟรีสำหรับสมาชิก</span>`:""}<span class="dec-btns">${btn}</span></div>`}
+  const pic=img?`<img src="${img}" alt="" loading="lazy">`:`<span class="dec-none">${slot==="shelf"||slot==="candle"||slot==="glass"||slot==="incense"||slot==="bg"?"✨":"—"}</span>`,tried=DEC_TRY[slot]===id&&slot in DEC_TRY;
+  return `<div class="dec-card${on?" on":""}${tried?" tried":""}">${on?`<span class="dec-img">${pic}</span>`:`<button type="button" class="dec-img tryable" data-try="${slot}:${id}" aria-label="ลอง${nm}บนหิ้ง">${pic}</button>`}<b>${nm}</b>${it&&it.mem?`<span class="small">ฟรีสำหรับสมาชิก</span>`:""}<span class="dec-btns">${btn}</span></div>`}
 function renderDec(){decS();const tabs=[["mem","👑 สมาชิก"],["dec","🛍️ แต่งหิ้ง"],["wall","🖼️ วอลเปเปอร์"]];
   let body="";
   if(DEC_TAB==="mem"){const m=isMem();
@@ -3348,8 +3383,9 @@ function renderDec(){decS();const tabs=[["mem","👑 สมาชิก"],["dec"
       ${DEC_ASK==="mem"?`<div class="row" style="flex-wrap:nowrap;gap:8px"><button class="primary" id="memYes" type="button">ยืนยัน ใช้ ${MEM_COST} เหรียญทอง</button><button class="ghost" type="button" data-ask="">ยกเลิก</button></div>`:`<button class="primary" type="button" data-ask="mem">${m?"ต่ออายุอีก "+MEM_DAYS+" วัน":"สมัครสมาชิก"}</button>`}
       <p class="note">จ่ายด้วยเหรียญทองครั้งเดียว ไม่ต่ออายุอัตโนมัติ ไม่ตัดเงินจากบัตร · ซื้อเพิ่มเมื่ออยากต่อ วันจะต่อจากวันหมดอายุเดิม</p></div>`}
   if(DEC_TAB==="dec"){const set=DECOR_SETS[0],need=set.items.filter(i=>!decHas(i)),full=set.items.reduce((a,i)=>a+decItem(i).c,0),sc=Math.min(set.c,need.reduce((a,i)=>a+decItem(i).c,0));
-    body=`${need.length?`<div class="dec-set"><span class="dec-img set">${set.items.map(i=>`<img src="${decThumb(i)}" alt="">`).join("")}</span><div><b>${set.n}</b><span class="small" style="text-align:left">${set.items.map(i=>decItem(i).n).join(" · ")} · ปกติ ${full} เหรียญทอง</span>
-      <span class="dec-btns">${DEC_ASK===set.id?`<button class="mini dec-yes" type="button" data-buy="${set.id}">ยืนยัน ใช้ ${sc}</button><button class="mini" type="button" data-ask="">ยกเลิก</button>`:`<button class="mini dec-buy" type="button" data-ask="${set.id}"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${sc}</button>`}</span></div></div>`:""}`
+    const nTry=Object.keys(DEC_TRY).length;
+    body=`${nTry?`<button type="button" class="dec-trybar" data-tryopen="1">👀 กำลังลอง ${nTry} ชิ้น · ดูบนหิ้งของคุณ</button>`:`<p class="small dec-hint">แตะรูปของแต่ง เพื่อดูบนหิ้งของคุณก่อนซื้อหรือก่อนใช้</p>`}${need.length?`<div class="dec-set"><span class="dec-img set">${set.items.map(i=>`<img src="${decThumb(i)}" alt="">`).join("")}</span><div><b>${set.n}</b><span class="small" style="text-align:left">${set.items.map(i=>decItem(i).n).join(" · ")} · ปกติ ${full} เหรียญทอง</span>
+      <span class="dec-btns"><button class="mini" type="button" data-tryset="${set.id}">👀 ลองทั้งชุด</button>${DEC_ASK===set.id?`<button class="mini dec-yes" type="button" data-buy="${set.id}">ยืนยัน ใช้ ${sc}</button><button class="mini" type="button" data-ask="">ยกเลิก</button>`:`<button class="mini dec-buy" type="button" data-ask="${set.id}"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>${sc}</button>`}</span></div></div>`:""}`
       +DECOR_SLOTS.map(([slot,sn])=>{const items=DECOR.filter(x=>x.s===slot);const extra=slot==="cloth"&&decHas("cloth30")?[{id:"cloth30",s:"cloth",n:"ผ้าแพรไหว้ครบ 30 วัน",c:0}]:[];
         return `<h3 class="dec-h">${sn}</h3><div class="dec-grid">${decCard(null,slot)}${extra.map(x=>decCardX(x,slot)).join("")}${items.map(it=>decCard(it,slot)).join("")}</div>`}).join("")
       +`<p class="note">ของแต่งซื้อขาด ใช้ได้ตลอด ไม่มีการสุ่ม · กด "ใช้" เพื่อเปลี่ยนกลับไปมาได้ทุกเมื่อ</p>`}
@@ -3360,19 +3396,78 @@ function renderDec(){decS();const tabs=[["mem","👑 สมาชิก"],["dec"
   $("decPop").innerHTML=`<div class="pop-head"><h2 id="decTitle">ร้านของแต่งหิ้ง</h2><button class="ghost" id="decClose" type="button">ปิด</button></div>
     <div class="dec-have">คุณมี <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg><b>${(+S.stars||0).toLocaleString()}</b> เหรียญทอง <button class="mini" type="button" id="decTop">เติม</button></div>
     <div class="dec-tabs" role="tablist">${tabs.map(([k,n])=>`<button type="button" role="tab" aria-selected="${DEC_TAB===k}" class="${DEC_TAB===k?"on":""}" data-dtab="${k}">${n}</button>`).join("")}</div><div class="dec-body">${body}</div><p class="small dec-msg" id="decMsg" role="status"></p>`}
-function decCardX(x,slot){const on=decOn(slot)===x.id;return `<div class="dec-card${on?" on":""}"><span class="dec-img"><img src="${decThumb(x.id)}" alt=""></span><b>${x.n}</b><span class="small">รางวัลไหว้ต่อเนื่อง</span><span class="dec-btns">${on?`<button class="mini" type="button" disabled>ใช้อยู่</button>`:`<button class="mini" type="button" data-wear="${slot}:${x.id}">ใช้</button>`}</span></div>`}
-function openDec(tab){DEC_TAB=tab||DEC_TAB||"mem";DEC_ASK="";renderDec();$("decModal").hidden=false;setTimeout(()=>{const c=$("decClose");if(c)c.focus()},30)}
+function decCardX(x,slot){const on=decOn(slot)===x.id;return `<div class="dec-card${on?" on":""}">${on?`<span class="dec-img"><img src="${decThumb(x.id)}" alt=""></span>`:`<button type="button" class="dec-img tryable" data-try="${slot}:${x.id}" aria-label="ลอง${x.n}บนหิ้ง"><img src="${decThumb(x.id)}" alt=""></button>`}<b>${x.n}</b><span class="small">รางวัลไหว้ต่อเนื่อง</span><span class="dec-btns">${on?`<button class="mini" type="button" disabled>ใช้อยู่</button>`:`<button class="mini" type="button" data-wear="${slot}:${x.id}">ใช้</button>`}</span></div>`}
+/* ---------- v103 try-on window: see an item on your own altar before you buy or wear it ---------- */
+var DEC_TRY={},TRY_VIEW="try",TRY_ASK="",DEC_CHANGED=[];
+const DEC_DEF={shelf:"altar_shelf",candle:"candle",glass:"glass_clear",incense:"incense_lit",bg:"altar_bg"};
+const slotName=s=>(DECOR_SLOTS.find(x=>x[0]===s)||["",""])[1];
+function decNow(){const o={};DECOR_SLOTS.forEach(([s])=>{o[s]=decOn(s)});return o}
+function tryInfo(slot,id){const it=id?(decItem(id)||(id==="cloth30"?{id,s:"cloth",n:"ผ้าแพรไหว้ครบ 30 วัน",c:0}:null)):null;
+  return{it,n:it?it.n:(slot==="cloth"||slot==="garland"||slot==="lantern"?"ไม่ใส่"+slotName(slot):slotName(slot)+"แบบเริ่มต้น"),own:!it||decHas(id),img:it?decThumb(id):(DEC_DEF[slot]?altarArt(DEC_DEF[slot]):"")}}
+/* a static copy of the altar scene for any set of decorations (clean water and lit incense, like a catalogue photo) */
+function trySceneHTML(on){const A=altarS(),D=DEITIES.find(x=>x.k===A.d),art=altarArt;
+  const ck=on.cloth&&on.cloth!=="none"?on.cloth:"",cl=ck?art(ck==="cloth30"?"altar_cloth30":ck):"";
+  const gl=art(on.glass==="glass_crystal"?"glass_crystal":"glass_clear"),ik=on.incense&&art(on.incense+"_lit")?on.incense+"_lit":"incense_lit";
+  return `<div class="try-stage"><div class="altar-scene try-scene" data-bg="${on.bg||"altar_bg"}">${A.glow&&art("altar_glow7")?`<img class="a-glow" src="${art("altar_glow7")}" alt="">`:""}${on.lantern?`<img class="a-lantern" src="${art(on.lantern)}" alt="">`:""}<div class="a-deity">${D&&art("deity_"+D.k)?`<img src="${art("deity_"+D.k)}" alt="${D.n}">`:""}</div><img class="a-shelf" src="${art(on.shelf||"altar_shelf")}" alt="">${cl?`<img class="a-cloth" src="${cl}" alt="">`:""}${on.garland?`<img class="a-garland" src="${art(on.garland)}" alt="">`:""}<img class="a-vase" src="${art("flower_vase")}" alt=""><span class="a-glass"><img src="${gl}" alt=""></span><span class="a-incense"><img src="${art(ik)}" alt=""></span><img class="a-candle" src="${art(on.candle||"candle")}" alt=""></div></div>`}
+function tryBgFit(){const ts=document.querySelector("#tryPop .try-scene");if(!ts)return;const url=altarArt(ts.dataset.bg||"altar_bg");if(!url){ts.style.backgroundImage="";return}
+  const scr=$("scr-altar"),real=scr&&!scr.hidden?scr.querySelector(".altar-scene"):null,Wp=ts.clientWidth||300;let Ws,Hs,sx,sy,Wc;
+  if(real&&real.offsetWidth){const r0=scr.getBoundingClientRect(),c=real.getBoundingClientRect();Ws=r0.width;Hs=Math.max(r0.height,c.height);sx=c.left-r0.left;sy=c.top-r0.top;Wc=c.width}else{Wc=Wp;Ws=Wp*1.06;Hs=Wp*4.2;sx=Wp*.03;sy=Wp*.12}
+  const s=Math.max(Ws/540,Hs/960),k=Wp/Wc,a0=.4+.533*Math.min(1,sy/Hs),a1=.4+.533*Math.min(1,(sy+Wc*1.02)/Hs);
+  ts.style.backgroundImage=`linear-gradient(rgba(36,22,56,${a0.toFixed(3)}),rgba(36,22,56,${a1.toFixed(3)})),url("${url}")`;ts.style.backgroundRepeat="no-repeat";
+  ts.style.backgroundSize=`100% 100%,${(540*s*k).toFixed(1)}px ${(960*s*k).toFixed(1)}px`;ts.style.backgroundPosition=`0 0,${(((Ws-540*s)/2-sx)*k).toFixed(1)}px ${(-sy*k).toFixed(1)}px`}
+/* when every item still missing from a set is being tried, buying them all uses the set price */
+function trySetDeal(){return DECOR_SETS.map(set=>{const need=set.items.filter(i=>!decHas(i));return need.length>1&&need.every(i=>{const it=decItem(i);return it&&DEC_TRY[it.s]===i})?{set,need,c:Math.min(set.c,need.reduce((t,i)=>t+decItem(i).c,0)),full:need.reduce((t,i)=>t+decItem(i).c,0)}:null}).find(Boolean)||null}
+const tryDoneMsg=(s,x)=>x.it?`ใช้${x.n}แล้ว ✨`:(s==="cloth"||s==="garland"||s==="lantern"?`เอา${slotName(s)}ออกแล้ว`:`กลับไปใช้${slotName(s)}แบบเริ่มต้นแล้ว`);
+function tryAdd(slot,id){const cur=decOn(slot);if((id||"")===(cur||"")||(slot==="cloth"&&id==="none"&&!cur))delete DEC_TRY[slot];else DEC_TRY[slot]=id}
+function openTry(){TRY_VIEW="try";TRY_ASK="";$("tryModal").hidden=false;renderTry();setTimeout(()=>{const c=$("tryClose");if(c)c.focus()},30)}
+function renderTry(){const cur=decNow(),on=Object.assign({},cur,DEC_TRY),slots=Object.keys(DEC_TRY);
+  const buyable=slots.filter(s=>{const x=tryInfo(s,DEC_TRY[s]);return x.it&&!x.own&&!x.it.mem}),deal=trySetDeal(),rest=buyable.filter(s=>!(deal&&deal.need.includes(DEC_TRY[s])));
+  const total=(deal?deal.c:0)+rest.reduce((t,s)=>t+tryInfo(s,DEC_TRY[s]).it.c,0),full=buyable.reduce((t,s)=>t+tryInfo(s,DEC_TRY[s]).it.c,0);
+  const rows=slots.map(s=>{const id=DEC_TRY[s],x=tryInfo(s,id),ask=TRY_ASK===s;
+    const btn=x.own?`<button class="mini dec-yes" type="button" data-tuse="${s}">ใช้ชิ้นนี้</button>`:x.it.mem?`<button class="mini" type="button" data-tmem="1">👑 สำหรับสมาชิก</button>`:ask?`<button class="mini dec-yes" type="button" data-tbuy="${s}">ยืนยัน ใช้ ${x.it.c}</button><button class="mini" type="button" data-task="">ยกเลิก</button>`:`<button class="mini dec-buy" type="button" data-task="${s}"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#f0d28a"/></svg>ซื้อ ${x.it.c}</button>`;
+    return `<div class="try-row"><span class="dec-img">${x.img?`<img src="${x.img}" alt="">`:`<span class="dec-none">—</span>`}</span><span class="tr-t"><b>${x.n}</b><span class="small">${slotName(s)} · ${x.own?(x.it?"มีแล้ว":"ฟรี"):x.it.mem?"ฟรีสำหรับสมาชิก":x.it.c+" เหรียญทอง"}</span></span><span class="dec-btns">${btn}<button class="mini" type="button" data-tdel="${s}" aria-label="ไม่ลอง${x.n}">✕</button></span></div>`}).join("");
+  $("tryPop").innerHTML=`<div class="pop-head"><h2 id="tryTitle">ลองแต่งหิ้ง</h2><button class="ghost" id="tryClose" type="button">กลับไปร้าน</button></div>
+    <div class="try-seg" role="group" aria-label="ดูหิ้ง"><button type="button" data-tview="now" aria-pressed="${TRY_VIEW==="now"}" class="${TRY_VIEW==="now"?"on":""}">หิ้งตอนนี้</button><button type="button" data-tview="try" aria-pressed="${TRY_VIEW==="try"}" class="${TRY_VIEW==="try"?"on":""}">ลองใส่ (${slots.length})</button></div>
+    ${trySceneHTML(TRY_VIEW==="now"?cur:on)}
+    <div class="try-list">${rows||`<p class="small" style="margin:0">ใส่ครบแล้ว ไม่มีชิ้นที่กำลังลอง กลับไปร้านเพื่อลองชิ้นอื่นได้เลย</p>`}</div>
+    ${deal?`<p class="small try-deal">ลองครบ${deal.set.n}แล้ว ซื้อรวมได้ราคาชุด ${deal.c} เหรียญทอง (ปกติ ${deal.full})</p>`:""}${buyable.length>1?(TRY_ASK==="all"?`<div class="row" style="flex-wrap:nowrap;gap:8px"><button class="primary" type="button" data-tall="1">ยืนยัน ใช้ ${total} เหรียญทอง</button><button class="ghost" type="button" data-task="">ยกเลิก</button></div>`:`<button class="primary" type="button" data-task="all">ซื้อทุกชิ้นที่ลอง · ${total} เหรียญทอง${total<full?` <s class="try-was">${full}</s>`:""}</button>`):""}
+    <p class="note" style="margin:0">ลองได้ไม่จำกัด ยังไม่เสียเหรียญทองจนกว่าจะกดยืนยัน · มี <b>${(+S.stars||0).toLocaleString()}</b> เหรียญทอง</p><p class="small try-msg" id="tryMsg" role="status"></p>`;tryBgFit()}
+async function tryWear(s){const id=DEC_TRY[s],x=tryInfo(s,id),r=await decDo("wear",s+":"+(id||""));if(!r)return false;delete DEC_TRY[s];DEC_CHANGED.push(s);return x}
+async function tryBuy(s){const id=DEC_TRY[s],x=tryInfo(s,id);if((+S.stars||0)<x.it.c){toast("เหรียญทองไม่พอ เติมเหรียญทองก่อนนะคะ");return false}const r=await decDo("buy",id);if(!r)return false;delete DEC_TRY[s];DEC_CHANGED.push(s);return x}
+$("tryModal").addEventListener("click",async e=>{const t=e.target;
+  if(t.id==="tryModal"||t.closest("#tryClose")){$("tryModal").hidden=true;TRY_ASK="";renderDec();return}
+  const tv=t.closest("[data-tview]");if(tv){TRY_VIEW=tv.dataset.tview;renderTry();return}
+  const ak=t.closest("[data-task]");if(ak){TRY_ASK=ak.dataset.task;renderTry();return}
+  const dl=t.closest("[data-tdel]");if(dl){delete DEC_TRY[dl.dataset.tdel];TRY_ASK="";renderTry();return}
+  if(t.closest("[data-tmem]")){$("tryModal").hidden=true;DEC_TAB="mem";DEC_ASK="";renderDec();return}
+  const us=t.closest("[data-tuse]");if(us){const s=us.dataset.tuse,x=await tryWear(s);if(x){chime([880,1175],.08);toast(tryDoneMsg(s,x))}TRY_ASK="";renderTry();renderDec();renderAltar();return}
+  const bu=t.closest("[data-tbuy]");if(bu){const x=await tryBuy(bu.dataset.tbuy);if(x){burst(2,"#f0d28a");chime([784,988,1175],.12);toast(`ได้${x.n}แล้ว ✨ ตั้งบนหิ้งให้แล้ว`)}TRY_ASK="";renderTry();renderDec();renderAltar();render();return}
+  if(t.closest("[data-tall]")){const deal=trySetDeal();let got=0,ok=true;
+    if(deal){if((+S.stars||0)<deal.c){toast("เหรียญทองไม่พอ เติมเหรียญทองก่อนนะคะ");TRY_ASK="";renderTry();return}const r=await decDo("buy",deal.set.id);if(r){deal.set.items.forEach(i=>{const it=decItem(i);if(it){DEC_CHANGED.push(it.s);delete DEC_TRY[it.s]}});got+=deal.need.length}else ok=false}
+    const list=ok?Object.keys(DEC_TRY).filter(s=>{const x=tryInfo(s,DEC_TRY[s]);return x.it&&!x.own&&!x.it.mem}):[];for(const s of list){const x=await tryBuy(s);if(!x)break;got++}
+    if(got){burst(3,"#f0d28a");chime([659,784,988,1319]);toast(`ได้ของแต่ง ${got} ชิ้นแล้ว ✨ ตั้งบนหิ้งให้แล้ว`)}TRY_ASK="";renderTry();renderDec();renderAltar();render();return}});
+/* after the shop closes, a soft sparkle marks every part of the altar that changed, so the change is easy to see */
+function altarSparkle(slots){const scr=$("scr-altar"),sc=scr&&!scr.hidden?scr.querySelector(".altar-scene"):null;if(!sc||!slots.length)return;
+  const sel={shelf:".a-shelf",cloth:"#altarCloth",garland:"#altarGarland",lantern:"#altarLantern",incense:"#altarIncense",candle:".a-candle",glass:"#altarGlass"};
+  try{sc.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){}
+  setTimeout(()=>{const R0=sc.getBoundingClientRect();[...new Set(slots)].forEach((s,i)=>{let el=sel[s]?sc.querySelector(sel[s]):null;if(el&&el.hidden&&s!=="lantern")el=sc.querySelector(".a-shelf");const vis=el&&!el.hidden&&el.getBoundingClientRect().width>0,r=vis?el.getBoundingClientRect():R0;
+    const sp=document.createElement("i");sp.className="dec-spark"+(vis?"":" wide");sp.setAttribute("aria-hidden","true");sp.style.cssText=`left:${r.left-R0.left-6}px;top:${r.top-R0.top-6}px;width:${r.width+12}px;height:${r.height+12}px;animation-delay:${i*.18}s`;sc.appendChild(sp);setTimeout(()=>sp.remove(),2600+i*180)});chime([988,1319],.05)},380)}
+function closeDec(){$("decModal").hidden=true;$("tryModal").hidden=true;DEC_ASK="";DEC_TRY={};TRY_ASK="";const ch=DEC_CHANGED;DEC_CHANGED=[];if(ch.length)altarSparkle(ch)}
+function openDec(tab){DEC_TAB=tab||DEC_TAB||"mem";DEC_ASK="";DEC_TRY={};DEC_CHANGED=[];renderDec();$("decModal").hidden=false;setTimeout(()=>{const c=$("decClose");if(c)c.focus()},30)}
 let DEC_BUSY=false;
 async function decDo(op,arg){if(DEC_BUSY)return null;DEC_BUSY=true;try{return await shopAct(op,arg)}catch(e){if(e!=="locked"){const m=$("decMsg");if(m)m.textContent=e;toast(e)}return null}finally{DEC_BUSY=false}}
 function wallSave(d){const url=WALL_FULL[d]||SS_ART["wall_"+d]||"";if(!url)return;const a=document.createElement("a");a.href=url;a.download=`fortuniehoro-wallpaper-${d}.${WALL_FULL[d]?"jpg":"webp"}`;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),100);toast("กำลังบันทึกรูป ถ้าไม่ขึ้นให้กดค้างที่รูปเพื่อบันทึกนะคะ")}
-$("decModal").addEventListener("click",async e=>{const t=e.target;if(t.id==="decModal"||t.closest("#decClose")){$("decModal").hidden=true;DEC_ASK="";return}
+$("decModal").addEventListener("click",async e=>{const t=e.target;if(t.id==="decModal"||t.closest("#decClose")){closeDec();return}
+  const tr=t.closest("[data-try]");if(tr){const v=tr.dataset.try,i=v.indexOf(":");tryAdd(v.slice(0,i),v.slice(i+1));if(!Object.keys(DEC_TRY).length){renderDec();return}openTry();return}
+  const ts=t.closest("[data-tryset]");if(ts){const set=DECOR_SETS.find(x=>x.id===ts.dataset.tryset);if(set)set.items.forEach(i=>{const it=decItem(i);if(it)tryAdd(it.s,i)});openTry();return}
+  if(t.closest("[data-tryopen]")){openTry();return}
   const tb=t.closest("[data-dtab]");if(tb){DEC_TAB=tb.dataset.dtab;DEC_ASK="";renderDec();return}
-  if(t.closest("#decTop")){$("decModal").hidden=true;openSheet();return}
+  if(t.closest("#decTop")){closeDec();openSheet();return}
   const ak=t.closest("[data-ask]");if(ak){DEC_ASK=ak.dataset.ask;renderDec();return}
   if(t.closest("[data-memgo]")){DEC_TAB="mem";DEC_ASK="";renderDec();return}
   if(t.closest("#memYes")){if((+S.stars||0)<MEM_COST){DEC_ASK="";renderDec();toast("เหรียญทองไม่พอ เติมเหรียญทองก่อนนะคะ");return}const r=await decDo("mem");DEC_ASK="";if(r){burst(3,"#f0d28a");chime([659,784,988,1319]);toast(`ยินดีต้อนรับสู่สมาชิกสายมู 👑 ถึง ${memUntil()}`);musApplySafe()}renderDec();renderAltar();render();return}
-  const by=t.closest("[data-buy]");if(by){const id=by.dataset.buy,r=await decDo("buy",id);DEC_ASK="";if(r){const it=decItem(id)||DECOR_SETS.find(x=>x.id===id);burst(2,"#f0d28a");chime([784,988,1175],.12);toast(`ได้${it?it.n:"ของแต่ง"}แล้ว ✨ ตั้งบนหิ้งให้แล้ว`)}renderDec();renderAltar();render();return}
-  const wr=t.closest("[data-wear]");if(wr){const r=await decDo("wear",wr.dataset.wear);if(r){chime([880],.08)}renderDec();renderAltar();return}
+  const by=t.closest("[data-buy]");if(by){const id=by.dataset.buy,r=await decDo("buy",id);DEC_ASK="";if(r){const it=decItem(id)||DECOR_SETS.find(x=>x.id===id);(it&&it.items?it.items.map(i=>decItem(i).s):[it&&it.s]).forEach(s=>{if(s){DEC_CHANGED.push(s);delete DEC_TRY[s]}});burst(2,"#f0d28a");chime([784,988,1175],.12);toast(`ได้${it?it.n:"ของแต่ง"}แล้ว ✨ ตั้งบนหิ้งให้แล้ว`)}renderDec();renderAltar();render();return}
+  const wr=t.closest("[data-wear]");if(wr){const r=await decDo("wear",wr.dataset.wear);if(r){const s=wr.dataset.wear.split(":")[0];DEC_CHANGED.push(s);delete DEC_TRY[s];chime([880],.08);toast(`เปลี่ยน${slotName(s)}แล้ว ✨ ปิดร้านแล้วดูที่หิ้งได้เลย`)}renderDec();renderAltar();return}
   const wb=t.closest("[data-wbuy]");if(wb){const d=wb.dataset.wbuy,r=await decDo("wall",d);DEC_ASK="";if(r){chime([784,988],.1);toast(`ปลดล็อกวอลเปเปอร์วัน${WALL_DAY[d][0]}แล้ว`)}renderDec();render();return}
   const wd=t.closest("[data-wdl]");if(wd){wallSave(wd.dataset.wdl);return}});
 function musApplySafe(){try{musApply()}catch(e){}}
