@@ -3343,7 +3343,7 @@ let MUSN=null;
 function musStop(fade){if(!MUSN)return;const m=MUSN;MUSN=null;clearInterval(m.timer);const a=AC;try{m.out.gain.setTargetAtTime(0,a.currentTime,fade==null?.6:fade)}catch(e){}setTimeout(()=>{m.stops.forEach(s=>{try{s.stop()}catch(e){}});try{m.out.disconnect()}catch(e){}},4000)}
 function musPlay(k){musStop(.4);const a=anyAc();if(!a)return;const out=a.createGain();out.gain.value=0;out.connect(a.destination);out.gain.setTargetAtTime(MUS.vol*.55,a.currentTime,1.2);
   const m={k,out,stops:[],timer:0};MUSN=m;const src=(kind,filt)=>{const s=a.createBufferSource();s.buffer=loopNoise(a,kind);s.loop=true;let n=s;for(const f of filt||[]){n.connect(f);n=f}const g=a.createGain();n.connect(g).connect(out);s.start();m.stops.push(s);return g};
-  const every=(lo,hi,fn)=>{let next=a.currentTime+.5;return()=>{while(next<a.currentTime+.6){fn(next);next+=lo+Math.random()*(hi-lo)}}};
+  const every=(lo,hi,fn)=>{let next=a.currentTime+.5;return()=>{if(next<a.currentTime-.2)next=a.currentTime+.05;while(next<a.currentTime+.6){fn(next);next+=lo+Math.random()*(hi-lo)}}};
   const filt=(type,f,q)=>{const b=a.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b};
   const sine=(f,g)=>{const o=a.createOscillator(),e=a.createGain();o.frequency.value=f;e.gain.value=g;o.connect(e).connect(out);o.start();m.stops.push(o)};
   let tasks=[];
@@ -3362,8 +3362,12 @@ const PLUCK={};function pluck(a,dest,f,t,vol){const key=Math.round(f);let b=PLUC
   const s=a.createBufferSource(),e=a.createGain();s.buffer=b;e.gain.value=vol;s.connect(e).connect(dest);s.start(t)}
 function musApply(){if(MUS.on&&bgmOwned(MUS.track)){if(!MUSN||MUSN.k!==MUS.track)musPlay(MUS.track);else if(AC)MUSN.out.gain.setTargetAtTime(MUS.vol*.55,AC.currentTime,.3)}else musStop()}
 /* browsers only start sound after a tap: start the music on the first one */
-document.addEventListener("pointerdown",()=>{if(MUS.on&&!MUSN&&!MED)musApply()},{capture:true});
-document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden){if(!MED)AC.suspend&&AC.suspend()}else AC.resume&&AC.resume()});
+document.addEventListener("pointerdown",()=>{try{if(AC&&AC.state!=="running"&&AC.state!=="closed")AC.resume()}catch(e){}if(MUS.on&&!MUSN&&!MED)musApply()},{capture:true});
+/* v108: phones (iPhone most of all) break the sound after the screen locks: the audio comes back crackly or silent.
+   So when the page is hidden the music stops and the audio engine is closed; it is rebuilt fresh when the player comes back
+   (on iPhone the first tap starts it again). During meditation the sound keeps going so the end bell still rings. */
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(MED||!AC)return;musStop(0);const old=AC;AC=null;try{old.close()}catch(e){}for(const k in NOISE)delete NOISE[k];for(const k in PLUCK)delete PLUCK[k]}
+  else{try{if(AC&&AC.state!=="running"&&AC.state!=="closed")AC.resume()}catch(e){}if(MUS.on&&!MUSN&&!MED)setTimeout(musApplySafe,250)}});
 /* ---------- the sound sheet ---------- */
 function renderMus(){const sfx=typeof PREF!=="undefined"&&PREF&&"sound" in PREF?PREF.sound:S.sound;
   $("musPop").innerHTML=`<div class="pop-head"><h2 id="musTitle">🎵 เสียงและเพลง</h2><button class="ghost" id="musClose" type="button">ปิด</button></div>
