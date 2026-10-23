@@ -248,11 +248,21 @@ function actLeafBuy(id,n){const it=LEAF_SHOP.find(x=>x.id===id);if(!it)throw "�
 function summary(){return{stars:S.stars,leaves:S.leaves||0,shakes:S.shakes,pets:PETS.filter(p=>S.owned[p.n]).length,topBaht:S.topBaht||0,tickets:S.tickets,rtickets:S.rtickets||0,bp:S.bp||0,jarT:S.jarT||0}}
 /* SHOP_RULES v102: altar decorations, membership, wallpapers (prices in gold coins = S.stars), special days, birthday colour */
 const DECOR=[{id:"shelf_jade",s:"shelf",n:"หิ้งหยกเขียว",c:99},{id:"shelf_cloud",s:"shelf",n:"หิ้งเมฆขาว",c:99},{id:"shelf_redgold",s:"shelf",n:"หิ้งแดงทอง",c:199},
-  {id:"cloth_pink",s:"cloth",n:"ผ้าแพรชมพู",c:29},{id:"cloth_gold",s:"cloth",n:"ผ้าแพรทอง",c:0,mem:1},{id:"garland_jasmine",s:"garland",n:"พวงมาลัยมะลิ",c:29},
+  {id:"cloth_pink",s:"cloth",n:"ผ้าแพรชมพู วันอังคาร",c:29},{id:"cloth_gold",s:"cloth",n:"ผ้าแพรทอง",c:0,mem:1},{id:"garland_jasmine",s:"garland",n:"พวงมาลัยมะลิ",c:29},
   {id:"incense_gold",s:"incense",n:"กระถางธูปทอง",c:99},{id:"incense_dragon",s:"incense",n:"กระถางธูปมังกร",c:199},{id:"candle_lotus",s:"candle",n:"เทียนบัวทอง",c:19},
-  {id:"glass_crystal",s:"glass",n:"แก้วน้ำคริสตัล",c:29},{id:"lantern",s:"lantern",n:"โคมแดงมงคล",c:19},{id:"bg_temple",s:"bg",n:"ฉากวัดยามเย็น",c:99},{id:"bg_night",s:"bg",n:"ฉากฟ้าราตรี",c:99}];
-const DECOR_SETS=[{id:"set_dragon",n:"ชุดหิ้งแดงมังกร",c:299,items:["shelf_redgold","incense_dragon","lantern","bg_temple"]}];
-const DECOR_SLOTS=[["shelf","ตัวหิ้ง"],["cloth","ผ้าแพร"],["garland","พวงมาลัย"],["incense","กระถางธูป"],["candle","เทียน"],["glass","แก้วน้ำ"],["lantern","โคมไฟ"],["bg","ฉากหลัง"]];
+  {id:"glass_crystal",s:"glass",n:"แก้วน้ำคริสตัล",c:29},{id:"lantern",s:"lantern",n:"โคมแดงมงคล",c:19},{id:"bg_temple",s:"bg",n:"ฉากวัดยามเย็น",c:99},{id:"bg_night",s:"bg",n:"ฉากฟ้าราตรี",c:99},
+  {id:"cloth_yellow",s:"cloth",n:"ผ้าแพรเหลือง วันจันทร์",c:29},{id:"cloth_green",s:"cloth",n:"ผ้าแพรเขียว วันพุธ",c:29},{id:"cloth_orange",s:"cloth",n:"ผ้าแพรส้ม วันพฤหัสฯ",c:29},
+  {id:"cloth_skyblue",s:"cloth",n:"ผ้าแพรฟ้า วันศุกร์",c:29},{id:"cloth_purple",s:"cloth",n:"ผ้าแพรม่วง วันเสาร์",c:29},{id:"cloth_red",s:"cloth",n:"ผ้าแพรแดง วันอาทิตย์",c:29},
+  {id:"garland_marigold",s:"garland",n:"มาลัยดาวเรือง",c:29},{id:"garland_rose",s:"garland",n:"มาลัยกุหลาบมะลิ",c:39},{id:"garland_dokrak",s:"garland",n:"มาลัยดอกรัก",c:29},
+  {id:"vase_orchid",s:"vase",n:"แจกันกล้วยไม้",c:49},{id:"vase_bamboo",s:"vase",n:"แจกันไผ่กวักทรัพย์",c:49},{id:"vase_rose",s:"vase",n:"แจกันกุหลาบ",c:49},
+  {id:"candle_gold",s:"candle",n:"เทียนทองบัวตูม",c:29},{id:"candle_red",s:"candle",n:"เทียนแดงมังกร",c:29},{id:"glass_lotus",s:"glass",n:"แก้วบัวชมพู",c:29},
+  {id:"incense_lotus",s:"incense",n:"กระถางธูปบัวขาว",c:99},{id:"lantern_lotus",s:"lantern",n:"โคมบัวชมพู",c:29},{id:"lantern_lanna",s:"lantern",n:"โคมดาวล้านนา",c:29},
+  {id:"shelf_lotus",s:"shelf",n:"หิ้งบัวขาวทอง",c:149},{id:"bg_lotus",s:"bg",n:"ฉากบึงบัวยามเย็น",c:99},{id:"bg_loykrathong",s:"bg",n:"ฉากคืนลอยกระทง",c:99},{id:"bg_cny",s:"bg",n:"ฉากตรุษจีน",c:99}];
+const DECOR_SETS=[{id:"set_loy",n:"ชุดลอยกระทง",c:149,items:["bg_loykrathong","lantern_lanna","garland_marigold","candle_gold"]},
+  {id:"set_lotus",n:"ชุดหิ้งบัวชมพู",c:349,items:["shelf_lotus","incense_lotus","glass_lotus","lantern_lotus","vase_rose","bg_lotus"]},
+  {id:"set_dragon",n:"ชุดหิ้งแดงมังกร",c:299,items:["shelf_redgold","incense_dragon","lantern","bg_temple"]},
+  {id:"set_cny",n:"ชุดตรุษจีน",c:169,items:["bg_cny","cloth_red","candle_red","vase_bamboo"]}];
+const DECOR_SLOTS=[["shelf","ตัวหิ้ง"],["cloth","ผ้าแพร"],["garland","พวงมาลัย"],["vase","แจกันดอกไม้"],["incense","กระถางธูป"],["candle","เทียน"],["glass","แก้วน้ำ"],["lantern","โคมไฟ"],["bg","ฉากหลัง"]];
 const WALLS=["sun","mon","tue","wed","thu","fri","sat"],WALL_COST=19,MEM_COST=199,MEM_DAYS=30,MEM_ALTAR=20;
 const FIRST_PACK={baht:19,stars:30,rt:1,decor:"candle_lotus"};
 function decS(){if(!S.dec||typeof S.dec!=="object")S.dec={};const D=S.dec;if(!Array.isArray(D.own))D.own=[];if(!D.on||typeof D.on!=="object")D.on={};if(!Array.isArray(S.walls))S.walls=[];return D}
