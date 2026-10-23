@@ -1082,12 +1082,12 @@ input,textarea,[contenteditable],.copyable,#bcText,#psNo,#psNo *,#scr-admin,#scr
 .bgm-card span{font-size:11px;color:var(--muted)}.bgm-card.on{border-color:var(--butter);box-shadow:0 0 0 2px #f0d28a55}.bgm-card.locked img{filter:grayscale(.6) brightness(.8)}
 .med{position:fixed;inset:0;z-index:110;background:radial-gradient(circle at 50% 40%,#3a2660,#120a1f 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;color:var(--text)}
 .med[hidden]{display:none}
-.med-circle{width:min(62vw,260px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#f6dc9a55,#f6dc9a11 60%,transparent 70%);animation:mbreath 10s ease-in-out infinite}
+.med-circle{width:min(62vw,260px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#f6dc9a55,#f6dc9a11 60%,transparent 70%);position:relative;transform:scale(.55)}
 .med-circle i{width:40%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff6d6,#f0d28a);box-shadow:0 0 40px #f6dc9a}
 @keyframes mbreath{0%{transform:scale(.62)}40%{transform:scale(1)}100%{transform:scale(.62)}}
 .med-say{font-family:var(--f-display);font-size:22px;margin:0;color:var(--butter)}
 .med-time{font-size:34px;font-family:var(--f-display);font-weight:500;letter-spacing:.05em}
-@media (prefers-reduced-motion:reduce){.med-circle{animation:none}}
+@media (prefers-reduced-motion:reduce){.med-circle{transform:scale(.8)!important}}
 #musModal{z-index:125}.med{z-index:130}
 
 /* v102 phase 3: merit points + gold coins icons */
@@ -1236,6 +1236,17 @@ button.dec-img::after{content:"👀 ลอง";position:absolute;right:4px;botto
 .db-coins{display:inline-flex;align-items:center;gap:3px;flex-wrap:wrap}.db-coins .star{width:13px;height:13px}.dress-bar>p.db-coins{justify-content:center;display:flex}
 .db-top{font:inherit;font-size:12px;border:1px solid var(--line);background:#ffffff10;color:var(--butter);border-radius:999px;padding:1px 9px;margin-left:2px;cursor:pointer}
 @media (max-height:700px){.dress-stage .altar-scene{width:min(100%,max(160px,calc(100dvh - 450px)))}.dress-bar{gap:4px;padding-top:6px}.dress-item .dec-img{height:52px}}
+
+/* v109 timed breathing */
+.med-n{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:44px;color:#5a3d12;font-weight:600}
+.med-pat{margin:0;color:var(--muted);font-size:14px}
+.med-time{font-size:18px;color:var(--muted)}
+.br-box{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:16px;padding:12px;background:#ffffff08;text-align:left}
+.br-h{font-family:var(--f-display);font-size:17px;font-weight:500}
+.br-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.br-row:has(.br-min){grid-template-columns:repeat(4,1fr)}
+.br-chip{display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;min-height:52px;border:1px solid var(--line);background:#ffffff0c;color:var(--text);border-radius:12px;padding:6px 4px;font:inherit;cursor:pointer;text-align:center}
+.br-chip b{font-size:13.5px;font-weight:600}.br-chip span{font-size:11px;color:var(--muted);line-height:1.3}
+.br-chip.on{background:var(--lav);border-color:var(--lav);color:#1a0f2b}.br-chip.on span{color:#2a1d3d}
 
 /* web: login */
 .login{position:fixed;inset:0;z-index:96;overflow:auto;background:radial-gradient(circle at 50% 20%,#4a2d75,#1a0f2b 70%);display:flex;align-items:flex-start;justify-content:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 40px}
@@ -1676,11 +1687,12 @@ button.dec-img::after{content:"👀 ลอง";position:absolute;right:4px;botto
   <button class="primary" id="paidOk" type="button">เยี่ยมเลย ไปเขย่ากัน</button>
 </div></div>
 <div class="scrim center" id="musModal" hidden><div class="pop mus-pop" role="dialog" aria-modal="true" aria-labelledby="musTitle" id="musPop"></div></div>
-<div class="med" id="medOverlay" hidden role="dialog" aria-modal="true" aria-label="นั่งสมาธิ">
-  <div class="med-circle" aria-hidden="true"><i></i></div>
-  <p class="med-say" id="medSay">หายใจเข้า…</p>
-  <b class="med-time" id="medTime">10:00</b>
-  <p class="small">นั่งให้สบาย หลับตาได้ ฟังเสียงแล้วหายใจตามวงกลม</p>
+<div class="med" id="medOverlay" hidden role="dialog" aria-modal="true" aria-label="หายใจตามจังหวะ">
+  <p class="med-pat" id="medPat"></p>
+  <div class="med-circle" id="medCircle" aria-hidden="true"><i></i><b class="med-n" id="medCount"></b></div>
+  <p class="med-say" id="medSay" aria-live="polite">หายใจเข้า</p>
+  <b class="med-time" id="medTime"></b>
+  <p class="small">นั่งหรือนอนให้สบาย หายใจตามวงกลม ถ้าเวียนหัวให้กลับมาหายใจปกติ</p>
   <button class="ghost" id="medStop" type="button">หยุด</button>
 </div>
 <div class="scrim center" id="wishModal" hidden><div class="pop wish-pop" role="dialog" aria-modal="true" aria-labelledby="wishTitle">
@@ -2054,10 +2066,12 @@ function actAltar(op,arg){const A=altarS(),today=dk(now());
   throw "คำสั่งไม่ถูกต้อง"}
 /* v101 music unlocks + meditation reward */
 const BGM_PAID=["wind","stream","china"],BGM_COST=200,MED_SEC=600;
+/* v109 timed breathing: 1 / 3 / 5 / 10 minutes, merit for the first finish of the day by length */
+var BREATH_MIN=[1,3,5,10],BREATH_L={1:3,3:5,5:8,10:10};
 function actMus(op,arg){const today=dk(now());
   if(op==="buy"){if(!BGM_PAID.includes(arg))throw "ไม่พบเพลงนี้";S.bgm=Array.isArray(S.bgm)?S.bgm:[];if(S.bgm.includes(arg))return{ok:1};if((S.leaves||0)<BGM_COST)throw "แต้มบุญไม่พอ ต้องใช้ "+BGM_COST+" แต้มบุญ";S.leaves-=BGM_COST;S.bgm.push(arg);return{ok:1}}
-  if(op==="med_start"){S.medAt=now();return{ok:1}}
-  if(op==="med_done"){if(!S.medAt||now()-S.medAt<(MED_SEC-5)*1000)throw "นั่งสมาธิให้ครบ 10 นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  if(op==="med_start"){const m=Math.trunc(+arg);S.medMin=BREATH_MIN.includes(m)?m:10;S.medAt=now();return{ok:1,min:S.medMin}}
+  if(op==="med_done"){const m=BREATH_MIN.includes(+S.medMin)?+S.medMin:10;if(!S.medAt||now()-S.medAt<(m*60-5)*1000)throw "หายใจให้ครบ "+m+" นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=BREATH_L[m];S.leaves=(S.leaves||0)+l}return{l,min:m}}
   throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีไหสะสมบุญเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
@@ -3242,7 +3256,7 @@ function renderAltar(){const box=$("altarBox");if(!box)return;const A=altarS(),t
   $("altarInfo").innerHTML=`<div class="altar-card"><span class="ak">${D.n}</span><b>ไหว้ต่อเนื่อง ${A.st} วัน</b><span class="small" style="text-align:left">เดือนนี้ไหว้แล้ว ${A.mk===dk(now()).split("-").slice(0,2).join("-")?(+A.mn||0):0} วัน · ขาดได้อีก ${FZ_MAX-(A.fzM===dk(now()).split("-").slice(0,2).join("-")?(+A.fz||0):0)} วันโดยไม่เสียสตรีค</span><span class="small" style="text-align:left">${A.glow?"✨ ได้แสงทองรอบหิ้งแล้ว":`ไหว้ครบ 7 วันติด ได้แสงทองรอบหิ้ง (${Math.min(A.st,7)}/7)`} · ${A.cloth?"🎀 ได้ผ้าแพรแล้ว":`ครบ 30 วันติด ได้ผ้าแพร (${Math.min(A.st,30)}/30)`}</span></div>
     <div class="altar-card"><span class="ak">สีประจำวัน${dc[0]}</span><b><i class="daycol" style="background:${dc[2]}"></i>สี${dc[1]}</b><span class="small" style="text-align:left">สีประจำวันตามความเชื่อไทย ใส่หรือพกของสีนี้ไว้เป็นกำลังใจได้</span></div>
     <div class="altar-card wide"><span class="ak">คำอธิษฐานวันนี้</span>${b?`<b class="pray">${esc(F[b.f][6])}</b><span class="small" style="text-align:left">จากใบเซียมซีที่ใช้เป็นดวงวันนี้ ใบที่ ${th(b.f+1)}</span>`:`<span class="small" style="text-align:left">เขย่าเซียมซีแล้ว<b>ใช้เป็นดวงวันนี้</b> คำอธิษฐานประจำวันจะขึ้นตรงนี้</span>`}</div>
-    <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button><button class="ghost" id="altarBowl" type="button">🥣 ถูขันทิเบต</button><button class="ghost" id="altarMed" type="button">🧘 นั่งสมาธิ 10 นาที</button><button class="ghost dec-open" id="altarDec" type="button">🛍️ แต่งหิ้ง · สมาชิก · วอลเปเปอร์</button></div>${altarExtraHTML()}
+    <div class="altar-btns"><button class="ghost" id="altarWishBtn" type="button">📝 สมุดคำขอพร${wl?` (${wl})`:""}</button><button class="ghost" id="altarChange" type="button">เปลี่ยนองค์ที่บูชา</button><button class="ghost" id="altarBowl" type="button">🥣 ถูขันทิเบต</button><button class="ghost" id="altarMed" type="button">🌬️ หายใจตามจังหวะ</button><button class="ghost dec-open" id="altarDec" type="button">🛍️ แต่งหิ้ง · สมาชิก · วอลเปเปอร์</button></div>${altarExtraHTML()}
     <p class="note">เพื่อความบันเทิงและเป็นกำลังใจ ไม่ใช่การรับประกันผล</p>`}
 function waterSound(){const a=ac();if(!a)return;const s=a.createBufferSource();s.buffer=noiseBuf(a,1.1,false);const f=a.createBiquadFilter();f.type="bandpass";f.frequency.value=900;f.Q.value=.8;
   const g=a.createGain(),t=a.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+.12);g.gain.linearRampToValueAtTime(.05,t+.9);g.gain.linearRampToValueAtTime(0,t+1.1);
@@ -3256,7 +3270,7 @@ $("altarBox").addEventListener("click",async e=>{const t=e.target;
   if(t.closest("#altarChange")){ALTAR_PICKING=true;renderAltar();return}
   if(t.closest("#altarWishBtn")){openWish();return}
   if(t.closest("#altarBowl")){INSTR="bowl";try{localStorage.setItem("ftn_instr","bowl")}catch(er){}showTab("rank");setRkMode("pop");return}
-  if(t.closest("#altarMed")){medStart();return}
+  if(t.closest("#altarMed")){openMus();setTimeout(()=>{const b=$("brBox");if(b)b.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"})},60);return}
   if(t.closest("#altarDec")){openDec("dec");return}
   if(t.closest("#memOpen")){openDec("mem");return}
   if(t.closest("#bdayEdit")){openBday();return}
@@ -3279,6 +3293,10 @@ $("wishList").addEventListener("click",async e=>{const card=e.target.closest("[d
 
 /* ---------- v101 sound & feel: rub a singing bowl / gong, ring a bell, background music made live in the browser, a 10-minute meditation ---------- */
 var BGM=[{k:"bowl",n:"ขันทิเบต",free:1},{k:"rain",n:"ฝนตกเบา ๆ",free:1},{k:"wind",n:"ลมกับกระดิ่ง"},{k:"stream",n:"ลำธารในวัด"},{k:"china",n:"ดนตรีจีน"}],BGM_PRICE=200,MED_LEN=600;
+var BREATH_MIN=[1,3,5,10],BREATH_L={1:3,3:5,5:8,10:10};
+/* v109 breathing patterns: phases in seconds */
+var BREATH_PAT={relax:{n:"ผ่อนคลาย",d:"เข้า 4 · ออก 6",s:[["in",4],["out",6]]},box:{n:"สมดุล",d:"เข้า 4 · กลั้น 4 · ออก 4 · พัก 4",s:[["in",4],["hold",4],["out",4],["rest",4]]},sleep:{n:"หลับสบาย",d:"เข้า 4 · กลั้น 7 · ออก 8",s:[["in",4],["hold",7],["out",8]]}};
+var BREATH_SAY={in:"หายใจเข้า",hold:"กลั้นไว้",out:"หายใจออก",rest:"พักว่าง"};
 var MUS=(function(){let m={on:false,track:"bowl",vol:.6};try{Object.assign(m,JSON.parse(localStorage.getItem("ftn_mus")||"{}"))}catch(e){}return m})();
 function musSave(){try{localStorage.setItem("ftn_mus",JSON.stringify(MUS))}catch(e){}}
 function bgmOwned(k){const b=BGM.find(x=>x.k===k);return !!b&&(b.free||(S.bgm||[]).includes(k)||(typeof isMem==="function"&&isMem()))}
@@ -3375,27 +3393,44 @@ function renderMus(){const sfx=typeof PREF!=="undefined"&&PREF&&"sound" in PREF?
   <label class="toggle"><input type="checkbox" id="musOn" ${MUS.on?"checked":""}> เพลงพื้นหลัง</label>
   <label class="lbl-s" for="musVol">ความดังเพลง</label><input type="range" id="musVol" min="0" max="1" step="0.05" value="${MUS.vol}">
   <div class="bgm-grid">${BGM.map(b=>{const own=bgmOwned(b.k);return `<button type="button" class="bgm-card${MUS.track===b.k?" on":""}${own?"":" locked"}" data-bgm="${b.k}"><img src="${SS_ART["bgm_"+b.k]||""}" alt=""><b>${b.n}</b><span>${own?(MUS.track===b.k&&MUS.on?"กำลังเล่น":"ฟรี"):`🔒 ${BGM_PRICE} แต้มบุญ`}</span></button>`}).join("")}</div>
-  <button class="primary" id="medBtn" type="button">🧘 นั่งสมาธิ 10 นาที</button>
-  <p class="note">เพลงทุกเพลงสร้างขึ้นสดในเครื่องของคุณ ฟังเพื่อผ่อนคลาย ไม่ใช่การรักษาโรค · นั่งสมาธิครบ 10 นาที รับ +10 แต้มบุญ วันละครั้ง</p>`}
+  ${breathBoxHTML()}
+  <p class="note">เพลงทุกเพลงสร้างขึ้นสดในเครื่องของคุณ ฟังเพื่อผ่อนคลาย ไม่ใช่การรักษาโรค</p>`}
+function breathMin(){return BREATH_MIN.includes(+MUS.bmin)?+MUS.bmin:3}
+function breathPat(){return BREATH_PAT[MUS.bpat]?MUS.bpat:"relax"}
+function breathBoxHTML(){const m=breathMin(),p=breathPat();
+  return `<div class="br-box" id="brBox"><b class="br-h">🌬️ หายใจตามจังหวะ</b><span class="small" style="text-align:left">หายใจตามวงกลมกับเพลงที่เลือก ทำครบรับแต้มบุญวันละครั้ง</span>
+  <div class="br-row" role="group" aria-label="จังหวะหายใจ">${Object.entries(BREATH_PAT).map(([k,x])=>`<button type="button" class="br-chip${p===k?" on":""}" aria-pressed="${p===k}" data-bpat="${k}"><b>${x.n}</b><span>${x.d}</span></button>`).join("")}</div>
+  <div class="br-row" role="group" aria-label="เวลา">${BREATH_MIN.map(n=>`<button type="button" class="br-chip br-min${m===n?" on":""}" aria-pressed="${m===n}" data-bmin="${n}"><b>${n} นาที</b><span>+${BREATH_L[n]} แต้มบุญ</span></button>`).join("")}</div>
+  <button class="primary" id="medBtn" type="button">เริ่มหายใจ ${m} นาที</button>
+  <p class="small" style="text-align:left;margin:0">ถ้าเวียนหัวหรืออึดอัด ให้กลับมาหายใจปกติ ไม่ต้องกลั้นตาม</p></div>`}
 function openMus(){renderMus();$("musModal").hidden=false}
 $("musModal").addEventListener("click",async e=>{const t=e.target;if(t.id==="musModal"||t.closest("#musClose")){$("musModal").hidden=true;return}
   const c=t.closest("[data-bgm]");if(c){const k=c.dataset.bgm;if(!bgmOwned(k)){if((S.leaves||0)<BGM_PRICE){toast(`แต้มบุญไม่พอ ต้องใช้ ${BGM_PRICE} แต้มบุญ`);return}try{await musAct("buy",k);toast("ปลดล็อกเพลงแล้ว 🎵");render()}catch(er){if(er!=="locked")toast(er);return}}
     MUS.track=k;MUS.on=true;musSave();musApply();renderMus();return}
+  const bp=t.closest("[data-bpat]");if(bp){MUS.bpat=bp.dataset.bpat;musSave();renderMus();return}
+  const bm=t.closest("[data-bmin]");if(bm){MUS.bmin=+bm.dataset.bmin;musSave();renderMus();return}
   if(t.closest("#medBtn")){$("musModal").hidden=true;medStart()}});
 $("musModal").addEventListener("change",e=>{const t=e.target;if(t.id==="musOn"){MUS.on=t.checked;musSave();musApply();renderMus()}
   if(t.id==="musSfx"){if(typeof PREF!=="undefined"&&PREF&&"sound" in PREF){PREF.sound=t.checked;savePref()}else{S.sound=t.checked;save()}render()}});
 $("musModal").addEventListener("input",e=>{if(e.target.id==="musVol"){MUS.vol=+e.target.value;musSave();if(MUSN&&AC)MUSN.out.gain.setTargetAtTime(MUS.vol*.55,AC.currentTime,.1)}});
 /* ---------- meditation: breathe with the circle for 10 minutes ---------- */
 let MED=null;
-async function medStart(){const a=anyAc();try{await musAct("med_start")}catch(e){if(e!=="locked")toast(e);return}
+/* v109: timed breathing (1 / 3 / 5 / 10 minutes) with a pattern; the circle grows on the in-breath and shrinks on the out-breath */
+async function medStart(){const a=anyAc(),min=breathMin(),P=BREATH_PAT[breathPat()];try{await musAct("med_start",min)}catch(e){if(e!=="locked")toast(e);return}
   const track=bgmOwned(MUS.track)?MUS.track:"bowl";if(!MUSN||MUSN.k!==track)musPlay(track);
-  MED={t0:Date.now(),timer:0,track};$("medOverlay").hidden=false;if(a)bellTone(a,a.destination,220,BOWL_P,7,.16);
-  const tick=()=>{if(!MED)return;const el=(Date.now()-MED.t0)/1000,left=Math.max(0,MED_LEN-el),cyc=el%10;
-    $("medTime").textContent=`${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,"0")}`;$("medSay").textContent=cyc<4?"หายใจเข้า…":"หายใจออก…";
-    if(left<=0){medEnd(true)}};MED.timer=setInterval(tick,250);tick()}
-async function medEnd(done){if(!MED)return;clearInterval(MED.timer);MED=null;$("medOverlay").hidden=true;
+  const cyc=P.s.reduce((t,x)=>t+x[1],0),circ=$("medCircle");
+  MED={t0:Date.now(),timer:0,track,len:min*60,min,P,ph:-1,k:-1};$("medOverlay").hidden=false;$("medPat").textContent=`${P.n} · ${P.d}`;
+  if(circ){circ.style.transition="none";circ.style.transform="scale(.55)"}if(a)bellTone(a,a.destination,220,BOWL_P,7,.16);
+  const tick=()=>{if(!MED)return;const el=(Date.now()-MED.t0)/1000,left=Math.max(0,MED.len-el);let pos=el%cyc,i=0;while(i<P.s.length-1&&pos>=P.s[i][1]){pos-=P.s[i][1];i++}
+    const [ph,dur]=P.s[i],k=Math.floor(el/cyc)*10+i;
+    if(k!==MED.k){MED.k=k;if(circ&&!reduce){circ.style.transition=`transform ${Math.max(.2,dur-pos).toFixed(2)}s ease-in-out`;if(ph==="in")circ.style.transform="scale(1)";if(ph==="out")circ.style.transform="scale(.55)"}
+      if(MED.ph!==-1){const c=ac();if(c)bellTone(c,c.destination,ph==="in"?392:ph==="out"?294:330,BOWL_P,2.2,.035);vib(8)}MED.ph=i;$("medSay").textContent=BREATH_SAY[ph]}
+    $("medCount").textContent=String(Math.max(1,Math.ceil(dur-pos)));
+    $("medTime").textContent=`เหลือ ${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,"0")}`;
+    if(left<=0){medEnd(true)}};MED.timer=setInterval(tick,200);tick()}
+async function medEnd(done){if(!MED)return;const min=MED.min;clearInterval(MED.timer);MED=null;$("medOverlay").hidden=true;
   if(!(MUS.on&&bgmOwned(MUS.track)))musStop(2);
-  if(done){const a=ac();if(a)[0,1.6,3.2].forEach(d=>bellTone(a,a.destination,196,BOWL_P,6,.16,a.currentTime+d));try{const r=await musAct("med_done");burst(2,"#f6dc9a");toast(r&&r.l?`นั่งสมาธิครบ 10 นาที 🙏 รับ +${r.l} แต้มบุญ`:"นั่งสมาธิครบ 10 นาที 🙏 วันนี้รับแต้มบุญไปแล้ว");render()}catch(e){if(e!=="locked")toast(e)}}}
+  if(done){const a=ac();if(a)[0,1.6,3.2].forEach(d=>bellTone(a,a.destination,196,BOWL_P,6,.16,a.currentTime+d));try{const r=await musAct("med_done");burst(2,"#f6dc9a");toast(r&&r.l?`หายใจครบ ${min} นาที 🙏 รับ +${r.l} แต้มบุญ`:`หายใจครบ ${min} นาที 🙏 วันนี้รับแต้มบุญไปแล้ว`);render()}catch(e){if(e!=="locked")toast(e)}}}
 $("medStop").addEventListener("click",()=>medEnd(false));
 
 /* ---------- v102 phase 4-5: altar decorations, membership, wallpapers, welcome pack, LINE, story cards, invite a friend, special days, birthday colour ---------- */

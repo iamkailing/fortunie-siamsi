@@ -233,10 +233,12 @@ function actAltar(op,arg){const A=altarS(),today=dk(now());
   throw "คำสั่งไม่ถูกต้อง"}
 /* v101 music unlocks + meditation reward */
 const BGM_PAID=["wind","stream","china"],BGM_COST=200,MED_SEC=600;
+/* v109 timed breathing: 1 / 3 / 5 / 10 minutes, merit for the first finish of the day by length */
+var BREATH_MIN=[1,3,5,10],BREATH_L={1:3,3:5,5:8,10:10};
 function actMus(op,arg){const today=dk(now());
   if(op==="buy"){if(!BGM_PAID.includes(arg))throw "ไม่พบเพลงนี้";S.bgm=Array.isArray(S.bgm)?S.bgm:[];if(S.bgm.includes(arg))return{ok:1};if((S.leaves||0)<BGM_COST)throw "แต้มบุญไม่พอ ต้องใช้ "+BGM_COST+" แต้มบุญ";S.leaves-=BGM_COST;S.bgm.push(arg);return{ok:1}}
-  if(op==="med_start"){S.medAt=now();return{ok:1}}
-  if(op==="med_done"){if(!S.medAt||now()-S.medAt<(MED_SEC-5)*1000)throw "นั่งสมาธิให้ครบ 10 นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=10;S.leaves=(S.leaves||0)+l}return{l}}
+  if(op==="med_start"){const m=Math.trunc(+arg);S.medMin=BREATH_MIN.includes(m)?m:10;S.medAt=now();return{ok:1,min:S.medMin}}
+  if(op==="med_done"){const m=BREATH_MIN.includes(+S.medMin)?+S.medMin:10;if(!S.medAt||now()-S.medAt<(m*60-5)*1000)throw "หายใจให้ครบ "+m+" นาทีก่อนนะคะ";S.medAt=0;let l=0;if(S.medDay!==today){S.medDay=today;l=BREATH_L[m];S.leaves=(S.leaves||0)+l}return{l,min:m}}
   throw "คำสั่งไม่ถูกต้อง"}
 function actTut(s,done){S.tutS=Math.max(S.tutS||0,Math.max(0,Math.min(99,Math.floor(+s||0))));if(done){S.tutF=0;S.tutS=99}return{tutS:S.tutS}}
 function actJar(){settlePending();if(!(S.jarT>0))throw "ยังไม่มีไหสะสมบุญเต็ม";S.jarT--;let r=rnd()*100,t=2;for(const [tt,w] of JAR_ODDS){if(r<w){t=tt;break}r-=w}if(tutRig()&&!S.tutJar){S.tutJar=1;t=2}
